@@ -78,7 +78,7 @@
 
     {{-- Links --}}
     <div class="card overflow-hidden mb-5">
-        <a href="{{ route('merchant.security') }}" class="flex items-center justify-between px-5 py-3" style="text-decoration: none; color: inherit;">
+        <a wire:navigate href="{{ route('merchant.security') }}" class="flex items-center justify-between px-5 py-3" style="text-decoration: none; color: inherit;">
             <div class="flex items-center gap-3">
                 <x-icon name="shield" class="w-5 h-5" style="color: var(--color-ink-mid);"/>
                 <span style="font-size: 14px;">Security & PIN</span>

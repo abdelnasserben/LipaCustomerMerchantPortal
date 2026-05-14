@@ -2,7 +2,7 @@
 <div>
     <div class="px-5 pt-5">
         <div class="flex items-center gap-3 mb-5">
-            <a href="{{ route('customer.profile') }}" class="circle-btn">
+            <a wire:navigate href="{{ route('customer.profile') }}" class="circle-btn">
                 <x-icon name="arrow-left" class="w-4 h-4"/>
             </a>
             <h1 class="font-bold" style="font-size: 21px; letter-spacing: -0.02em;">Security</h1>

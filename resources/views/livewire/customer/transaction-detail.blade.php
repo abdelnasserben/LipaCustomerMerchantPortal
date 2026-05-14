@@ -2,7 +2,7 @@
 <div class="px-5 pt-5">
     {{-- Back --}}
     <div class="flex items-center gap-3 mb-6">
-        <a href="{{ route('customer.transactions') }}" class="circle-btn">
+        <a wire:navigate href="{{ route('customer.transactions') }}" class="circle-btn">
             <x-icon name="arrow-left" class="w-4 h-4"/>
         </a>
         <h1 class="font-bold" style="font-size: 19px; letter-spacing: -0.02em;">Transaction Detail</h1>
@@ -12,7 +12,7 @@
     <div class="empty-state">
         <x-icon name="warn" class="w-10 h-10 mb-3" style="color: var(--color-border-hi);"/>
         <div style="font-size: 15px; font-weight: 600; margin-bottom: 6px;">Transaction not found</div>
-        <a href="{{ route('customer.transactions') }}" class="btn btn-secondary btn-md mt-2">Back to Activity</a>
+        <a wire:navigate href="{{ route('customer.transactions') }}" class="btn btn-secondary btn-md mt-2">Back to Activity</a>
     </div>
     @else
 

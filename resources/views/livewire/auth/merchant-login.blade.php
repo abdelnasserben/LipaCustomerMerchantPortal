@@ -166,7 +166,7 @@
             @endif
 
             <div class="mt-8 text-center">
-                <a href="{{ route('customer.login') }}" style="font-size: 13px; color: var(--color-ink-low);">
+                <a wire:navigate href="{{ route('customer.login') }}" style="font-size: 13px; color: var(--color-ink-low);">
                     Customer? <span style="color: var(--color-brand); font-weight: 600;">Sign in to customer portal →</span>
                 </a>
             </div>

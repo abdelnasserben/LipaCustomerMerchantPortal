@@ -147,7 +147,7 @@
         @endif
 
         <div class="mt-8 text-center">
-            <a href="{{ route('merchant.login') }}" style="font-size: 13px; color: var(--color-ink-low);">
+            <a wire:navigate href="{{ route('merchant.login') }}" style="font-size: 13px; color: var(--color-ink-low);">
                 Merchant? <span style="color: var(--color-brand); font-weight: 600;">Sign in to merchant portal →</span>
             </a>
         </div>

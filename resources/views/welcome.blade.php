@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lipa — Customer & Merchant Portal</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
 </head>
 <body style="background: var(--color-bg); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;">
     <div style="width: 100%; max-width: 460px; text-align: center;">
@@ -30,7 +31,7 @@
 
         <div class="flex flex-col gap-4">
             {{-- Customer card --}}
-            <a href="{{ route('customer.login') }}" style="text-decoration: none;">
+            <a wire:navigate href="{{ route('customer.login') }}" style="text-decoration: none;">
                 <div class="card p-6 text-left cursor-pointer" style="border: 1.5px solid var(--color-border); transition: box-shadow .15s;">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-4">
@@ -57,7 +58,7 @@
             </a>
 
             {{-- Merchant card --}}
-            <a href="{{ route('merchant.login') }}" style="text-decoration: none;">
+            <a wire:navigate href="{{ route('merchant.login') }}" style="text-decoration: none;">
                 <div class="card p-6 text-left cursor-pointer" style="border: 1.5px solid var(--color-border); transition: box-shadow .15s;">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-4">
@@ -89,5 +90,6 @@
             Lipa · All sessions are logged and monitored
         </div>
     </div>
+    @livewireScripts
 </body>
 </html>

@@ -41,13 +41,13 @@
 
                 {{-- Quick actions --}}
                 <div class="flex gap-3 mt-6">
-                    <a href="{{ route('customer.send') }}" style="flex: 1; height: 44px; background: #0c7a3e; border: none; border-radius: 10px; color: #fff; font-weight: 600; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; cursor: pointer;">
+                    <a wire:navigate href="{{ route('customer.send') }}" style="flex: 1; height: 44px; background: #0c7a3e; border: none; border-radius: 10px; color: #fff; font-weight: 600; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; cursor: pointer;">
                         <x-icon name="send" class="w-4 h-4"/>Send
                     </a>
-                    <a href="{{ route('customer.statement') }}" style="flex: 1; height: 44px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; color: rgba(255,255,255,0.85); font-weight: 600; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; cursor: pointer;">
+                    <a wire:navigate href="{{ route('customer.statement') }}" style="flex: 1; height: 44px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; color: rgba(255,255,255,0.85); font-weight: 600; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; cursor: pointer;">
                         <x-icon name="doc" class="w-4 h-4"/>Statement
                     </a>
-                    <a href="{{ route('customer.cards') }}" style="flex: 1; height: 44px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; color: rgba(255,255,255,0.85); font-weight: 600; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; cursor: pointer;">
+                    <a wire:navigate href="{{ route('customer.cards') }}" style="flex: 1; height: 44px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; color: rgba(255,255,255,0.85); font-weight: 600; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; cursor: pointer;">
                         <x-icon name="card" class="w-4 h-4"/>Cards
                     </a>
                 </div>
@@ -61,7 +61,7 @@
         <div class="section-title mb-3">Send Again</div>
         <div class="flex gap-3 overflow-x-auto pb-1" style="-webkit-overflow-scrolling: touch;">
             @foreach($beneficiaries as $b)
-            <a href="{{ route('customer.send', ['phone' => $b['phoneNumber'], 'name' => $b['fullName']]) }}"
+            <a wire:navigate href="{{ route('customer.send', ['phone' => $b['phoneNumber'], 'name' => $b['fullName']]) }}"
                class="flex flex-col items-center gap-2 flex-shrink-0 text-decoration-none" style="text-decoration: none;">
                 <div style="width: 52px; height: 52px; border-radius: 50%; background: var(--color-brand-soft); border: 2px solid var(--color-brand-soft); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: var(--color-brand-deep);">
                     {{ FormatService::initials($b['fullName']) }}
@@ -79,7 +79,7 @@
     <div class="px-5">
         <div class="flex justify-between items-center mb-3">
             <div class="section-title">Recent Activity</div>
-            <a href="{{ route('customer.transactions') }}" style="font-size: 12.5px; font-weight: 600; color: var(--color-brand); text-decoration: none;">View all</a>
+            <a wire:navigate href="{{ route('customer.transactions') }}" style="font-size: 12.5px; font-weight: 600; color: var(--color-brand); text-decoration: none;">View all</a>
         </div>
 
         @if(empty($grouped))
@@ -104,7 +104,7 @@
                 </span>
             </div>
             @foreach($txs as $tx)
-            <a href="{{ route('customer.transactions.show', $tx['id']) }}" class="tx-row" style="text-decoration: none; color: inherit; border-bottom: 1px solid var(--color-border);">
+            <a wire:navigate href="{{ route('customer.transactions.show', $tx['id']) }}" class="tx-row" style="text-decoration: none; color: inherit; border-bottom: 1px solid var(--color-border);">
                 {{-- Icon --}}
                 <div style="width: 42px; height: 42px; border-radius: 12px; background: {{ $tx['direction'] === 'in' ? 'var(--color-brand-soft)' : 'var(--color-surface-alt)' }}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                     @if($tx['direction'] === 'in')

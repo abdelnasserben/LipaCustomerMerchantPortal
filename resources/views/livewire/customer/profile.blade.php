@@ -97,14 +97,14 @@
 
         {{-- Links --}}
         <div class="card overflow-hidden mb-5">
-            <a href="{{ route('customer.statement') }}" class="flex items-center justify-between px-4 py-3 text-decoration-none" style="border-bottom: 1px solid var(--color-border); text-decoration: none; color: inherit;">
+            <a wire:navigate href="{{ route('customer.statement') }}" class="flex items-center justify-between px-4 py-3 text-decoration-none" style="border-bottom: 1px solid var(--color-border); text-decoration: none; color: inherit;">
                 <div class="flex items-center gap-3">
                     <x-icon name="doc" class="w-5 h-5" style="color: var(--color-ink-mid);"/>
                     <span style="font-size: 14px;">Account Statement</span>
                 </div>
                 <x-icon name="chev-right" class="w-4 h-4" style="color: var(--color-ink-low);"/>
             </a>
-            <a href="{{ route('customer.security') }}" class="flex items-center justify-between px-4 py-3" style="text-decoration: none; color: inherit;">
+            <a wire:navigate href="{{ route('customer.security') }}" class="flex items-center justify-between px-4 py-3" style="text-decoration: none; color: inherit;">
                 <div class="flex items-center gap-3">
                     <x-icon name="shield" class="w-5 h-5" style="color: var(--color-ink-mid);"/>
                     <span style="font-size: 14px;">Security & PIN</span>

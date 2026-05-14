@@ -50,7 +50,7 @@
             <div class="col-span-2 section-title text-right">Amount</div>
         </div>
         @forelse($transactions as $tx)
-        <a href="{{ route('merchant.transactions.show', $tx['id']) }}"
+        <a wire:navigate href="{{ route('merchant.transactions.show', $tx['id']) }}"
            class="grid grid-cols-1 md:grid-cols-12 items-center px-5 py-3 hover:bg-[var(--color-surface-alt)] transition-colors"
            style="border-bottom: 1px solid var(--color-border); text-decoration: none; color: inherit;">
             <div class="col-span-3 flex items-center gap-3 mb-2 md:mb-0">

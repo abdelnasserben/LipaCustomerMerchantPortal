@@ -231,7 +231,7 @@
             </div>
 
             <button wire:click="resetForm" class="btn btn-primary btn-lg btn-full">Send Another</button>
-            <a href="{{ route('customer.dashboard') }}" class="btn btn-secondary btn-lg btn-full">Back to Home</a>
+            <a wire:navigate href="{{ route('customer.dashboard') }}" class="btn btn-secondary btn-lg btn-full">Back to Home</a>
         </div>
         @endif
     </div>

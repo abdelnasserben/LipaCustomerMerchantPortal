@@ -145,7 +145,7 @@
         </div>
 
         <button wire:click="resetForm" class="btn btn-primary btn-lg btn-full">Send Again</button>
-        <a href="{{ route('merchant.dashboard') }}" class="btn btn-secondary btn-lg btn-full">Back to Dashboard</a>
+        <a wire:navigate href="{{ route('merchant.dashboard') }}" class="btn btn-secondary btn-lg btn-full">Back to Dashboard</a>
     </div>
     @endif
 </div>

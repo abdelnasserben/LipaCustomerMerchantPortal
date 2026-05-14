@@ -2,7 +2,7 @@
 <div>
     <div class="sticky top-0 z-10 px-5 pt-5 pb-4" style="background: var(--color-bg);">
         <div class="flex items-center gap-3 mb-4">
-            <a href="{{ route('customer.profile') }}" class="circle-btn">
+            <a wire:navigate href="{{ route('customer.profile') }}" class="circle-btn">
                 <x-icon name="arrow-left" class="w-4 h-4"/>
             </a>
             <h1 class="font-bold flex-1" style="font-size: 21px; letter-spacing: -0.02em;">Statement</h1>

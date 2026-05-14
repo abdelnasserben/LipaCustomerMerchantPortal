@@ -8,7 +8,7 @@
             <div style="font-size: 13px; color: var(--color-ink-low); margin-top: 2px;">{{ $profile['externalRef'] }} · {{ $profile['addressCity'] }}, {{ $profile['addressDistrict'] }}</div>
         </div>
         <div class="flex gap-3">
-            <a href="{{ route('merchant.send') }}" class="btn btn-primary btn-md">
+            <a wire:navigate href="{{ route('merchant.send') }}" class="btn btn-primary btn-md">
                 <x-icon name="send" class="w-4 h-4"/>Send M2M
             </a>
             <button class="circle-btn">
@@ -44,7 +44,7 @@
             <div class="section-title mb-3">Terminals Online</div>
             <div class="font-mono font-bold" style="font-size: 32px; color: var(--color-ink-hi);">{{ $activeTerminals }}</div>
             <div style="font-size: 13px; color: var(--color-ink-low); margin-top: 4px;">of {{ count($terminals) }} total</div>
-            <a href="{{ route('merchant.terminals') }}" class="mt-3 inline-flex items-center gap-1" style="font-size: 12.5px; color: var(--color-brand); font-weight: 600; text-decoration: none;">View terminals <x-icon name="chev-right" class="w-3 h-3"/></a>
+            <a wire:navigate href="{{ route('merchant.terminals') }}" class="mt-3 inline-flex items-center gap-1" style="font-size: 12.5px; color: var(--color-brand); font-weight: 600; text-decoration: none;">View terminals <x-icon name="chev-right" class="w-3 h-3"/></a>
         </div>
         <div class="stat-card">
             <div class="section-title mb-3">Wallet Status</div>
@@ -99,7 +99,7 @@
     <div class="mt-6">
         <div class="flex justify-between items-center mb-4">
             <div class="font-semibold" style="font-size: 15px;">Recent Payments</div>
-            <a href="{{ route('merchant.transactions') }}" style="font-size: 12.5px; color: var(--color-brand); font-weight: 600; text-decoration: none;">View all →</a>
+            <a wire:navigate href="{{ route('merchant.transactions') }}" style="font-size: 12.5px; color: var(--color-brand); font-weight: 600; text-decoration: none;">View all →</a>
         </div>
         <div class="card overflow-hidden">
             {{-- Table header --}}
@@ -111,7 +111,7 @@
                 <div class="col-span-3 section-title text-right">Amount</div>
             </div>
             @forelse($transactions as $tx)
-            <a href="{{ route('merchant.transactions.show', $tx['id']) }}" class="grid grid-cols-1 md:grid-cols-12 items-center px-4 py-3 hover:bg-[var(--color-surface-alt)] transition-colors" style="border-bottom: 1px solid var(--color-border); text-decoration: none; color: inherit;">
+            <a wire:navigate href="{{ route('merchant.transactions.show', $tx['id']) }}" class="grid grid-cols-1 md:grid-cols-12 items-center px-4 py-3 hover:bg-[var(--color-surface-alt)] transition-colors" style="border-bottom: 1px solid var(--color-border); text-decoration: none; color: inherit;">
                 <div class="col-span-3 flex items-center gap-3 mb-2 md:mb-0">
                     <div style="width: 32px; height: 32px; border-radius: 8px; background: {{ $tx['direction'] === 'in' ? 'var(--color-brand-soft)' : 'var(--color-surface-alt)' }}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         @if($tx['direction'] === 'in')

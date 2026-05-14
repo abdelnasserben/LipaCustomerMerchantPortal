@@ -26,36 +26,36 @@
 
                 {{-- Nav --}}
                 <nav class="flex flex-col gap-1 flex-1">
-                    <a href="{{ route('merchant.dashboard') }}" class="nav-item {{ request()->routeIs('merchant.dashboard') ? 'active' : '' }}">
+                    <a wire:navigate href="{{ route('merchant.dashboard') }}" class="nav-item {{ request()->routeIs('merchant.dashboard') ? 'active' : '' }}">
                         <x-icon name="home" class="w-5 h-5"/>
                         <span>Dashboard</span>
                     </a>
-                    <a href="{{ route('merchant.transactions') }}" class="nav-item {{ request()->routeIs('merchant.transactions*') ? 'active' : '' }}">
+                    <a wire:navigate href="{{ route('merchant.transactions') }}" class="nav-item {{ request()->routeIs('merchant.transactions*') ? 'active' : '' }}">
                         <x-icon name="list" class="w-5 h-5"/>
                         <span>Transactions</span>
                     </a>
-                    <a href="{{ route('merchant.statement') }}" class="nav-item {{ request()->routeIs('merchant.statement') ? 'active' : '' }}">
+                    <a wire:navigate href="{{ route('merchant.statement') }}" class="nav-item {{ request()->routeIs('merchant.statement') ? 'active' : '' }}">
                         <x-icon name="doc" class="w-5 h-5"/>
                         <span>Statement</span>
                     </a>
-                    <a href="{{ route('merchant.send') }}" class="nav-item {{ request()->routeIs('merchant.send*') ? 'active' : '' }}">
+                    <a wire:navigate href="{{ route('merchant.send') }}" class="nav-item {{ request()->routeIs('merchant.send*') ? 'active' : '' }}">
                         <x-icon name="send" class="w-5 h-5"/>
                         <span>Send Money</span>
                     </a>
-                    <a href="{{ route('merchant.operators') }}" class="nav-item {{ request()->routeIs('merchant.operators*') ? 'active' : '' }}">
+                    <a wire:navigate href="{{ route('merchant.operators') }}" class="nav-item {{ request()->routeIs('merchant.operators*') ? 'active' : '' }}">
                         <x-icon name="team" class="w-5 h-5"/>
                         <span>Cashiers</span>
                     </a>
-                    <a href="{{ route('merchant.terminals') }}" class="nav-item {{ request()->routeIs('merchant.terminals*') ? 'active' : '' }}">
+                    <a wire:navigate href="{{ route('merchant.terminals') }}" class="nav-item {{ request()->routeIs('merchant.terminals*') ? 'active' : '' }}">
                         <x-icon name="device" class="w-5 h-5"/>
                         <span>Terminals</span>
                     </a>
                     <div class="mt-auto">
-                        <a href="{{ route('merchant.profile') }}" class="nav-item {{ request()->routeIs('merchant.profile') ? 'active' : '' }}">
+                        <a wire:navigate href="{{ route('merchant.profile') }}" class="nav-item {{ request()->routeIs('merchant.profile') ? 'active' : '' }}">
                             <x-icon name="user" class="w-5 h-5"/>
                             <span>Profile</span>
                         </a>
-                        <a href="{{ route('merchant.security') }}" class="nav-item {{ request()->routeIs('merchant.security') ? 'active' : '' }}">
+                        <a wire:navigate href="{{ route('merchant.security') }}" class="nav-item {{ request()->routeIs('merchant.security') ? 'active' : '' }}">
                             <x-icon name="shield" class="w-5 h-5"/>
                             <span>Security</span>
                         </a>
@@ -94,14 +94,14 @@
                     </button>
                 </div>
                 <nav class="flex flex-col gap-1">
-                    <a href="{{ route('merchant.dashboard') }}" class="nav-item">Dashboard</a>
-                    <a href="{{ route('merchant.transactions') }}" class="nav-item">Transactions</a>
-                    <a href="{{ route('merchant.statement') }}" class="nav-item">Statement</a>
-                    <a href="{{ route('merchant.send') }}" class="nav-item">Send Money</a>
-                    <a href="{{ route('merchant.operators') }}" class="nav-item">Cashiers</a>
-                    <a href="{{ route('merchant.terminals') }}" class="nav-item">Terminals</a>
-                    <a href="{{ route('merchant.profile') }}" class="nav-item">Profile</a>
-                    <a href="{{ route('merchant.security') }}" class="nav-item">Security</a>
+                    <a wire:navigate href="{{ route('merchant.dashboard') }}" class="nav-item {{ request()->routeIs('merchant.dashboard') ? 'active' : '' }}" data-mobile-nav-link>Dashboard</a>
+                    <a wire:navigate href="{{ route('merchant.transactions') }}" class="nav-item {{ request()->routeIs('merchant.transactions*') ? 'active' : '' }}" data-mobile-nav-link>Transactions</a>
+                    <a wire:navigate href="{{ route('merchant.statement') }}" class="nav-item {{ request()->routeIs('merchant.statement') ? 'active' : '' }}" data-mobile-nav-link>Statement</a>
+                    <a wire:navigate href="{{ route('merchant.send') }}" class="nav-item {{ request()->routeIs('merchant.send*') ? 'active' : '' }}" data-mobile-nav-link>Send Money</a>
+                    <a wire:navigate href="{{ route('merchant.operators') }}" class="nav-item {{ request()->routeIs('merchant.operators*') ? 'active' : '' }}" data-mobile-nav-link>Cashiers</a>
+                    <a wire:navigate href="{{ route('merchant.terminals') }}" class="nav-item {{ request()->routeIs('merchant.terminals*') ? 'active' : '' }}" data-mobile-nav-link>Terminals</a>
+                    <a wire:navigate href="{{ route('merchant.profile') }}" class="nav-item {{ request()->routeIs('merchant.profile') ? 'active' : '' }}" data-mobile-nav-link>Profile</a>
+                    <a wire:navigate href="{{ route('merchant.security') }}" class="nav-item {{ request()->routeIs('merchant.security') ? 'active' : '' }}" data-mobile-nav-link>Security</a>
                 </nav>
             </div>
         </div>
@@ -112,13 +112,43 @@
         </main>
     </div>
     @livewireScripts
-    <script>
-        const toggle = document.getElementById('mobile-nav-toggle');
-        const nav = document.getElementById('mobile-nav');
-        const close = document.getElementById('mobile-nav-close');
-        if (toggle) toggle.addEventListener('click', () => nav.classList.toggle('hidden'));
-        if (close) close.addEventListener('click', () => nav.classList.add('hidden'));
-        if (nav) nav.addEventListener('click', e => { if (e.target === nav) nav.classList.add('hidden'); });
+    <script data-navigate-once>
+        (() => {
+            const closeMobileNav = () => document.getElementById('mobile-nav')?.classList.add('hidden');
+
+            const initMerchantMobileNav = () => {
+                const toggle = document.getElementById('mobile-nav-toggle');
+                const nav = document.getElementById('mobile-nav');
+                const close = document.getElementById('mobile-nav-close');
+
+                if (toggle && !toggle.dataset.bound) {
+                    toggle.addEventListener('click', () => nav?.classList.toggle('hidden'));
+                    toggle.dataset.bound = 'true';
+                }
+
+                if (close && !close.dataset.bound) {
+                    close.addEventListener('click', closeMobileNav);
+                    close.dataset.bound = 'true';
+                }
+
+                if (nav && !nav.dataset.bound) {
+                    nav.addEventListener('click', e => {
+                        if (e.target === nav) closeMobileNav();
+                    });
+                    nav.dataset.bound = 'true';
+                }
+
+                document.querySelectorAll('[data-mobile-nav-link]').forEach(link => {
+                    if (link.dataset.bound) return;
+                    link.addEventListener('click', closeMobileNav);
+                    link.dataset.bound = 'true';
+                });
+            };
+
+            initMerchantMobileNav();
+            document.addEventListener('livewire:navigated', initMerchantMobileNav);
+            document.addEventListener('livewire:navigating', closeMobileNav);
+        })();
     </script>
 </body>
 </html>
