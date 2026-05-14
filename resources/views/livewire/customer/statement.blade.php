@@ -1,0 +1,60 @@
+@php use App\Services\FormatService; @endphp
+<div>
+    <div class="sticky top-0 z-10 px-5 pt-5 pb-4" style="background: var(--color-bg);">
+        <div class="flex items-center gap-3 mb-4">
+            <a href="{{ route('customer.profile') }}" class="circle-btn">
+                <x-icon name="arrow-left" class="w-4 h-4"/>
+            </a>
+            <h1 class="font-bold flex-1" style="font-size: 21px; letter-spacing: -0.02em;">Statement</h1>
+            <button class="circle-btn">
+                <x-icon name="download" class="w-4 h-4"/>
+            </button>
+        </div>
+        {{-- Date filters --}}
+        <div class="flex gap-2">
+            <div class="flex-1">
+                <div class="label mb-1">From</div>
+                <input wire:model="from" type="date" class="input" style="height: 42px; font-size: 13px;"/>
+            </div>
+            <div class="flex-1">
+                <div class="label mb-1">To</div>
+                <input wire:model="to" type="date" class="input" style="height: 42px; font-size: 13px;"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="px-5">
+        @if(empty($entries))
+        <div class="empty-state">
+            <x-icon name="doc" class="w-10 h-10 mb-3" style="color: var(--color-border-hi);"/>
+            <div style="font-size: 15px; font-weight: 600;">No statement entries</div>
+        </div>
+        @else
+        <div class="card overflow-hidden">
+            {{-- Header row --}}
+            <div class="flex gap-3 px-4 py-2" style="background: var(--color-surface-alt); border-bottom: 1px solid var(--color-border);">
+                <span class="section-title flex-1">Description</span>
+                <span class="section-title w-24 text-right">Amount</span>
+                <span class="section-title w-28 text-right">Balance</span>
+            </div>
+            @foreach($entries as $entry)
+            <div class="flex gap-3 items-center px-4 py-3" style="border-bottom: 1px solid var(--color-border);">
+                <div class="flex-1 min-w-0">
+                    <div style="font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $entry['description'] }}</div>
+                    <div style="font-size: 11px; color: var(--color-ink-low);">{{ FormatService::dateTime($entry['postedAt'], 'd M · H:i') }}</div>
+                </div>
+                <div class="w-24 text-right">
+                    <span class="font-mono font-semibold" style="font-size: 13px; color: {{ $entry['entryType'] === 'CREDIT' ? 'var(--color-success)' : 'var(--color-ink-hi)' }};">
+                        {{ $entry['entryType'] === 'CREDIT' ? '+' : '−' }}{{ FormatService::kmf($entry['amount']) }}
+                    </span>
+                </div>
+                <div class="w-28 text-right">
+                    <span class="font-mono" style="font-size: 12px; color: var(--color-ink-mid);">{{ FormatService::kmf($entry['runningBalance']) }}</span>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        @endif
+    </div>
+    <div class="h-6"></div>
+</div>
