@@ -68,14 +68,6 @@
             <input wire:model="description" type="text" placeholder="What's this for?" class="input" style="font-family: var(--font-sans); font-size: 15px;"/>
         </div>
 
-        <div class="alert alert-info">
-            <x-icon name="warn" class="w-4 h-4 flex-shrink-0"/>
-            <div>
-                <div class="font-semibold mb-1">No PIN gate on M2M</div>
-                <div>Merchant-to-merchant transfers execute immediately. An idempotency key is generated automatically.</div>
-            </div>
-        </div>
-
         <button type="submit" class="btn btn-primary btn-lg btn-full" {{ !$profile['canReceiveFromMerchant'] ? 'disabled' : '' }}>
             Review Transfer
         </button>

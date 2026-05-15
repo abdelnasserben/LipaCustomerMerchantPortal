@@ -9,15 +9,6 @@
     </div>
     @endif
 
-    {{-- Session model warning --}}
-    <div class="alert alert-warn mb-5">
-        <x-icon name="warn" class="w-4 h-4 flex-shrink-0 mt-0.5"/>
-        <div>
-            <div class="font-semibold mb-1">Merchant session limitations</div>
-            <div>Merchant access tokens last 8 hours. There is <strong>no automatic refresh</strong> and <strong>no server-side logout</strong> — signing out only clears local storage. The JWT remains valid until natural expiry.</div>
-        </div>
-    </div>
-
     {{-- PIN management --}}
     <div class="card overflow-hidden mb-5">
         <div class="px-5 py-2" style="background: var(--color-surface-alt); border-bottom: 1px solid var(--color-border);">
@@ -107,10 +98,15 @@
         <div class="flex-1 overflow-y-auto px-6 py-5">
             <p style="font-size: 14px; color: var(--color-ink-mid); margin-bottom: 20px;">Scan the QR code with your authenticator app, then enter the 6-digit code.</p>
             <div class="mb-5 flex justify-center">
-                <div style="width: 160px; height: 160px; border: 1px solid var(--color-border); border-radius: 12px; background: var(--color-surface-alt); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
-                    <x-icon name="qr" class="w-12 h-12" style="color: var(--color-ink-low);"/>
-                    <div style="font-size: 10px; color: var(--color-ink-low);">QR Code</div>
+                @if($totpQrSvg)
+                <div style="width: 200px; height: 200px; padding: 10px; border: 1px solid var(--color-border); border-radius: 12px; background: #fff;">
+                    {!! $totpQrSvg !!}
                 </div>
+                @else
+                <div style="width: 200px; height: 200px; border: 1px solid var(--color-border); border-radius: 12px; background: var(--color-surface-alt); display: flex; align-items: center; justify-content: center;">
+                    <div style="font-size: 11px; color: var(--color-ink-low);">Loading QR…</div>
+                </div>
+                @endif
             </div>
             <div class="card-flat p-3 mb-5">
                 <div class="section-title mb-1">Manual key</div>
@@ -122,7 +118,7 @@
             <form wire:submit="enrollTotp" class="flex flex-col gap-4">
                 <div>
                     <label class="label">Verification Code</label>
-                    <input wire:model="totpCode" type="text" inputmode="numeric" maxlength="6" placeholder="6-digit code" class="input" style="text-align: center; font-size: 22px; letter-spacing: 0.3em;"/>
+                    <input wire:model="totpCode" type="text" inputmode="numeric" maxlength="6" placeholder="******" class="input" style="text-align: center; font-size: 22px; letter-spacing: 0.3em;"/>
                 </div>
                 <button type="submit" class="btn btn-primary btn-lg btn-full">Enable 2FA</button>
                 <button type="button" wire:click="openPanel('')" class="btn btn-ghost btn-md btn-full" style="color: var(--color-ink-mid);">Cancel</button>
@@ -150,7 +146,7 @@
             <form wire:submit="revokeTotp" class="flex flex-col gap-4">
                 <div>
                     <label class="label">Current Code</label>
-                    <input wire:model="totpCode" type="text" inputmode="numeric" maxlength="6" placeholder="6-digit code" class="input" style="text-align: center; font-size: 22px; letter-spacing: 0.3em;"/>
+                    <input wire:model="totpCode" type="text" inputmode="numeric" maxlength="6" placeholder="******" class="input" style="text-align: center; font-size: 22px; letter-spacing: 0.3em;"/>
                 </div>
                 <button type="submit" class="btn btn-danger btn-lg btn-full">Disable 2FA</button>
                 <button type="button" wire:click="openPanel('')" class="btn btn-ghost btn-md btn-full" style="color: var(--color-ink-mid);">Cancel</button>

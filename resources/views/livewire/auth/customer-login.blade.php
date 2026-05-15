@@ -119,22 +119,25 @@
 
             @if($step === 'mfa')
             <form wire:submit="verifyMfa" class="flex flex-col gap-6">
-                <div>
+                <div x-data="otpInput(@js($mfaCode))" x-init="$watch('value', v => $wire.set('mfaCode', v, false))">
                     <label class="label">Authenticator Code</label>
-                    <div class="flex gap-2 justify-between">
+                    <div class="flex gap-2 justify-between" x-on:paste.prevent="onPaste($event)">
                         @for($i = 0; $i < 6; $i++)
-                        <input type="text" maxlength="1" inputmode="numeric"
+                        <input type="text" maxlength="1" inputmode="numeric" autocomplete="one-time-code"
                             class="otp-input flex-1 min-w-0"
-                            x-data x-on:input="if($event.target.value && $el.nextElementSibling) $el.nextElementSibling.focus()"/>
+                            x-ref="d{{ $i }}"
+                            x-on:input="onInput($event, {{ $i }})"
+                            x-on:keydown="onKeydown($event, {{ $i }})"
+                            x-on:focus="$event.target.select()"
+                            @if($i === 0) autofocus @endif />
                         @endfor
                     </div>
-                    <input wire:model="mfaCode" type="hidden" id="mfa-hidden"/>
                 </div>
                 <div class="alert alert-info">
                     <x-icon name="shield" class="w-4 h-4 flex-shrink-0 mt-0.5"/>
                     <span>Open your authenticator app and enter the 6-digit code for Lipa.</span>
                 </div>
-                <button type="button" wire:click="$set('mfaCode', '123456'); verifyMfa()" class="btn btn-primary btn-lg btn-full">
+                <button type="submit" class="btn btn-primary btn-lg btn-full">
                     Verify Code
                 </button>
                 <button type="button" wire:click="$set('step', 'login')" class="btn btn-ghost btn-md btn-full" style="color: var(--color-ink-mid);">

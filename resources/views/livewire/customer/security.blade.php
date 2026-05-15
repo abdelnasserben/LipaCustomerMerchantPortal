@@ -109,12 +109,17 @@
     <div class="sheet">
         <div class="font-bold mb-1" style="font-size: 18px;">Enable 2FA</div>
         <p style="font-size: 14px; color: var(--color-ink-mid); margin-bottom: 20px;">Scan the QR code with your authenticator app, then enter the 6-digit code to confirm.</p>
-        {{-- QR placeholder --}}
+        {{-- Real TOTP QR --}}
         <div class="mb-5 flex justify-center">
-            <div style="width: 160px; height: 160px; border: 1px solid var(--color-border); border-radius: 12px; background: var(--color-surface-alt); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
-                <x-icon name="qr" class="w-12 h-12" style="color: var(--color-ink-low);"/>
-                <div style="font-size: 10px; color: var(--color-ink-low);">QR Code Placeholder</div>
+            @if($totpQrSvg)
+            <div style="width: 200px; height: 200px; padding: 10px; border: 1px solid var(--color-border); border-radius: 12px; background: #fff;">
+                {!! $totpQrSvg !!}
             </div>
+            @else
+            <div style="width: 200px; height: 200px; border: 1px solid var(--color-border); border-radius: 12px; background: var(--color-surface-alt); display: flex; align-items: center; justify-content: center;">
+                <div style="font-size: 11px; color: var(--color-ink-low);">Loading QR…</div>
+            </div>
+            @endif
         </div>
         <div class="card-flat p-3 mb-4">
             <div class="section-title mb-1">Manual entry key</div>
@@ -126,7 +131,7 @@
         <form wire:submit="enrollTotp" class="flex flex-col gap-4">
             <div>
                 <label class="label">Verification Code</label>
-                <input wire:model="totpCode" type="text" inputmode="numeric" maxlength="6" placeholder="6-digit code" class="input" style="text-align: center; font-size: 22px; letter-spacing: 0.3em;"/>
+                <input wire:model="totpCode" type="text" inputmode="numeric" maxlength="6" placeholder="******" class="input" style="text-align: center; font-size: 22px; letter-spacing: 0.3em;"/>
             </div>
             <button type="submit" class="btn btn-primary btn-lg btn-full">Enable 2FA</button>
             <button type="button" wire:click="openPanel('')" class="btn btn-ghost btn-md btn-full" style="color: var(--color-ink-mid);">Cancel</button>
@@ -149,7 +154,7 @@
         <form wire:submit="revokeTotp" class="flex flex-col gap-4">
             <div>
                 <label class="label">Current TOTP Code</label>
-                <input wire:model="totpCode" type="text" inputmode="numeric" maxlength="6" placeholder="6-digit code" class="input" style="text-align: center; font-size: 22px; letter-spacing: 0.3em;"/>
+                <input wire:model="totpCode" type="text" inputmode="numeric" maxlength="6" placeholder="******" class="input" style="text-align: center; font-size: 22px; letter-spacing: 0.3em;"/>
             </div>
             <button type="submit" class="btn btn-danger btn-lg btn-full">Disable 2FA</button>
             <button type="button" wire:click="openPanel('')" class="btn btn-ghost btn-md btn-full" style="color: var(--color-ink-mid);">Cancel</button>
