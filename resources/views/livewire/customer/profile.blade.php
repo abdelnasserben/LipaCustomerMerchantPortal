@@ -117,10 +117,13 @@
 
         </div> {{-- /lg grid --}}
 
-        <a href="{{ route('customer.login') }}" class="btn btn-secondary btn-lg btn-full">
-            <x-icon name="arrow-left" class="w-4 h-4"/>
-            Sign Out
-        </a>
+        <form method="POST" action="{{ route('customer.logout') }}">
+            @csrf
+            <button type="submit" class="btn btn-secondary btn-lg btn-full">
+                <x-icon name="arrow-left" class="w-4 h-4"/>
+                Sign Out
+            </button>
+        </form>
     </div>
     <div class="h-6"></div>
 </div>

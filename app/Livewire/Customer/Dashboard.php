@@ -2,12 +2,17 @@
 
 namespace App\Livewire\Customer;
 
-use App\Data\Mock\CustomerData;
-use App\Services\FormatService;
+use App\Komopay\Contracts\CustomerApi;
+use App\Komopay\Presenters\TransactionPresenter;
+use App\Livewire\Concerns\HandlesAuthException;
 use Livewire\Component;
 
 class Dashboard extends Component
 {
+    use HandlesAuthException;
+
+    protected string $actor = 'customer';
+
     public bool $balanceHidden = false;
 
     public function toggleBalance(): void
@@ -15,14 +20,13 @@ class Dashboard extends Component
         $this->balanceHidden = !$this->balanceHidden;
     }
 
-    public function render()
+    public function render(CustomerApi $api, TransactionPresenter $presenter)
     {
-        $profile = CustomerData::profile();
-        $balance = CustomerData::balance();
-        $activity = CustomerData::activity(10);
-        $beneficiaries = CustomerData::beneficiaries();
+        $profile       = $api->profile();
+        $balance       = $api->balance();
+        $beneficiaries = $api->beneficiaries(20);
+        $activity      = $presenter->presentMany($api->activity(10), $profile['walletId'] ?? '');
 
-        // Group activity by date
         $grouped = [];
         foreach ($activity as $tx) {
             $date = date('Y-m-d', strtotime($tx['createdAt']));

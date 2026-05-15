@@ -47,7 +47,7 @@
         <div class="flex flex-col md:grid md:grid-cols-12 md:items-center gap-3 md:gap-0 px-4 md:px-5 py-4" style="border-bottom: 1px solid var(--color-border);">
             <div class="md:col-span-4 flex items-center gap-3 min-w-0">
                 <div style="width: 38px; height: 38px; border-radius: 50%; background: var(--color-brand-soft); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: var(--color-brand-deep); flex-shrink: 0;">
-                    {{ FormatService::initials($op['fullName']) }}
+                    {{ FormatService::initials($op['fullName'] ?? '?') }}
                 </div>
                 <div class="min-w-0 flex-1">
                     <div class="truncate" style="font-size: 14px; font-weight: 500;">{{ $op['fullName'] }}</div>

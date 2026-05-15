@@ -2,15 +2,20 @@
 
 namespace App\Livewire\Merchant;
 
-use App\Data\Mock\MerchantData;
+use App\Komopay\Contracts\MerchantApi;
+use App\Livewire\Concerns\HandlesAuthException;
 use Livewire\Component;
 
 class Profile extends Component
 {
-    public function render()
+    use HandlesAuthException;
+
+    protected string $actor = 'merchant';
+
+    public function render(MerchantApi $api)
     {
-        $profile = MerchantData::profile();
-        $balance = MerchantData::balance();
+        $profile = $api->profile();
+        $balance = $api->balance();
         return view('livewire.merchant.profile', compact('profile', 'balance'))
             ->layout('layouts.merchant', ['title' => 'Lipa Merchant · Profile']);
     }

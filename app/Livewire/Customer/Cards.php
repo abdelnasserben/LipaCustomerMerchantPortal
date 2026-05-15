@@ -2,23 +2,24 @@
 
 namespace App\Livewire\Customer;
 
-use App\Data\Mock\CustomerData;
+use App\Komopay\Contracts\CustomerApi;
+use App\Komopay\Presenters\CardPresenter;
+use App\Livewire\Concerns\HandlesAuthException;
 use Livewire\Component;
 
 class Cards extends Component
 {
+    use HandlesAuthException;
+
+    protected string $actor = 'customer';
+
     public ?array $selectedCard = null;
     public bool $showReportModal = false;
     public string $reportType = ''; // lost | stolen
 
-    public function selectCard(string $id): void
+    public function selectCard(string $id, CustomerApi $api, CardPresenter $presenter): void
     {
-        foreach (CustomerData::cards() as $card) {
-            if ($card['id'] === $id) {
-                $this->selectedCard = $card;
-                break;
-            }
-        }
+        $this->selectedCard = $presenter->present($api->card($id));
     }
 
     public function back(): void
@@ -33,17 +34,21 @@ class Cards extends Component
         $this->showReportModal = true;
     }
 
-    public function confirmReport(): void
+    public function confirmReport(CustomerApi $api, CardPresenter $presenter): void
     {
         if ($this->selectedCard) {
-            $this->selectedCard['status'] = strtoupper($this->reportType);
+            $card = $this->reportType === 'stolen'
+                ? $api->reportCardStolen($this->selectedCard['id'])
+                : $api->reportCardLost($this->selectedCard['id']);
+            $this->selectedCard = $presenter->present($card);
         }
         $this->showReportModal = false;
     }
 
-    public function render()
+    public function render(CustomerApi $api, CardPresenter $presenter)
     {
-        $cards = CustomerData::cards();
+        $cards = $presenter->presentMany($api->cards());
+
         return view('livewire.customer.cards', compact('cards'))
             ->layout('layouts.customer', ['title' => 'Lipa · Cards']);
     }

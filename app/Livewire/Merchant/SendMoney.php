@@ -2,11 +2,18 @@
 
 namespace App\Livewire\Merchant;
 
-use App\Data\Mock\MerchantData;
+use App\Komopay\Contracts\MerchantApi;
+use App\Komopay\Exceptions\KomopayException;
+use App\Komopay\Support\IdempotencyKey;
+use App\Livewire\Concerns\HandlesAuthException;
 use Livewire\Component;
 
 class SendMoney extends Component
 {
+    use HandlesAuthException;
+
+    protected string $actor = 'merchant';
+
     public string $step = 'form'; // form | confirm | receipt
     public string $recipientPhone = '';
     public string $recipientCountryCode = '269';
@@ -19,10 +26,11 @@ class SendMoney extends Component
 
     public function mount(): void
     {
-        $this->idempotencyKey = (string) \Str::uuid();
+        $this->recipientCountryCode = (string) config('komopay.default_country_code');
+        $this->idempotencyKey = IdempotencyKey::generate();
     }
 
-    public function proceedToConfirm(): void
+    public function proceedToConfirm(MerchantApi $api): void
     {
         $this->error = '';
         if (empty($this->recipientPhone)) {
@@ -36,8 +44,9 @@ class SendMoney extends Component
         }
         $this->amount = $amount;
 
-        $profile = MerchantData::profile();
-        if (!$profile['canReceiveFromMerchant']) {
+        // Spec 9.3: gate UI on canReceiveFromMerchant; backend remains authoritative.
+        $profile = $api->profile();
+        if (empty($profile['canReceiveFromMerchant'])) {
             $this->error = 'M2M transfers are not enabled for your account.';
             return;
         }
@@ -45,21 +54,20 @@ class SendMoney extends Component
         $this->step = 'confirm';
     }
 
-    public function submit(): void
+    public function submit(MerchantApi $api): void
     {
         $this->error = '';
-        $fee = (int) ($this->amount * 0.01);
-        $net = $this->amount - $fee;
-        $this->receipt = [
-            'transactionId' => 'tx_m2m_' . substr(md5(uniqid()), 0, 8),
-            'status' => 'COMPLETED',
-            'requestedAmount' => $this->amount,
-            'feeAmount' => $fee,
-            'netAmountToDestination' => $net,
-            'completedAt' => now()->toIso8601String(),
-            'replayed' => false,
-        ];
-        $this->step = 'receipt';
+        try {
+            $this->receipt = $api->m2mTransfer([
+                'recipientCountryCode' => $this->recipientCountryCode,
+                'recipientPhone'       => str_replace(' ', '', $this->recipientPhone),
+                'amount'               => $this->amount,
+                'description'          => $this->description ?: null,
+            ], $this->idempotencyKey);
+            $this->step = 'receipt';
+        } catch (KomopayException $e) {
+            $this->error = $e->getMessage();
+        }
     }
 
     public function resetForm(): void
@@ -71,13 +79,13 @@ class SendMoney extends Component
         $this->description = '';
         $this->error = '';
         $this->receipt = null;
-        $this->idempotencyKey = (string) \Str::uuid();
+        $this->idempotencyKey = IdempotencyKey::generate();
     }
 
-    public function render()
+    public function render(MerchantApi $api)
     {
-        $profile = MerchantData::profile();
-        $balance = MerchantData::balance();
+        $profile = $api->profile();
+        $balance = $api->balance();
         return view('livewire.merchant.send-money', compact('profile', 'balance'))
             ->layout('layouts.merchant', ['title' => 'Lipa Merchant · Send Money']);
     }

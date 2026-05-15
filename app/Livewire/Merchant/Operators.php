@@ -2,11 +2,17 @@
 
 namespace App\Livewire\Merchant;
 
-use App\Data\Mock\MerchantData;
+use App\Komopay\Contracts\MerchantApi;
+use App\Komopay\Exceptions\KomopayException;
+use App\Livewire\Concerns\HandlesAuthException;
 use Livewire\Component;
 
 class Operators extends Component
 {
+    use HandlesAuthException;
+
+    protected string $actor = 'merchant';
+
     public string $filterStatus = '';
     public bool $showCreateDrawer = false;
     public ?string $actionOperatorId = null;
@@ -22,15 +28,7 @@ class Operators extends Component
     public string $success = '';
     public ?array $createdOperatorPin = null;
 
-    // Local state (simulated)
-    public array $operators = [];
-
-    public function mount(): void
-    {
-        $this->operators = MerchantData::operators();
-    }
-
-    public function createOperator(): void
+    public function createOperator(MerchantApi $api): void
     {
         $this->error = '';
         if (empty($this->fullName) || empty($this->phoneNumber) || empty($this->pin)) {
@@ -45,26 +43,22 @@ class Operators extends Component
             $this->error = 'PINs do not match.';
             return;
         }
-        // Check for duplicate phone
-        foreach ($this->operators as $op) {
-            if ($op['phoneNumber'] === str_replace(' ', '', $this->phoneNumber)) {
-                $this->error = 'This phone number is already in use (PHONE_ALREADY_IN_USE).';
-                return;
-            }
+
+        try {
+            $newOp = $api->createOperator([
+                'fullName'         => $this->fullName,
+                'phoneCountryCode' => (string) config('komopay.default_country_code'),
+                'phoneNumber'      => str_replace(' ', '', $this->phoneNumber),
+                'pin'              => $this->pin,
+            ]);
+        } catch (KomopayException $e) {
+            // PHONE_ALREADY_IN_USE → inline form error (spec 12.2).
+            $this->error = $e->errorCode() === 'PHONE_ALREADY_IN_USE'
+                ? 'This phone number is already in use (PHONE_ALREADY_IN_USE).'
+                : $e->getMessage();
+            return;
         }
 
-        $newOp = [
-            'id' => 'op_new_' . uniqid(),
-            'merchantId' => 'mer_27c9e1ab',
-            'fullName' => $this->fullName,
-            'phoneCountryCode' => '269',
-            'phoneNumber' => str_replace(' ', '', $this->phoneNumber),
-            'status' => 'ACTIVE',
-            'createdAt' => now()->toIso8601String(),
-            'lastLoginAt' => null,
-        ];
-
-        $this->operators[] = $newOp;
         $this->createdOperatorPin = ['operator' => $newOp, 'pin' => $this->pin];
         $this->showCreateDrawer = false;
         $this->fullName = $this->phoneNumber = $this->pin = $this->confirmPin = '';
@@ -78,30 +72,36 @@ class Operators extends Component
         $this->showActionModal = true;
     }
 
-    public function confirmAction(): void
+    public function confirmAction(MerchantApi $api): void
     {
-        foreach ($this->operators as &$op) {
-            if ($op['id'] === $this->actionOperatorId) {
-                $op['status'] = match ($this->actionType) {
-                    'suspend'    => 'SUSPENDED',
-                    'reactivate' => 'ACTIVE',
-                    'revoke'     => 'REVOKED',
-                    default      => $op['status'],
-                };
-                break;
-            }
+        if (!$this->actionOperatorId) return;
+        try {
+            match ($this->actionType) {
+                'suspend'    => $api->suspendOperator($this->actionOperatorId),
+                'reactivate' => $api->reactivateOperator($this->actionOperatorId),
+                'revoke'     => $api->revokeOperator($this->actionOperatorId),
+                default      => null,
+            };
+        } catch (KomopayException $e) {
+            $this->error = $e->getMessage();
         }
         $this->showActionModal = false;
         $this->actionOperatorId = null;
         $this->actionType = '';
     }
 
-    public function render()
+    public function render(MerchantApi $api)
     {
-        $operators = $this->operators;
-        if ($this->filterStatus) {
-            $operators = array_filter($operators, fn($o) => $o['status'] === $this->filterStatus);
+        $operators = [];
+        try {
+            $operators = $api->operators(
+                status: $this->filterStatus ?: null,
+                limit: 100,
+            )->items;
+        } catch (KomopayException) {
+            // Treat backend errors as empty list — empty state handles UX.
         }
+
         return view('livewire.merchant.operators', ['operators' => array_values($operators)])
             ->layout('layouts.merchant', ['title' => 'Lipa Merchant · Cashiers']);
     }

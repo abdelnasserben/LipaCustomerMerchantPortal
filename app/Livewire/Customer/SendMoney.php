@@ -2,13 +2,18 @@
 
 namespace App\Livewire\Customer;
 
-use App\Data\Mock\CustomerData;
-use App\Services\FormatService;
+use App\Komopay\Contracts\CustomerApi;
+use App\Komopay\Exceptions\KomopayException;
+use App\Komopay\Support\IdempotencyKey;
+use App\Livewire\Concerns\HandlesAuthException;
 use Livewire\Component;
-use Ramsey\Uuid\Uuid;
 
 class SendMoney extends Component
 {
+    use HandlesAuthException;
+
+    protected string $actor = 'customer';
+
     public string $step = 'recipient'; // recipient | amount | confirm | pin | threshold | receipt
     public string $recipientPhone = '';
     public string $recipientCountryCode = '269';
@@ -21,14 +26,18 @@ class SendMoney extends Component
     public string $idempotencyKey = '';
     public bool $showBeneficiaries = true;
 
-    // Receipt data
     public ?array $receipt = null;
-    // Control gate
     public ?int $thresholdAmount = null;
+
+    // True once the user has cleared the PENDING_CONFIRMATION control —
+    // re-sent on the same idempotency key (spec 11.3).
+    public bool $confirmationAcknowledged = false;
+    public bool $pinValidated = false;
 
     public function mount(): void
     {
-        $this->idempotencyKey = (string) \Str::uuid();
+        $this->recipientCountryCode = (string) config('komopay.default_country_code');
+        $this->idempotencyKey = IdempotencyKey::generate();
     }
 
     public function selectBeneficiary(string $phone, string $name): void
@@ -37,23 +46,23 @@ class SendMoney extends Component
         $this->recipientName = $name;
     }
 
-    public function proceedToAmount(): void
+    public function proceedToAmount(CustomerApi $api): void
     {
         $this->error = '';
         if (empty($this->recipientPhone)) {
             $this->error = 'Please enter a recipient phone number.';
             return;
         }
-        // Lookup name from beneficiaries
         if (empty($this->recipientName)) {
-            foreach (CustomerData::beneficiaries() as $b) {
-                if ($b['phoneNumber'] === str_replace(' ', '', $this->recipientPhone)) {
+            $needle = str_replace(' ', '', $this->recipientPhone);
+            foreach ($api->beneficiaries(50) as $b) {
+                if ($b['phoneNumber'] === $needle) {
                     $this->recipientName = $b['fullName'];
                     break;
                 }
             }
             if (empty($this->recipientName)) {
-                $this->recipientName = '+269 ' . $this->recipientPhone;
+                $this->recipientName = '+' . $this->recipientCountryCode . ' ' . $this->recipientPhone;
             }
         }
         $this->step = 'amount';
@@ -75,54 +84,60 @@ class SendMoney extends Component
         $this->step = 'confirm';
     }
 
-    public function submitTransfer(): void
+    public function submitTransfer(CustomerApi $api): void
     {
-        $this->error = '';
-        // Simulate control gate: amounts > 50 000 KMF trigger PENDING_CONFIRMATION
-        if ($this->amount > 50000 && $this->step === 'confirm') {
-            $this->thresholdAmount = 50000;
-            $this->step = 'threshold';
-            return;
-        }
-        // Simulate PIN step for confirm amounts 10 000–50 000
-        if ($this->amount >= 10000 && $this->step === 'confirm') {
-            $this->step = 'pin';
-            return;
-        }
-        $this->executeTransfer();
+        $this->dispatchTransfer($api);
     }
 
-    public function submitWithPin(): void
+    public function submitWithPin(CustomerApi $api): void
     {
         $this->error = '';
         if (strlen($this->pin) < 4) {
             $this->error = 'Enter your PIN to confirm.';
             return;
         }
-        $this->executeTransfer();
+        $this->pinValidated = true;
+        $this->dispatchTransfer($api);
     }
 
     public function confirmThreshold(): void
     {
+        $this->confirmationAcknowledged = true;
+        // Per spec 11.3 PIN gate may still fire after confirmation — go through PIN.
         $this->step = 'pin';
     }
 
-    private function executeTransfer(): void
+    private function dispatchTransfer(CustomerApi $api): void
     {
-        $fee = (int) ($this->amount * 0.01);
-        $net = $this->amount - $fee;
-        $this->receipt = [
-            'transactionId' => 'tx_' . substr(md5(uniqid()), 0, 10),
-            'outcome' => 'EXECUTED',
-            'requestedAmount' => $this->amount,
-            'feeAmount' => $fee,
-            'netAmountToDestination' => $net,
-            'currency' => 'KMF',
-            'completedAt' => now()->toIso8601String(),
-            'replayed' => false,
-            'recipientName' => $this->recipientName,
-        ];
-        $this->step = 'receipt';
+        try {
+            $result = $api->p2pTransfer([
+                'recipientCountryCode'      => $this->recipientCountryCode,
+                'recipientPhone'            => str_replace(' ', '', $this->recipientPhone),
+                'amount'                    => $this->amount,
+                'description'               => $this->description ?: null,
+                'pinValidated'              => $this->pinValidated,
+                'confirmationAcknowledged'  => $this->confirmationAcknowledged,
+            ], $this->idempotencyKey);
+        } catch (KomopayException $e) {
+            $this->error = $e->getMessage();
+            return;
+        }
+
+        switch ($result['outcome'] ?? null) {
+            case 'PENDING_CONFIRMATION':
+                $this->thresholdAmount = $result['matchedThresholdAmount'] ?? null;
+                $this->step = 'threshold';
+                return;
+
+            case 'PENDING_PIN':
+                $this->step = 'pin';
+                return;
+
+            case 'EXECUTED':
+            default:
+                $this->receipt = array_merge($result, ['recipientName' => $this->recipientName]);
+                $this->step = 'receipt';
+        }
     }
 
     public function resetForm(): void
@@ -136,13 +151,16 @@ class SendMoney extends Component
         $this->pin = '';
         $this->error = '';
         $this->receipt = null;
-        $this->idempotencyKey = (string) \Str::uuid();
+        $this->thresholdAmount = null;
+        $this->confirmationAcknowledged = false;
+        $this->pinValidated = false;
+        $this->idempotencyKey = IdempotencyKey::generate();
     }
 
-    public function render()
+    public function render(CustomerApi $api)
     {
-        $beneficiaries = CustomerData::beneficiaries();
-        $balance = CustomerData::balance();
+        $beneficiaries = $api->beneficiaries(20);
+        $balance = $api->balance();
         return view('livewire.customer.send-money', compact('beneficiaries', 'balance'))
             ->layout('layouts.customer', ['title' => 'Lipa · Send Money']);
     }

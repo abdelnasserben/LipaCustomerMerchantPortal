@@ -46,17 +46,17 @@
                 <div class="px-5 py-2 font-semibold text-sm" style="background: var(--color-surface-alt); border-bottom: 1px solid var(--color-border); color: var(--color-ink-mid);">Transaction Details</div>
                 @php
                 $rows = [
-                    ['Counterparty', $tx['counterparty']],
+                    ['Counterparty', $tx['counterparty'] ?: '—'],
                     ['Type', FormatService::txTypLabel($tx['type'])],
                     ['Direction', $tx['direction'] === 'in' ? 'Incoming (credit)' : 'Outgoing (debit)'],
                     ['Operator', $tx['operatorName'] ?? '—'],
                     ['Terminal', $tx['terminalSerial'] ?? '—'],
                 ];
-                if ($tx['commissionAmount'] > 0) $rows[] = ['Commission', FormatService::kmf($tx['commissionAmount'])];
-                if ($tx['feeAmount'] > 0) $rows[] = ['Fee', FormatService::kmf($tx['feeAmount'])];
-                if ($tx['netAmountToDestination'] > 0) $rows[] = ['Net to destination', FormatService::kmf($tx['netAmountToDestination'])];
-                $rows[] = ['Created', FormatService::dateTime($tx['createdAt'])];
-                if (isset($tx['completedAt'])) $rows[] = ['Completed', FormatService::dateTime($tx['completedAt'])];
+                if (($tx['commissionAmount'] ?? 0) > 0) $rows[] = ['Commission', FormatService::kmf($tx['commissionAmount'])];
+                if (($tx['feeAmount'] ?? 0) > 0) $rows[] = ['Fee', FormatService::kmf($tx['feeAmount'])];
+                if (($tx['netAmountToDestination'] ?? 0) > 0) $rows[] = ['Net to destination', FormatService::kmf($tx['netAmountToDestination'])];
+                if (!empty($tx['createdAt'])) $rows[] = ['Created', FormatService::dateTime($tx['createdAt'])];
+                if (!empty($tx['completedAt'])) $rows[] = ['Completed', FormatService::dateTime($tx['completedAt'])];
                 @endphp
                 @foreach($rows as $row)
                 <div class="flex justify-between items-center px-5 py-3" style="border-bottom: 1px solid var(--color-border);">
@@ -82,17 +82,17 @@
                 <div class="section-title mb-3">Wallet IDs</div>
                 <div class="mb-3">
                     <div style="font-size: 11px; color: var(--color-ink-low); margin-bottom: 2px;">Source</div>
-                    <div class="font-mono" style="font-size: 12px;">{{ FormatService::shortId($tx['sourceWalletId']) }}</div>
+                    <div class="font-mono" style="font-size: 12px;">{{ !empty($tx['sourceWalletId']) ? FormatService::shortId($tx['sourceWalletId']) : '—' }}</div>
                 </div>
                 <div>
                     <div style="font-size: 11px; color: var(--color-ink-low); margin-bottom: 2px;">Destination</div>
-                    <div class="font-mono" style="font-size: 12px;">{{ $tx['destinationWalletId'] ? FormatService::shortId($tx['destinationWalletId']) : '—' }}</div>
+                    <div class="font-mono" style="font-size: 12px;">{{ !empty($tx['destinationWalletId']) ? FormatService::shortId($tx['destinationWalletId']) : '—' }}</div>
                 </div>
             </div>
             <div class="card p-5">
                 <div class="section-title mb-3">Initiator</div>
                 <div class="font-semibold" style="font-size: 14px;">{{ $tx['initiatorType'] }}</div>
-                <div class="font-mono text-sm" style="color: var(--color-ink-low); margin-top: 2px;">{{ FormatService::shortId($tx['initiatorId']) }}</div>
+                <div class="font-mono text-sm" style="color: var(--color-ink-low); margin-top: 2px;">{{ !empty($tx['initiatorId']) ? FormatService::shortId($tx['initiatorId']) : '—' }}</div>
             </div>
         </div>
     </div>

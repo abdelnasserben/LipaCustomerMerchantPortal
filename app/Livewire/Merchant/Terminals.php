@@ -2,20 +2,26 @@
 
 namespace App\Livewire\Merchant;
 
-use App\Data\Mock\MerchantData;
+use App\Komopay\Contracts\MerchantApi;
+use App\Komopay\Exceptions\KomopayException;
+use App\Komopay\Presenters\TerminalPresenter;
+use App\Livewire\Concerns\HandlesAuthException;
 use Livewire\Component;
 
 class Terminals extends Component
 {
+    use HandlesAuthException;
+
+    protected string $actor = 'merchant';
+
     public ?array $selectedTerminal = null;
 
-    public function selectTerminal(string $id): void
+    public function selectTerminal(string $id, MerchantApi $api, TerminalPresenter $presenter): void
     {
-        foreach (MerchantData::terminals() as $t) {
-            if ($t['id'] === $id) {
-                $this->selectedTerminal = $t;
-                break;
-            }
+        try {
+            $this->selectedTerminal = $presenter->present($api->terminal($id));
+        } catch (KomopayException) {
+            $this->selectedTerminal = null;
         }
     }
 
@@ -24,9 +30,9 @@ class Terminals extends Component
         $this->selectedTerminal = null;
     }
 
-    public function render()
+    public function render(MerchantApi $api, TerminalPresenter $presenter)
     {
-        $terminals = MerchantData::terminals();
+        $terminals = $presenter->presentMany($api->terminals());
         return view('livewire.merchant.terminals', compact('terminals'))
             ->layout('layouts.merchant', ['title' => 'Lipa Merchant · Terminals']);
     }

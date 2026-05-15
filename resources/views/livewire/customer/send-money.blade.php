@@ -138,17 +138,9 @@
                     <span style="font-size: 13px; color: var(--color-ink-mid);">Phone</span>
                     <span class="font-mono" style="font-size: 13px;">+269 {{ $recipientPhone }}</span>
                 </div>
-                <div class="flex justify-between px-4 py-3" style="border-bottom: 1px solid var(--color-border);">
+                <div class="flex justify-between px-4 py-3">
                     <span style="font-size: 13px; color: var(--color-ink-mid);">Amount</span>
                     <span class="font-mono font-semibold" style="font-size: 13px;">{{ FormatService::kmf($amount) }}</span>
-                </div>
-                <div class="flex justify-between px-4 py-3" style="border-bottom: 1px solid var(--color-border);">
-                    <span style="font-size: 13px; color: var(--color-ink-mid);">Fee (~1%)</span>
-                    <span class="font-mono" style="font-size: 13px; color: var(--color-ink-mid);">{{ FormatService::kmf((int)($amount * 0.01)) }}</span>
-                </div>
-                <div class="flex justify-between px-4 py-3">
-                    <span style="font-size: 13px; font-weight: 600;">Total deducted</span>
-                    <span class="font-mono font-bold" style="font-size: 13px;">{{ FormatService::kmf((int)($amount * 1.01)) }}</span>
                 </div>
             </div>
 

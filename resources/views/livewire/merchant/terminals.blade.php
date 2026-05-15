@@ -27,13 +27,12 @@
             @php
             $rows = [
                 ['Serial Number', $selectedTerminal['serialNumber']],
-                ['Alias', $selectedTerminal['operatorAlias']],
                 ['Model', $selectedTerminal['deviceModel'] ?? '—'],
                 ['Android Version', $selectedTerminal['androidVersion'] ?? '—'],
                 ['App Version', $selectedTerminal['appVersion'] ?? '—'],
                 ['Status', null, $selectedTerminal['status']],
-                ['Last Seen', FormatService::relativeTime($selectedTerminal['lastSeenAt'])],
-                ['Registered', FormatService::date($selectedTerminal['registeredAt'])],
+                ['Last Seen', !empty($selectedTerminal['lastSeenAt']) ? FormatService::relativeTime($selectedTerminal['lastSeenAt']) : '—'],
+                ['Registered', !empty($selectedTerminal['registeredAt']) ? FormatService::date($selectedTerminal['registeredAt']) : '—'],
             ];
             @endphp
             @foreach($rows as $row)
@@ -72,12 +71,11 @@
                 </div>
                 <x-status-pill :status="$t['status']"/>
             </div>
-            <div class="font-bold mb-1" style="font-size: 15px;">{{ $t['operatorAlias'] }}</div>
-            <div style="font-size: 13px; color: var(--color-ink-mid);">{{ $t['deviceModel'] }}</div>
+            <div class="font-bold mb-1" style="font-size: 15px;">{{ $t['deviceModel'] }}</div>
             <div class="font-mono" style="font-size: 11px; color: var(--color-ink-low); margin-top: 2px;">{{ $t['serialNumber'] }}</div>
             <div class="flex items-center gap-2 mt-4 pt-4" style="border-top: 1px solid var(--color-border);">
                 <div style="width: 7px; height: 7px; border-radius: 50%; background: {{ $t['status'] === 'ACTIVE' ? 'var(--color-brand)' : 'var(--color-ink-low)' }};"></div>
-                <span style="font-size: 12px; color: var(--color-ink-low);">{{ FormatService::relativeTime($t['lastSeenAt']) }}</span>
+                <span style="font-size: 12px; color: var(--color-ink-low);">{{ !empty($t['lastSeenAt']) ? FormatService::relativeTime($t['lastSeenAt']) : '—' }}</span>
             </div>
         </button>
         @endforeach

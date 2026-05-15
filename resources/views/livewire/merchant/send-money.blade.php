@@ -58,8 +58,8 @@
             <label class="label">Amount (KMF)</label>
             <div style="display: flex; height: 64px; border: 1px solid var(--color-border-hi); border-radius: 12px; background: #fff; align-items: center; padding: 0 18px; gap: 8px;">
                 <input wire:model="amountInput" type="text" inputmode="numeric" placeholder="0"
-                    style="flex: 1; border: none; outline: none; font-family: var(--font-mono); font-size: 26px; font-weight: 600; color: var(--color-ink-hi); background: transparent; letter-spacing: -0.02em;"/>
-                <span style="font-family: var(--font-mono); font-size: 14px; color: var(--color-ink-low);">KMF</span>
+                    style="flex: 1 1 auto; min-width: 0; border: none; outline: none; font-family: var(--font-mono); font-size: 26px; font-weight: 600; color: var(--color-ink-hi); background: transparent; letter-spacing: -0.02em;"/>
+                <span style="flex-shrink: 0; font-family: var(--font-mono); font-size: 14px; color: var(--color-ink-low);">KMF</span>
             </div>
         </div>
 
@@ -95,17 +95,9 @@
                 <span style="font-size: 13px; color: var(--color-ink-mid);">Recipient phone</span>
                 <span class="font-mono" style="font-size: 13px;">+269 {{ $recipientPhone }}</span>
             </div>
-            <div class="flex justify-between px-4 py-3" style="border-bottom: 1px solid var(--color-border);">
+            <div class="flex justify-between px-4 py-3">
                 <span style="font-size: 13px; color: var(--color-ink-mid);">Amount</span>
                 <span class="font-mono font-semibold" style="font-size: 13px;">{{ FormatService::kmf($amount) }}</span>
-            </div>
-            <div class="flex justify-between px-4 py-3" style="border-bottom: 1px solid var(--color-border);">
-                <span style="font-size: 13px; color: var(--color-ink-mid);">Fee (~1%)</span>
-                <span class="font-mono" style="font-size: 13px; color: var(--color-ink-mid);">{{ FormatService::kmf((int)($amount * 0.01)) }}</span>
-            </div>
-            <div class="flex justify-between px-4 py-3">
-                <span style="font-size: 13px; font-weight: 600;">Total deducted</span>
-                <span class="font-mono font-bold" style="font-size: 13px;">{{ FormatService::kmf((int)($amount * 1.01)) }}</span>
             </div>
         </div>
 

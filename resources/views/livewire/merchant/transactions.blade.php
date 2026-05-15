@@ -64,17 +64,17 @@
                     @endif
                 </div>
                 <div class="min-w-0 flex-1">
-                    <div class="truncate" style="font-size: 13px; font-weight: 500;">{{ $tx['counterparty'] }}</div>
+                    <div class="truncate" style="font-size: 13px; font-weight: 500;">{{ $tx['counterparty'] ?: FormatService::txTypLabel($tx['type']) }}</div>
                     <div class="font-mono" style="font-size: 11px; color: var(--color-ink-low);">
-                        {{ FormatService::txTypLabel($tx['type']) }}
-                        <span class="md:hidden"> · {{ FormatService::dateTime($tx['createdAt'], 'H:i') }}</span>
+                        {{ FormatService::txTypLabel($tx['type'] ?? '') }}
+                        <span class="md:hidden"> · {{ !empty($tx['createdAt']) ? FormatService::dateTime($tx['createdAt'], 'H:i') : '—' }}</span>
                     </div>
                 </div>
             </div>
-            <div class="col-span-2 hidden md:block truncate" style="font-size: 13px; color: var(--color-ink-mid);">{{ $tx['operatorName'] }}</div>
-            <div class="col-span-2 hidden md:block font-mono truncate" style="font-size: 12px; color: var(--color-ink-low);">{{ $tx['terminalSerial'] }}</div>
+            <div class="col-span-2 hidden md:block truncate" style="font-size: 13px; color: var(--color-ink-mid);">{{ $tx['operatorName'] ?? '—' }}</div>
+            <div class="col-span-2 hidden md:block font-mono truncate" style="font-size: 12px; color: var(--color-ink-low);">{{ $tx['terminalSerial'] ?? '—' }}</div>
             <div class="col-span-2 hidden md:block"><x-tx-status-pill :status="$tx['status']"/></div>
-            <div class="col-span-1 hidden md:block" style="font-size: 11px; color: var(--color-ink-low);">{{ FormatService::dateTime($tx['createdAt'], 'H:i') }}</div>
+            <div class="col-span-1 hidden md:block" style="font-size: 11px; color: var(--color-ink-low);">{{ !empty($tx['createdAt']) ? FormatService::dateTime($tx['createdAt'], 'H:i') : '—' }}</div>
             <div class="md:col-span-2 text-right flex-shrink-0">
                 <div class="font-mono font-semibold" style="font-size: 14px; color: {{ $tx['direction'] === 'in' && $tx['status'] === 'COMPLETED' ? 'var(--color-success)' : ($tx['status'] === 'DECLINED' ? 'var(--color-danger)' : 'var(--color-ink-hi)') }};">
                     {{ $tx['direction'] === 'in' ? '+' : '−' }}{{ FormatService::kmf(abs($tx['requestedAmount'])) }}

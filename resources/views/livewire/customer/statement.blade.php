@@ -40,7 +40,7 @@
             @foreach($entries as $entry)
             <div class="flex gap-3 items-center px-4 py-3" style="border-bottom: 1px solid var(--color-border);">
                 <div class="flex-1 min-w-0">
-                    <div class="truncate" style="font-size: 13px; font-weight: 500;">{{ $entry['description'] }}</div>
+                    <div class="truncate" style="font-size: 13px; font-weight: 500;">{{ FormatService::txTypLabel(strtok($entry['description'], ' ')) }}</div>
                     <div style="font-size: 11px; color: var(--color-ink-low);">
                         {{ FormatService::dateTime($entry['postedAt'], 'd M · H:i') }}
                         <span class="sm:hidden font-mono" style="margin-left: 6px;">bal {{ FormatService::kmf($entry['runningBalance']) }}</span>

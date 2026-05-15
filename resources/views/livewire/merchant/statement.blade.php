@@ -31,23 +31,23 @@
                 <span class="font-mono" style="font-size: 11px; color: var(--color-ink-low);">{{ $entry['globalSequence'] ?? ($i + 1) }}</span>
             </div>
             <div class="md:col-span-5 flex-1 min-w-0">
-                <div class="truncate" style="font-size: 13px; font-weight: 500;">{{ $entry['description'] }}</div>
+                <div class="truncate" style="font-size: 13px; font-weight: 500;">{{ FormatService::txTypLabel(strtok((string)($entry['description'] ?? ''), ' ') ?: '') }}</div>
                 <div class="font-mono" style="font-size: 11px; color: var(--color-ink-low);">
-                    {{ FormatService::shortId($entry['transactionId']) }}
-                    <span class="md:hidden"> · {{ FormatService::dateTime($entry['postedAt'], 'd M · H:i') }}</span>
+                    {{ !empty($entry['transactionId']) ? FormatService::shortId($entry['transactionId']) : '—' }}
+                    <span class="md:hidden"> · {{ !empty($entry['postedAt']) ? FormatService::dateTime($entry['postedAt'], 'd M · H:i') : '—' }}</span>
                 </div>
             </div>
             <div class="hidden md:block md:col-span-2" style="font-size: 12px; color: var(--color-ink-low);">
-                {{ FormatService::dateTime($entry['postedAt'], 'd M · H:i') }}
+                {{ !empty($entry['postedAt']) ? FormatService::dateTime($entry['postedAt'], 'd M · H:i') : '—' }}
             </div>
             <div class="md:col-span-2 text-right flex-shrink-0">
-                <span class="font-mono font-semibold" style="font-size: 13px; color: {{ $entry['entryType'] === 'CREDIT' ? 'var(--color-success)' : 'var(--color-danger)' }};">
-                    {{ $entry['entryType'] === 'CREDIT' ? '+' : '−' }}{{ FormatService::kmf($entry['amount']) }}
+                <span class="font-mono font-semibold" style="font-size: 13px; color: {{ ($entry['entryType'] ?? '') === 'CREDIT' ? 'var(--color-success)' : 'var(--color-danger)' }};">
+                    {{ ($entry['entryType'] ?? '') === 'CREDIT' ? '+' : '−' }}{{ FormatService::kmf((int)($entry['amount'] ?? 0)) }}
                 </span>
-                <div class="md:hidden font-mono" style="font-size: 11px; color: var(--color-ink-low); margin-top: 2px;">bal {{ FormatService::kmf($entry['runningBalance']) }}</div>
+                <div class="md:hidden font-mono" style="font-size: 11px; color: var(--color-ink-low); margin-top: 2px;">bal {{ FormatService::kmf((int)($entry['runningBalance'] ?? 0)) }}</div>
             </div>
             <div class="hidden md:block md:col-span-2 text-right">
-                <span class="font-mono" style="font-size: 12px; color: var(--color-ink-mid);">{{ FormatService::kmf($entry['runningBalance']) }}</span>
+                <span class="font-mono" style="font-size: 12px; color: var(--color-ink-mid);">{{ FormatService::kmf((int)($entry['runningBalance'] ?? 0)) }}</span>
             </div>
         </div>
         @empty

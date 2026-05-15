@@ -87,9 +87,12 @@
         </a>
     </div>
 
-    <a href="{{ route('merchant.login') }}" class="btn btn-secondary btn-lg">
-        <x-icon name="arrow-left" class="w-4 h-4"/>
-        Sign Out
-    </a>
+    <form method="POST" action="{{ route('merchant.logout') }}">
+        @csrf
+        <button type="submit" class="btn btn-secondary btn-lg">
+            <x-icon name="arrow-left" class="w-4 h-4"/>
+            Sign Out
+        </button>
+    </form>
     <div class="mt-3 text-sm" style="color: var(--color-ink-low);">Note: Merchant sessions last 8 hours. Sign-out only clears local storage — the JWT remains valid until natural expiry.</div>
 </div>

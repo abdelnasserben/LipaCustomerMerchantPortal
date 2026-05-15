@@ -75,7 +75,7 @@
                 <span class="pill pill-success">Live</span>
             </div>
             <div class="flex items-end gap-2" style="height: 120px;">
-                @php $maxAmt = max(array_column($chart, 'amount')) ?: 1; @endphp
+                @php $maxAmt = !empty($chart) ? (max(array_column($chart, 'amount')) ?: 1) : 1; @endphp
                 @foreach($chart as $bar)
                 <div class="flex-1 flex flex-col items-center gap-1">
                     <div class="w-full rounded-t" style="height: {{ max(4, ($bar['amount'] / $maxAmt) * 100) }}px; background: var(--color-brand); opacity: 0.85; min-width: 14px;"></div>
@@ -99,12 +99,12 @@
                 @foreach($terminals as $t)
                 <div class="flex items-center justify-between">
                     <div class="min-w-0">
-                        <div class="truncate" style="font-size: 13px; font-weight: 500;">{{ $t['operatorAlias'] }}</div>
+                        <div class="truncate" style="font-size: 13px; font-weight: 500;">{{ $t['deviceModel'] }}</div>
                         <div class="font-mono" style="font-size: 11px; color: var(--color-ink-low);">{{ $t['serialNumber'] }}</div>
                     </div>
                     <div class="flex items-center gap-2 flex-shrink-0">
                         <div style="width: 7px; height: 7px; border-radius: 50%; background: {{ $t['status'] === 'ACTIVE' ? 'var(--color-brand)' : 'var(--color-ink-low)' }};"></div>
-                        <span style="font-size: 11px; color: var(--color-ink-mid);">{{ FormatService::relativeTime($t['lastSeenAt']) }}</span>
+                        <span style="font-size: 11px; color: var(--color-ink-mid);">{{ !empty($t['lastSeenAt']) ? FormatService::relativeTime($t['lastSeenAt']) : '—' }}</span>
                     </div>
                 </div>
                 @endforeach
@@ -149,8 +149,8 @@
                         <div style="font-size: 12px; color: var(--color-ink-low); margin-top: 2px;">{{ FormatService::txTypLabel($tx['type']) }} · {{ FormatService::relativeTime($tx['createdAt'] ?? null) }}</div>
                     </div>
                 </div>
-                <div class="hidden lg:block lg:col-span-2" style="font-size: 13px; color: var(--color-ink-mid);">{{ $tx['operatorName'] }}</div>
-                <div class="hidden lg:block lg:col-span-2 font-mono" style="font-size: 12px; color: var(--color-ink-low);">{{ $tx['terminalSerial'] }}</div>
+                <div class="hidden lg:block lg:col-span-2" style="font-size: 13px; color: var(--color-ink-mid);">{{ $tx['operatorName'] ?? '—' }}</div>
+                <div class="hidden lg:block lg:col-span-2 font-mono" style="font-size: 12px; color: var(--color-ink-low);">{{ $tx['terminalSerial'] ?? '—' }}</div>
                 <div class="hidden lg:block lg:col-span-1"><x-tx-status-pill :status="$tx['status']"/></div>
                 <div class="lg:col-span-3 text-right flex-shrink-0">
                     <div class="font-mono font-semibold" style="font-size: 14px; color: {{ $tx['direction'] === 'in' && $tx['status'] === 'COMPLETED' ? 'var(--color-success)' : ($tx['status'] === 'DECLINED' ? 'var(--color-danger)' : 'var(--color-ink-hi)') }};">

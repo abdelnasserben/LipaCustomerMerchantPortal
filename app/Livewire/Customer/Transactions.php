@@ -2,27 +2,37 @@
 
 namespace App\Livewire\Customer;
 
-use App\Data\Mock\CustomerData;
+use App\Komopay\Contracts\CustomerApi;
+use App\Komopay\Presenters\TransactionPresenter;
+use App\Livewire\Concerns\HandlesAuthException;
 use Livewire\Component;
 
 class Transactions extends Component
 {
+    use HandlesAuthException;
+
+    protected string $actor = 'customer';
+
     public string $filterStatus = '';
     public string $filterType = '';
     public string $filterFrom = '';
     public string $filterTo = '';
     public bool $showFilters = false;
 
-    public function render()
+    public function render(CustomerApi $api, TransactionPresenter $presenter)
     {
-        $transactions = CustomerData::transactions();
+        $page = $api->transactions(
+            filters: array_filter([
+                'status' => $this->filterStatus ?: null,
+                'type'   => $this->filterType ?: null,
+                'from'   => $this->filterFrom ?: null,
+                'to'     => $this->filterTo ?: null,
+            ]),
+            limit: 50,
+        );
 
-        if ($this->filterStatus) {
-            $transactions = array_filter($transactions, fn($t) => $t['status'] === $this->filterStatus);
-        }
-        if ($this->filterType) {
-            $transactions = array_filter($transactions, fn($t) => $t['type'] === $this->filterType);
-        }
+        $walletId = $api->profile()['walletId'] ?? '';
+        $transactions = $presenter->presentMany($page->items, $walletId);
 
         $grouped = [];
         foreach ($transactions as $tx) {

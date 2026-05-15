@@ -2,23 +2,29 @@
 
 namespace App\Livewire\Customer;
 
-use App\Data\Mock\CustomerData;
+use App\Komopay\Contracts\CustomerApi;
+use App\Komopay\Exceptions\KomopayException;
+use App\Komopay\Presenters\TransactionPresenter;
+use App\Livewire\Concerns\HandlesAuthException;
 use Livewire\Component;
 
 class TransactionDetail extends Component
 {
+    use HandlesAuthException;
+
+    protected string $actor = 'customer';
+
     public string $id;
     public ?array $tx = null;
 
-    public function mount(string $id): void
+    public function mount(string $id, CustomerApi $api, TransactionPresenter $presenter): void
     {
         $this->id = $id;
-        $all = CustomerData::transactions();
-        foreach ($all as $t) {
-            if ($t['id'] === $id) {
-                $this->tx = $t;
-                break;
-            }
+        try {
+            $walletId = $api->profile()['walletId'] ?? '';
+            $this->tx = $presenter->present($api->transaction($id), $walletId);
+        } catch (KomopayException) {
+            $this->tx = null;
         }
     }
 

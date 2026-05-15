@@ -2,11 +2,15 @@
 
 namespace App\Livewire\Auth;
 
+use App\Komopay\Contracts\MerchantAuthApi;
+use App\Komopay\Exceptions\BusinessException;
+use App\Komopay\Exceptions\KomopayException;
 use Livewire\Component;
 
 class MerchantLogin extends Component
 {
     public string $step = 'login';
+    public string $phoneCountryCode = '269';
     public string $phoneNumber = '';
     public string $pin = '';
     public bool $pinVisible = false;
@@ -15,46 +19,72 @@ class MerchantLogin extends Component
     public string $confirmPin = '';
     public string $error = '';
 
+    public ?string $challengeId = null;
+    public ?string $pinSetupToken = null;
+
     public function mount(string $step = 'login'): void
     {
-        $this->step = $step;
+        $this->step = request()->query('step', $step);
+        $this->phoneCountryCode = (string) config('komopay.default_country_code');
     }
 
-    public function login(): void
+    public function login(MerchantAuthApi $auth): void
     {
         $this->error = '';
         if (empty($this->phoneNumber) || empty($this->pin)) {
             $this->error = 'Please enter your phone number and PIN.';
             return;
         }
-        if ($this->pin === '0000') {
-            $this->step = 'locked';
+
+        try {
+            $resp = $auth->login($this->phoneCountryCode, $this->phoneNumber, $this->pin);
+        } catch (BusinessException $e) {
+            $this->step = $e->errorCode() === 'AUTH_PIN_LOCKED' ? 'locked' : 'login';
+            $this->error = $e->getMessage();
+            return;
+        } catch (KomopayException $e) {
+            $this->error = $e->getMessage();
             return;
         }
-        if ($this->pin === '2222') {
-            $this->step = 'mfa';
-            return;
-        }
-        if ($this->pin === '3333') {
+
+        if (!empty($resp['pinSetupRequired'])) {
+            $this->pinSetupToken = $resp['pinSetupToken'] ?? null;
             $this->step = 'pinSetup';
             return;
         }
-        session(['actor_type' => 'merchant', 'auth_user' => ['name' => 'Boutique Karthala', 'type' => 'merchant']]);
-        $this->redirect(route('merchant.dashboard'), navigate: true);
+        if (!empty($resp['mfaRequired'])) {
+            $this->challengeId = $resp['challengeId'] ?? null;
+            $this->step = 'mfa';
+            return;
+        }
+        if (!empty($resp['tokens'])) {
+            app('komopay.tokens.merchant')->put($resp['tokens']);
+            session(['actor_type' => 'merchant', 'auth_user' => ['name' => 'Merchant', 'type' => 'merchant']]);
+            $this->redirect(route('merchant.dashboard'), navigate: true);
+        }
     }
 
-    public function verifyMfa(): void
+    public function verifyMfa(MerchantAuthApi $auth): void
     {
         $this->error = '';
         if (strlen($this->mfaCode) !== 6) {
             $this->error = 'Enter the 6-digit code from your authenticator app.';
             return;
         }
-        session(['actor_type' => 'merchant', 'auth_user' => ['name' => 'Boutique Karthala', 'type' => 'merchant']]);
-        $this->redirect(route('merchant.dashboard'), navigate: true);
+        try {
+            $resp = $auth->verifyMfa((string) $this->challengeId, $this->mfaCode);
+        } catch (KomopayException $e) {
+            $this->error = $e->getMessage();
+            return;
+        }
+        if (!empty($resp['tokens'])) {
+            app('komopay.tokens.merchant')->put($resp['tokens']);
+            session(['actor_type' => 'merchant', 'auth_user' => ['name' => 'Merchant', 'type' => 'merchant']]);
+            $this->redirect(route('merchant.dashboard'), navigate: true);
+        }
     }
 
-    public function setupPin(): void
+    public function setupPin(MerchantAuthApi $auth): void
     {
         $this->error = '';
         if (strlen($this->newPin) < 4 || strlen($this->newPin) > 8) {
@@ -65,9 +95,15 @@ class MerchantLogin extends Component
             $this->error = 'PINs do not match.';
             return;
         }
+        try {
+            $auth->setupPin((string) $this->pinSetupToken, $this->newPin);
+        } catch (KomopayException $e) {
+            $this->error = $e->getMessage();
+            return;
+        }
         $this->step = 'login';
-        $this->newPin = '';
-        $this->confirmPin = '';
+        $this->newPin = $this->confirmPin = '';
+        $this->pinSetupToken = null;
     }
 
     public function render()

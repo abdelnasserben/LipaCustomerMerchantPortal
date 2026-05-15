@@ -176,10 +176,6 @@
                         <div>After 3 failed attempts, PIN entry is temporarily blocked.</div>
                     </div>
                 </div>
-                <div class="card-flat p-4 text-center">
-                    <div class="font-mono font-bold text-2xl" style="color: var(--color-ink-hi);">14:00</div>
-                    <div class="text-sm mt-1" style="color: var(--color-ink-mid);">Time remaining</div>
-                </div>
                 <button wire:click="$set('step', 'login')" class="btn btn-secondary btn-lg btn-full">Try Again Later</button>
             </div>
             @endif

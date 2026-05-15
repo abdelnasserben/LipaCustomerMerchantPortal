@@ -2,22 +2,29 @@
 
 namespace App\Livewire\Merchant;
 
-use App\Data\Mock\MerchantData;
+use App\Komopay\Contracts\MerchantApi;
+use App\Komopay\Exceptions\KomopayException;
+use App\Komopay\Presenters\TransactionPresenter;
+use App\Livewire\Concerns\HandlesAuthException;
 use Livewire\Component;
 
 class TransactionDetail extends Component
 {
+    use HandlesAuthException;
+
+    protected string $actor = 'merchant';
+
     public string $id;
     public ?array $tx = null;
 
-    public function mount(string $id): void
+    public function mount(string $id, MerchantApi $api, TransactionPresenter $presenter): void
     {
         $this->id = $id;
-        foreach (MerchantData::transactions() as $t) {
-            if ($t['id'] === $id) {
-                $this->tx = $t;
-                break;
-            }
+        try {
+            $walletId = $api->profile()['walletId'] ?? '';
+            $this->tx = $presenter->present($api->transaction($id), $walletId);
+        } catch (KomopayException) {
+            $this->tx = null;
         }
     }
 
