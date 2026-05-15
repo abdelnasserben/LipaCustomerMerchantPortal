@@ -52,7 +52,10 @@ interface CustomerApi
     /**
      * POST /me/p2p — P2pTransferResponse (spec 7.4). Outcome may be EXECUTED |
      * PENDING_PIN | PENDING_CONFIRMATION; on continuation, callers MUST resend
-     * the SAME idempotency key with `pinValidated`/`confirmationAcknowledged`.
+     * the SAME idempotency key with `pin=<raw PIN>` (cleared by the server)
+     * and/or `confirmationAcknowledged=true`. Priority is Approval > PIN >
+     * Confirmation. A wrong PIN raises AuthPinInvalidException; 3 wrong
+     * attempts raise AuthPinLockedException (15 min lock).
      */
     public function p2pTransfer(array $request, string $idempotencyKey): array;
 

@@ -4,8 +4,10 @@ namespace App\Komopay\Services\Customer;
 
 use App\Komopay\Contracts\CursorPage;
 use App\Komopay\Contracts\CustomerApi;
+use App\Komopay\Exceptions\AuthException;
 use App\Komopay\Exceptions\BusinessException;
 use App\Komopay\Mock\Fixtures\CustomerFixtures;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * In-memory implementation of CustomerApi.
@@ -104,9 +106,12 @@ final class MockCustomerApi implements CustomerApi
     }
 
     /**
-     * Mirrors spec 2.4 / 11.3 control gate semantics:
-     *   amount > 50 000 KMF without `confirmationAcknowledged` → PENDING_CONFIRMATION
-     *   amount >= 10 000 KMF without `pinValidated`            → PENDING_PIN
+     * Mirrors spec 2.4 / 11.3 control gate semantics. Priority: Approval > PIN
+     * > Confirmation. PIN tier is cleared by sending the raw PIN; server
+     * verifies. 3 wrong PIN attempts → AUTH_PIN_LOCKED (15 min).
+     *
+     *   amount >= 10 000 KMF without matching `pin`            → PENDING_PIN
+     *   amount >  50 000 KMF without `confirmationAcknowledged` → PENDING_CONFIRMATION
      *   else                                                    → EXECUTED
      */
     public function p2pTransfer(array $request, string $idempotencyKey): array
@@ -117,12 +122,12 @@ final class MockCustomerApi implements CustomerApi
         }
 
         $confirmAck = (bool) ($request['confirmationAcknowledged'] ?? false);
-        $pinOk      = (bool) ($request['pinValidated'] ?? false);
+        $pin        = isset($request['pin']) ? (string) $request['pin'] : '';
 
-        if ($amount > 50000 && !$confirmAck) {
+        if ($amount >= 10000 && $pin === '') {
             return [
-                'outcome'                => 'PENDING_CONFIRMATION',
-                'matchedThresholdAmount' => 50000,
+                'outcome'                => 'PENDING_PIN',
+                'matchedThresholdAmount' => 10000,
                 'transactionId'          => null,
                 'status'                 => null,
                 'requestedAmount'        => $amount,
@@ -133,10 +138,14 @@ final class MockCustomerApi implements CustomerApi
                 'replayed'               => null,
             ];
         }
-        if ($amount >= 10000 && !$pinOk) {
+        if ($amount >= 10000) {
+            $this->verifyMockPin($pin);
+        }
+
+        if ($amount > 50000 && !$confirmAck) {
             return [
-                'outcome'                => 'PENDING_PIN',
-                'matchedThresholdAmount' => 10000,
+                'outcome'                => 'PENDING_CONFIRMATION',
+                'matchedThresholdAmount' => 50000,
                 'transactionId'          => null,
                 'status'                 => null,
                 'requestedAmount'        => $amount,
@@ -169,5 +178,26 @@ final class MockCustomerApi implements CustomerApi
         throw new \App\Komopay\Exceptions\NotImplementedException(
             'Bill payment is disabled', 'BILL_PAYMENT_DISABLED', 501,
         );
+    }
+
+    /**
+     * Wrong PIN raises AUTH_PIN_INVALID and counts toward the 3-strike /
+     * 15-min lock (spec 3.2 / 12.3).
+     */
+    private function verifyMockPin(string $pin): void
+    {
+        $bucket = 'mock:auth-pin:failures:' . md5((string) (auth()->id() ?? session()->getId()));
+        $fails  = (int) Cache::get($bucket, 0);
+        if ($fails >= 3) {
+            throw new BusinessException('PIN locked. Try again in 15 minutes.', 'AUTH_PIN_LOCKED', 422);
+        }
+
+        // Mock-only fixed PIN: anything other than "1234" is wrong.
+        if ($pin !== '1234') {
+            Cache::put($bucket, $fails + 1, now()->addMinutes(15));
+            throw new AuthException('Invalid PIN', 'AUTH_PIN_INVALID', 401);
+        }
+
+        Cache::forget($bucket);
     }
 }

@@ -408,7 +408,7 @@ P2pTransferRequest = {
   recipientPhone: string;             // not blank
   amount: long;                       // strictly positive
   description?: string;
-  pinValidated?: boolean;             // default false; set true to clear PENDING_PIN
+  pin?: string;                       // sender's auth PIN — required to clear PENDING_PIN; verified server-side, wrong PIN rejects with 401 AUTH_PIN_INVALID
   confirmationAcknowledged?: boolean; // default false; set true to clear PENDING_CONFIRMATION
 }
 
@@ -416,7 +416,7 @@ InitiateBillPaymentRequest = {
   serviceId: uuid;                    // the bill service — client must already hold it
   reference: string;                  // not blank, max 100 (e.g. meter / account number)
   amount: long;                       // >= 1
-  pinValidated?: boolean;
+  pin?: string;                       // customer's auth PIN — required to clear PENDING_PIN; verified server-side, wrong PIN rejects with 401 AUTH_PIN_INVALID
   confirmationAcknowledged?: boolean;
 }
 ```
@@ -831,8 +831,8 @@ Frontend rules:
 3. Handle the response:
    - `201` → executed, show receipt (`transactionId`, `feeAmount`, `netAmountToDestination`).
    - `200` → idempotent replay, show the same receipt (`replayed=true`).
-   - `202 outcome=PENDING_PIN` → collect the PIN via the existing PIN mechanism, resubmit **with the same `Idempotency-Key`** and `pinValidated=true`.
-   - `202 outcome=PENDING_CONFIRMATION` → show a confirm prompt citing `matchedThresholdAmount`, resubmit **with the same `Idempotency-Key`** and `confirmationAcknowledged=true`.
+   - `202 outcome=PENDING_PIN` → collect the customer's auth PIN, resubmit **with the same `Idempotency-Key`** and `pin=<rawPin>`. Backend verifies the PIN server-side; a wrong PIN returns `401 AUTH_PIN_INVALID` and counts toward the 3-strikes/15-min lock (`422 AUTH_PIN_LOCKED`). Priority is Approval > PIN > Confirmation, so an unanswered PIN never falls back to a confirmation prompt.
+   - `202 outcome=PENDING_CONFIRMATION` → show a confirm prompt citing `matchedThresholdAmount`, resubmit **with the same `Idempotency-Key`** and `confirmationAcknowledged=true`. Only fires when the resolved tier is confirmation (i.e. amount triggers confirmation but not PIN/approval).
 4. Each new amount/recipient = a **new** `Idempotency-Key`. A control continuation reuses the **same** key.
 
 ### 11.4 Customer — Cards
@@ -900,7 +900,7 @@ Frontend rules:
 | `outcome` | HTTP | UI |
 |---|---|---|
 | `EXECUTED` | `201` (new) / `200` (replay) | Show receipt with financial fields. |
-| `PENDING_PIN` | `202` | Collect PIN → resubmit same key, `pinValidated=true`. |
+| `PENDING_PIN` | `202` | Collect the customer's auth PIN → resubmit same key with `pin=<rawPin>`. Wrong PIN returns `401 AUTH_PIN_INVALID`; 3 wrong attempts → `422 AUTH_PIN_LOCKED` (15 min). |
 | `PENDING_CONFIRMATION` | `202` | Confirm prompt citing `matchedThresholdAmount` → resubmit same key, `confirmationAcknowledged=true`. |
 
 ### 12.4 List / Empty States
