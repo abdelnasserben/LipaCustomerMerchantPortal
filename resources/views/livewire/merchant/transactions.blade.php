@@ -1,35 +1,35 @@
 @php use App\Services\FormatService; @endphp
-<div class="p-6 lg:p-8">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+<div class="px-5 lg:px-8 pt-5 lg:pt-8">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 lg:mb-6">
         <div>
-            <h1 class="font-bold" style="font-size: 24px; letter-spacing: -0.02em;">Transactions</h1>
+            <h1 class="font-bold lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">Transactions</h1>
             <div style="font-size: 13px; color: var(--color-ink-low); margin-top: 2px;">All wallet activity</div>
         </div>
         <div class="flex gap-2">
-            <button wire:click="$toggle('showFilters')" class="btn btn-secondary btn-md {{ $showFilters ? 'ring-2 ring-brand' : '' }}">
+            <button wire:click="$toggle('showFilters')" class="btn btn-secondary btn-sm sm:btn-md {{ $showFilters ? 'ring-2 ring-brand' : '' }}">
                 <x-icon name="filter" class="w-4 h-4"/>Filters
             </button>
-            <button class="btn btn-secondary btn-md">
-                <x-icon name="download" class="w-4 h-4"/>Export
+            <button class="btn btn-secondary btn-sm sm:btn-md">
+                <x-icon name="download" class="w-4 h-4"/><span class="hidden sm:inline">Export</span>
             </button>
         </div>
     </div>
 
     @if($showFilters)
     <div class="card p-4 mb-5">
-        <div class="flex flex-wrap gap-3">
-            <div>
+        <div class="flex flex-col sm:flex-row sm:flex-wrap gap-3">
+            <div class="flex-1 sm:flex-none">
                 <label class="label">Status</label>
-                <select wire:model.live="filterStatus" class="input" style="height: 40px; font-size: 13px; width: auto;">
+                <select wire:model.live="filterStatus" class="input" style="height: 40px; font-size: 13px;">
                     <option value="">All statuses</option>
                     <option value="COMPLETED">Completed</option>
                     <option value="PENDING">Pending</option>
                     <option value="DECLINED">Declined</option>
                 </select>
             </div>
-            <div>
+            <div class="flex-1 sm:flex-none">
                 <label class="label">Type</label>
-                <select wire:model.live="filterType" class="input" style="height: 40px; font-size: 13px; width: auto;">
+                <select wire:model.live="filterType" class="input" style="height: 40px; font-size: 13px;">
                     <option value="">All types</option>
                     <option value="CARD_SALE">Card Sale</option>
                     <option value="MERCHANT_TO_MERCHANT">M2M Transfer</option>
@@ -51,9 +51,9 @@
         </div>
         @forelse($transactions as $tx)
         <a wire:navigate href="{{ route('merchant.transactions.show', $tx['id']) }}"
-           class="grid grid-cols-1 md:grid-cols-12 items-center px-5 py-3 hover:bg-[var(--color-surface-alt)] transition-colors"
+           class="flex md:grid md:grid-cols-12 items-center gap-3 px-4 md:px-5 py-3 hover:bg-[var(--color-surface-alt)] transition-colors"
            style="border-bottom: 1px solid var(--color-border); text-decoration: none; color: inherit;">
-            <div class="col-span-3 flex items-center gap-3 mb-2 md:mb-0">
+            <div class="md:col-span-3 flex items-center gap-3 flex-1 min-w-0">
                 <div style="width: 36px; height: 36px; border-radius: 10px; background: {{ $tx['direction'] === 'in' ? 'var(--color-brand-soft)' : 'var(--color-surface-alt)' }}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                     @if($tx['direction'] === 'in')
                         <x-icon name="arrow-down" class="w-4 h-4" style="color: var(--color-brand);"/>
@@ -63,16 +63,19 @@
                         <x-icon name="arrow-up" class="w-4 h-4" style="color: var(--color-ink-mid);"/>
                     @endif
                 </div>
-                <div class="min-w-0">
-                    <div style="font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $tx['counterparty'] }}</div>
-                    <div class="font-mono" style="font-size: 11px; color: var(--color-ink-low);">{{ FormatService::txTypLabel($tx['type']) }}</div>
+                <div class="min-w-0 flex-1">
+                    <div class="truncate" style="font-size: 13px; font-weight: 500;">{{ $tx['counterparty'] }}</div>
+                    <div class="font-mono" style="font-size: 11px; color: var(--color-ink-low);">
+                        {{ FormatService::txTypLabel($tx['type']) }}
+                        <span class="md:hidden"> · {{ FormatService::dateTime($tx['createdAt'], 'H:i') }}</span>
+                    </div>
                 </div>
             </div>
-            <div class="col-span-2 hidden md:block" style="font-size: 13px; color: var(--color-ink-mid);">{{ $tx['operatorName'] }}</div>
-            <div class="col-span-2 hidden md:block font-mono" style="font-size: 12px; color: var(--color-ink-low);">{{ $tx['terminalSerial'] }}</div>
+            <div class="col-span-2 hidden md:block truncate" style="font-size: 13px; color: var(--color-ink-mid);">{{ $tx['operatorName'] }}</div>
+            <div class="col-span-2 hidden md:block font-mono truncate" style="font-size: 12px; color: var(--color-ink-low);">{{ $tx['terminalSerial'] }}</div>
             <div class="col-span-2 hidden md:block"><x-tx-status-pill :status="$tx['status']"/></div>
             <div class="col-span-1 hidden md:block" style="font-size: 11px; color: var(--color-ink-low);">{{ FormatService::dateTime($tx['createdAt'], 'H:i') }}</div>
-            <div class="col-span-2 text-right">
+            <div class="md:col-span-2 text-right flex-shrink-0">
                 <div class="font-mono font-semibold" style="font-size: 14px; color: {{ $tx['direction'] === 'in' && $tx['status'] === 'COMPLETED' ? 'var(--color-success)' : ($tx['status'] === 'DECLINED' ? 'var(--color-danger)' : 'var(--color-ink-hi)') }};">
                     {{ $tx['direction'] === 'in' ? '+' : '−' }}{{ FormatService::kmf(abs($tx['requestedAmount'])) }}
                 </div>

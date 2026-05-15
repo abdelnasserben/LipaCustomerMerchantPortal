@@ -1,6 +1,6 @@
 @php use App\Services\FormatService; @endphp
-<div class="p-6 lg:p-8 max-w-2xl">
-    <h1 class="font-bold mb-6" style="font-size: 22px; letter-spacing: -0.02em;">Security</h1>
+<div class="px-5 lg:px-8 pt-5 lg:pt-8 lg:max-w-2xl">
+    <h1 class="font-bold mb-5 lg:mb-6 lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">Security</h1>
 
     @if($success)
     <div class="alert alert-success mb-5">

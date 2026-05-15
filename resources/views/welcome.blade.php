@@ -27,7 +27,7 @@
         </div>
 
         <h1 style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; color: var(--color-ink-hi);">Choose your portal</h1>
-        <p style="font-size: 14px; color: var(--color-ink-mid); margin-bottom: 36px; line-height: 1.5;">Access your Lipa account — customers and merchants have separate sign-in flows.</p>
+        <p style="font-size: 14px; color: var(--color-ink-mid); margin-bottom: 36px; line-height: 1.5;">Access your Lipa account</p>
 
         <div class="flex flex-col gap-4">
             {{-- Customer card --}}

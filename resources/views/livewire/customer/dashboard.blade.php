@@ -1,10 +1,10 @@
 @php use App\Services\FormatService; @endphp
 <div>
     {{-- Header --}}
-    <div class="flex items-center justify-between px-5 pt-5 pb-3">
+    <div class="flex items-center justify-between px-5 lg:px-8 pt-5 lg:pt-8 pb-3">
         <div>
             <div class="text-sm" style="color: var(--color-ink-mid);">Good morning</div>
-            <div class="font-bold" style="font-size: 19px; letter-spacing: -0.015em; margin-top: 1px;">{{ $profile['fullName'] }}</div>
+            <div class="font-bold lg:!text-2xl" style="font-size: 19px; letter-spacing: -0.015em; margin-top: 1px;">{{ $profile['fullName'] }}</div>
         </div>
         <div class="flex gap-2">
             <button class="circle-btn"><x-icon name="search" class="w-4 h-4"/></button>
@@ -13,8 +13,8 @@
     </div>
 
     {{-- Balance hero --}}
-    <div class="mx-5 mb-5">
-        <div class="balance-hero px-6 py-7">
+    <div class="mx-5 lg:mx-8 mb-5">
+        <div class="balance-hero px-6 py-7 lg:px-10 lg:py-10">
             <div class="grid-bg"></div>
             <div class="relative">
                 <div class="flex justify-between items-start">
@@ -55,11 +55,12 @@
         </div>
     </div>
 
+    <div class="lg:grid lg:grid-cols-3 lg:gap-6 lg:px-8">
     {{-- Send again (beneficiaries) --}}
     @if(count($beneficiaries) > 0)
-    <div class="px-5 mb-5">
+    <div class="px-5 lg:px-0 mb-5 lg:col-span-1 lg:order-2">
         <div class="section-title mb-3">Send Again</div>
-        <div class="flex gap-3 overflow-x-auto pb-1" style="-webkit-overflow-scrolling: touch;">
+        <div class="flex gap-3 overflow-x-auto lg:flex-wrap lg:overflow-visible pb-1" style="-webkit-overflow-scrolling: touch;">
             @foreach($beneficiaries as $b)
             <a wire:navigate href="{{ route('customer.send', ['phone' => $b['phoneNumber'], 'name' => $b['fullName']]) }}"
                class="flex flex-col items-center gap-2 flex-shrink-0 text-decoration-none" style="text-decoration: none;">
@@ -76,7 +77,7 @@
     @endif
 
     {{-- Recent activity --}}
-    <div class="px-5">
+    <div class="px-5 lg:px-0 lg:col-span-2 lg:order-1">
         <div class="flex justify-between items-center mb-3">
             <div class="section-title">Recent Activity</div>
             <a wire:navigate href="{{ route('customer.transactions') }}" style="font-size: 12.5px; font-weight: 600; color: var(--color-brand); text-decoration: none;">View all</a>
@@ -135,6 +136,8 @@
         </div>
         @endif
     </div>
+
+    </div> {{-- /lg grid --}}
 
     <div class="h-6"></div>
 </div>

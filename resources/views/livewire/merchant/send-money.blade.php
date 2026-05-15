@@ -1,13 +1,13 @@
 @php use App\Services\FormatService; @endphp
-<div class="p-6 lg:p-8 max-w-2xl">
-    <div class="flex items-center gap-4 mb-6">
+<div class="px-5 lg:px-8 pt-5 lg:pt-8 lg:max-w-2xl">
+    <div class="flex items-center gap-3 mb-6">
         @if($step !== 'form')
-        <button wire:click="$set('step', 'form')" class="btn btn-secondary btn-sm">
-            <x-icon name="arrow-left" class="w-4 h-4"/>Back
+        <button wire:click="$set('step', 'form')" class="circle-btn">
+            <x-icon name="arrow-left" class="w-4 h-4"/>
         </button>
         @endif
-        <div>
-            <h1 class="font-bold" style="font-size: 22px; letter-spacing: -0.02em;">
+        <div class="min-w-0 flex-1">
+            <h1 class="font-bold lg:!text-2xl truncate" style="font-size: 19px; letter-spacing: -0.02em;">
                 @if($step === 'form') Send to Merchant (M2M)
                 @elseif($step === 'confirm') Confirm Transfer
                 @elseif($step === 'receipt') Transfer Complete

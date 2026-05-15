@@ -1,13 +1,13 @@
 @php use App\Services\FormatService; @endphp
 <div>
     {{-- Header --}}
-    <div class="sticky top-0 z-10 flex items-center gap-3 px-5 pt-5 pb-4" style="background: var(--color-bg);">
+    <div class="sticky top-0 z-10 flex items-center gap-3 px-5 lg:px-8 pt-5 lg:pt-8 pb-4" style="background: var(--color-bg);">
         @if($step !== 'recipient')
         <button wire:click="$set('step', 'recipient')" class="circle-btn">
             <x-icon name="arrow-left" class="w-4 h-4"/>
         </button>
         @endif
-        <h1 class="font-bold flex-1" style="font-size: 19px; letter-spacing: -0.02em;">
+        <h1 class="font-bold flex-1 lg:!text-2xl" style="font-size: 19px; letter-spacing: -0.02em;">
             @if($step === 'recipient') Send Money
             @elseif($step === 'amount') Enter Amount
             @elseif($step === 'confirm') Confirm Transfer
@@ -20,7 +20,7 @@
 
     {{-- Progress steps --}}
     @if(!in_array($step, ['receipt', 'locked']))
-    <div class="px-5 mb-5">
+    <div class="px-5 lg:px-8 lg:max-w-xl mb-5">
         @php
         $steps = ['recipient', 'amount', 'confirm', 'receipt'];
         $idx = array_search($step, $steps) ?? 0;
@@ -31,7 +31,7 @@
     </div>
     @endif
 
-    <div class="px-5">
+    <div class="px-5 lg:px-8 lg:max-w-xl">
         @if($error)
         <div class="alert alert-danger mb-4">
             <x-icon name="warn" class="w-4 h-4 flex-shrink-0 mt-0.5"/>

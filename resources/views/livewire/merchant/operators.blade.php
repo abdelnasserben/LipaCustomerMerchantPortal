@@ -1,18 +1,18 @@
 @php use App\Services\FormatService; @endphp
-<div class="p-6 lg:p-8">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+<div class="px-5 lg:px-8 pt-5 lg:pt-8">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 lg:mb-6">
         <div>
-            <h1 class="font-bold" style="font-size: 22px; letter-spacing: -0.02em;">Cashiers</h1>
+            <h1 class="font-bold lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">Cashiers</h1>
             <div style="font-size: 13px; color: var(--color-ink-low); margin-top: 2px;">Manage your terminal operators</div>
         </div>
-        <div class="flex gap-3">
-            <div class="flex gap-1">
+        <div class="flex gap-2 sm:gap-3 flex-wrap">
+            <div class="flex gap-1 flex-1 sm:flex-none overflow-x-auto">
                 <button wire:click="$set('filterStatus', '')" class="btn btn-sm {{ $filterStatus === '' ? 'btn-primary' : 'btn-secondary' }}">All</button>
                 <button wire:click="$set('filterStatus', 'ACTIVE')" class="btn btn-sm {{ $filterStatus === 'ACTIVE' ? 'btn-primary' : 'btn-secondary' }}">Active</button>
                 <button wire:click="$set('filterStatus', 'SUSPENDED')" class="btn btn-sm {{ $filterStatus === 'SUSPENDED' ? 'btn-primary' : 'btn-secondary' }}">Suspended</button>
             </div>
-            <button wire:click="$set('showCreateDrawer', true)" class="btn btn-primary btn-md">
-                <x-icon name="plus" class="w-4 h-4"/>Add Cashier
+            <button wire:click="$set('showCreateDrawer', true)" class="btn btn-primary btn-sm sm:btn-md flex-shrink-0">
+                <x-icon name="plus" class="w-4 h-4"/>Add
             </button>
         </div>
     </div>
@@ -44,24 +44,28 @@
         </div>
 
         @forelse($operators as $op)
-        <div class="grid grid-cols-1 md:grid-cols-12 items-center px-5 py-4" style="border-bottom: 1px solid var(--color-border);">
-            <div class="col-span-4 flex items-center gap-3 mb-3 md:mb-0">
+        <div class="flex flex-col md:grid md:grid-cols-12 md:items-center gap-3 md:gap-0 px-4 md:px-5 py-4" style="border-bottom: 1px solid var(--color-border);">
+            <div class="md:col-span-4 flex items-center gap-3 min-w-0">
                 <div style="width: 38px; height: 38px; border-radius: 50%; background: var(--color-brand-soft); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: var(--color-brand-deep); flex-shrink: 0;">
                     {{ FormatService::initials($op['fullName']) }}
                 </div>
-                <div>
-                    <div style="font-size: 14px; font-weight: 500;">{{ $op['fullName'] }}</div>
-                    <div class="font-mono" style="font-size: 11px; color: var(--color-ink-low);">{{ $op['id'] }}</div>
+                <div class="min-w-0 flex-1">
+                    <div class="truncate" style="font-size: 14px; font-weight: 500;">{{ $op['fullName'] }}</div>
+                    <div class="font-mono truncate" style="font-size: 11px; color: var(--color-ink-low);">+{{ $op['phoneCountryCode'] }} {{ $op['phoneNumber'] }}</div>
+                </div>
+                <div class="md:hidden flex-shrink-0">
+                    <x-status-pill :status="$op['status']"/>
                 </div>
             </div>
-            <div class="col-span-3 font-mono mb-2 md:mb-0" style="font-size: 13px;">+{{ $op['phoneCountryCode'] }} {{ $op['phoneNumber'] }}</div>
-            <div class="col-span-2 mb-2 md:mb-0">
+            <div class="hidden md:block md:col-span-3 font-mono" style="font-size: 13px;">+{{ $op['phoneCountryCode'] }} {{ $op['phoneNumber'] }}</div>
+            <div class="hidden md:block md:col-span-2">
                 <x-status-pill :status="$op['status']"/>
             </div>
-            <div class="col-span-2 mb-2 md:mb-0" style="font-size: 12px; color: var(--color-ink-low);">
-                {{ $op['lastLoginAt'] ? FormatService::relativeTime($op['lastLoginAt']) : 'Never' }}
+            <div class="md:col-span-2 flex justify-between md:block items-center" style="font-size: 12px; color: var(--color-ink-low);">
+                <span class="md:hidden section-title">Last login</span>
+                <span>{{ $op['lastLoginAt'] ? FormatService::relativeTime($op['lastLoginAt']) : 'Never' }}</span>
             </div>
-            <div class="col-span-1 flex justify-end gap-2">
+            <div class="md:col-span-1 flex justify-end gap-2">
                 @if($op['status'] === 'ACTIVE')
                 <button wire:click="openAction('{{ $op['id'] }}', 'suspend')" class="btn btn-sm btn-secondary" title="Suspend">
                     <x-icon name="lock" class="w-3 h-3"/>
@@ -146,7 +150,7 @@
     {{-- Action modal --}}
     @if($showActionModal)
     <div class="drawer-backdrop" wire:click="$set('showActionModal', false)"></div>
-    <div style="position: fixed; bottom: 0; left: 0; right: 0; background: var(--color-surface); border-radius: 24px 24px 0 0; padding: 24px; z-index: 101; box-shadow: 0 -12px 32px rgba(0,0,0,0.15); max-width: 480px; margin: 0 auto;">
+    <div class="sheet">
         @php
         $op = collect($operators)->firstWhere('id', $actionOperatorId);
         $actionLabel = match($actionType) { 'suspend' => 'Suspend', 'reactivate' => 'Reactivate', 'revoke' => 'Revoke', default => '' };

@@ -1,10 +1,10 @@
 @php use App\Services\FormatService; @endphp
-<div class="p-6 lg:p-8">
-    <div class="flex items-center gap-4 mb-6">
-        <a wire:navigate href="{{ route('merchant.transactions') }}" class="btn btn-secondary btn-sm">
-            <x-icon name="arrow-left" class="w-4 h-4"/>Back
+<div class="px-5 lg:px-8 pt-5 lg:pt-8">
+    <div class="flex items-center gap-3 mb-6">
+        <a wire:navigate href="{{ route('merchant.transactions') }}" class="circle-btn">
+            <x-icon name="arrow-left" class="w-4 h-4"/>
         </a>
-        <h1 class="font-bold" style="font-size: 22px; letter-spacing: -0.02em;">Transaction Detail</h1>
+        <h1 class="font-bold lg:!text-2xl" style="font-size: 19px; letter-spacing: -0.02em;">Transaction Detail</h1>
     </div>
 
     @if(!$tx)

@@ -1,25 +1,25 @@
 @php use App\Services\FormatService; @endphp
-<div class="p-6 lg:p-8">
+<div class="px-5 lg:px-8 pt-5 lg:pt-8">
     @if($selectedTerminal)
     {{-- Terminal detail --}}
-    <div class="max-w-2xl">
-        <div class="flex items-center gap-4 mb-6">
-            <button wire:click="back" class="btn btn-secondary btn-sm">
-                <x-icon name="arrow-left" class="w-4 h-4"/>Back
+    <div class="lg:max-w-2xl">
+        <div class="flex items-center gap-3 mb-6">
+            <button wire:click="back" class="circle-btn">
+                <x-icon name="arrow-left" class="w-4 h-4"/>
             </button>
-            <h1 class="font-bold" style="font-size: 22px; letter-spacing: -0.02em;">Terminal Detail</h1>
+            <h1 class="font-bold lg:!text-2xl" style="font-size: 19px; letter-spacing: -0.02em;">Terminal Detail</h1>
         </div>
 
         <div class="card overflow-hidden mb-5">
-            <div class="flex items-center gap-4 px-5 py-4" style="border-bottom: 1px solid var(--color-border);">
-                <div style="width: 48px; height: 48px; border-radius: 12px; background: var(--color-surface-alt); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center;">
+            <div class="flex items-center gap-3 px-4 md:px-5 py-4" style="border-bottom: 1px solid var(--color-border);">
+                <div style="width: 48px; height: 48px; border-radius: 12px; background: var(--color-surface-alt); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                     <x-icon name="device" class="w-6 h-6" style="color: var(--color-ink-mid);"/>
                 </div>
-                <div>
-                    <div class="font-bold" style="font-size: 16px;">{{ $selectedTerminal['deviceModel'] }}</div>
-                    <div class="font-mono" style="font-size: 13px; color: var(--color-ink-low);">{{ $selectedTerminal['serialNumber'] }}</div>
+                <div class="min-w-0 flex-1">
+                    <div class="font-bold truncate" style="font-size: 16px;">{{ $selectedTerminal['deviceModel'] }}</div>
+                    <div class="font-mono truncate" style="font-size: 13px; color: var(--color-ink-low);">{{ $selectedTerminal['serialNumber'] }}</div>
                 </div>
-                <div class="ml-auto">
+                <div class="flex-shrink-0">
                     <x-status-pill :status="$selectedTerminal['status']" size="lg"/>
                 </div>
             </div>
@@ -37,12 +37,12 @@
             ];
             @endphp
             @foreach($rows as $row)
-            <div class="flex justify-between items-center px-5 py-3" style="border-bottom: 1px solid var(--color-border);">
-                <span style="font-size: 13px; color: var(--color-ink-mid);">{{ $row[0] }}</span>
+            <div class="flex justify-between items-center gap-3 px-4 md:px-5 py-3" style="border-bottom: 1px solid var(--color-border);">
+                <span class="flex-shrink-0" style="font-size: 13px; color: var(--color-ink-mid);">{{ $row[0] }}</span>
                 @if(isset($row[2]))
                     <x-status-pill :status="$row[2]"/>
                 @else
-                    <span class="font-mono" style="font-size: 13px;">{{ $row[1] }}</span>
+                    <span class="font-mono truncate text-right" style="font-size: 13px;">{{ $row[1] }}</span>
                 @endif
             </div>
             @endforeach
@@ -58,11 +58,9 @@
     </div>
     @else
     {{-- Terminals list --}}
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div>
-            <h1 class="font-bold" style="font-size: 22px; letter-spacing: -0.02em;">Terminals</h1>
-            <div style="font-size: 13px; color: var(--color-ink-low); margin-top: 2px;">Read-only — provisioned by Lipa operations</div>
-        </div>
+    <div class="mb-5 lg:mb-6">
+        <h1 class="font-bold lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">Terminals</h1>
+        <div style="font-size: 13px; color: var(--color-ink-low); margin-top: 2px;">Read-only — provisioned by Lipa operations</div>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

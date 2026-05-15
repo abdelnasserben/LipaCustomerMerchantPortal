@@ -1,16 +1,16 @@
 @php use App\Services\FormatService; @endphp
 <div>
     {{-- Header --}}
-    <div class="sticky top-0 z-10 px-5 pt-5 pb-3" style="background: var(--color-bg);">
+    <div class="sticky top-0 z-10 px-5 lg:px-8 pt-5 lg:pt-8 pb-3" style="background: var(--color-bg);">
         <div class="flex items-center justify-between mb-4">
-            <h1 class="font-bold" style="font-size: 21px; letter-spacing: -0.02em;">Activity</h1>
+            <h1 class="font-bold lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">Activity</h1>
             <button wire:click="$toggle('showFilters')" class="circle-btn" style="{{ $showFilters ? 'background: var(--color-brand-soft); color: var(--color-brand); border-color: var(--color-brand);' : '' }}">
                 <x-icon name="filter" class="w-4 h-4"/>
             </button>
         </div>
 
         @if($showFilters)
-        <div class="flex gap-2 overflow-x-auto pb-2">
+        <div class="flex flex-wrap gap-2 overflow-x-auto pb-2">
             <button wire:click="$set('filterStatus', '')" class="btn btn-sm {{ $filterStatus === '' ? 'btn-primary' : 'btn-secondary' }}">All</button>
             <button wire:click="$set('filterStatus', 'COMPLETED')" class="btn btn-sm {{ $filterStatus === 'COMPLETED' ? 'btn-primary' : 'btn-secondary' }}">Completed</button>
             <button wire:click="$set('filterStatus', 'PENDING')" class="btn btn-sm {{ $filterStatus === 'PENDING' ? 'btn-primary' : 'btn-secondary' }}">Pending</button>
@@ -19,7 +19,7 @@
         @endif
     </div>
 
-    <div class="px-5">
+    <div class="px-5 lg:px-8">
         @if(empty($grouped))
         <div class="empty-state">
             <x-icon name="list" class="w-10 h-10 mb-3" style="color: var(--color-border-hi);"/>

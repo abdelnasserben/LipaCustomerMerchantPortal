@@ -2,12 +2,12 @@
 <div>
     @if($selectedCard)
     {{-- Card detail view --}}
-    <div class="px-5 pt-5">
+    <div class="px-5 lg:px-8 pt-5 lg:pt-8 lg:max-w-2xl">
         <div class="flex items-center gap-3 mb-6">
             <button wire:click="back" class="circle-btn">
                 <x-icon name="arrow-left" class="w-4 h-4"/>
             </button>
-            <h1 class="font-bold" style="font-size: 19px; letter-spacing: -0.02em;">Card Detail</h1>
+            <h1 class="font-bold lg:!text-2xl" style="font-size: 19px; letter-spacing: -0.02em;">Card Detail</h1>
         </div>
 
         {{-- Card visual --}}
@@ -84,7 +84,7 @@
     {{-- Report modal --}}
     @if($showReportModal)
     <div class="drawer-backdrop" wire:click="$set('showReportModal', false)"></div>
-    <div style="position: fixed; bottom: 0; left: 0; right: 0; background: var(--color-surface); border-radius: 24px 24px 0 0; padding: 24px; z-index: 101; box-shadow: 0 -12px 32px rgba(0,0,0,0.15);">
+    <div class="sheet">
         <div class="font-bold text-center mb-2" style="font-size: 18px;">Report Card {{ ucfirst($reportType) }}</div>
         <p class="text-center mb-5" style="font-size: 14px; color: var(--color-ink-mid);">
             Are you sure you want to report this card as {{ $reportType }}? The card will be blocked immediately.
@@ -98,8 +98,8 @@
 
     @else
     {{-- Cards list --}}
-    <div class="px-5 pt-5">
-        <h1 class="font-bold mb-5" style="font-size: 21px; letter-spacing: -0.02em;">My Cards</h1>
+    <div class="px-5 lg:px-8 pt-5 lg:pt-8">
+        <h1 class="font-bold mb-5 lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">My Cards</h1>
 
         @if(empty($cards))
         <div class="empty-state">
@@ -108,7 +108,7 @@
             <div style="font-size: 13px;">Visit a Lipa agent to get your first card.</div>
         </div>
         @else
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-5">
             @foreach($cards as $card)
             <button wire:click="selectCard('{{ $card['id'] }}')" class="text-left" style="background: none; border: none; cursor: pointer; padding: 0;">
                 <div class="chip-card {{ $card['status'] !== 'ACTIVE' ? 'chip-card-blocked' : '' }}" style="min-height: 160px;">

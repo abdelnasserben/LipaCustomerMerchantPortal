@@ -1,11 +1,11 @@
 @php use App\Services\FormatService; @endphp
 <div>
-    <div class="px-5 pt-5">
+    <div class="px-5 lg:px-8 pt-5 lg:pt-8 lg:max-w-2xl">
         <div class="flex items-center gap-3 mb-5">
             <a wire:navigate href="{{ route('customer.profile') }}" class="circle-btn">
                 <x-icon name="arrow-left" class="w-4 h-4"/>
             </a>
-            <h1 class="font-bold" style="font-size: 21px; letter-spacing: -0.02em;">Security</h1>
+            <h1 class="font-bold lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">Security</h1>
         </div>
 
         @if($success)
@@ -78,7 +78,7 @@
     {{-- Change PIN panel --}}
     @if($activePanel === 'changePIN')
     <div class="drawer-backdrop" wire:click="openPanel('')"></div>
-    <div style="position: fixed; bottom: 0; left: 0; right: 0; background: var(--color-surface); border-radius: 24px 24px 0 0; padding: 24px; z-index: 101; box-shadow: 0 -12px 32px rgba(0,0,0,0.15);">
+    <div class="sheet">
         <div class="font-bold mb-1" style="font-size: 18px;">Change PIN</div>
         <p style="font-size: 14px; color: var(--color-ink-mid); margin-bottom: 20px;">Enter your current PIN then choose a new one.</p>
         @if($error)
@@ -106,7 +106,7 @@
     {{-- Enroll TOTP panel --}}
     @if($activePanel === 'enrollTOTP')
     <div class="drawer-backdrop" wire:click="openPanel('')"></div>
-    <div style="position: fixed; bottom: 0; left: 0; right: 0; background: var(--color-surface); border-radius: 24px 24px 0 0; padding: 24px; z-index: 101; max-height: 85vh; overflow-y: auto; box-shadow: 0 -12px 32px rgba(0,0,0,0.15);">
+    <div class="sheet">
         <div class="font-bold mb-1" style="font-size: 18px;">Enable 2FA</div>
         <p style="font-size: 14px; color: var(--color-ink-mid); margin-bottom: 20px;">Scan the QR code with your authenticator app, then enter the 6-digit code to confirm.</p>
         {{-- QR placeholder --}}
@@ -137,7 +137,7 @@
     {{-- Revoke TOTP panel --}}
     @if($activePanel === 'revokeTOTP')
     <div class="drawer-backdrop" wire:click="openPanel('')"></div>
-    <div style="position: fixed; bottom: 0; left: 0; right: 0; background: var(--color-surface); border-radius: 24px 24px 0 0; padding: 24px; z-index: 101; box-shadow: 0 -12px 32px rgba(0,0,0,0.15);">
+    <div class="sheet">
         <div class="font-bold mb-1" style="font-size: 18px;">Remove 2FA</div>
         <div class="alert alert-danger mb-4">
             <x-icon name="warn" class="w-4 h-4 flex-shrink-0"/>

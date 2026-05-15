@@ -1,16 +1,16 @@
 @php use App\Services\FormatService; @endphp
-<div class="p-6 lg:p-8 max-w-3xl">
-    <h1 class="font-bold mb-6" style="font-size: 22px; letter-spacing: -0.02em;">Business Profile</h1>
+<div class="px-5 lg:px-8 pt-5 lg:pt-8 lg:max-w-3xl">
+    <h1 class="font-bold mb-5 lg:mb-6 lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">Business Profile</h1>
 
     {{-- Identity card --}}
-    <div class="card p-6 mb-5">
+    <div class="card p-5 lg:p-6 mb-5">
         <div class="flex items-start gap-4">
-            <div style="width: 60px; height: 60px; border-radius: 16px; background: var(--color-brand-soft); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 20px; color: var(--color-brand-deep); flex-shrink: 0;">
+            <div style="width: 56px; height: 56px; border-radius: 16px; background: var(--color-brand-soft); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; color: var(--color-brand-deep); flex-shrink: 0;">
                 {{ FormatService::initials($profile['businessName']) }}
             </div>
-            <div class="flex-1">
-                <div class="font-bold" style="font-size: 20px;">{{ $profile['businessName'] }}</div>
-                <div style="font-size: 14px; color: var(--color-ink-mid); margin-top: 2px;">{{ $profile['legalName'] }}</div>
+            <div class="flex-1 min-w-0">
+                <div class="font-bold truncate" style="font-size: 18px;">{{ $profile['businessName'] }}</div>
+                <div class="truncate" style="font-size: 14px; color: var(--color-ink-mid); margin-top: 2px;">{{ $profile['legalName'] }}</div>
                 <div class="flex flex-wrap gap-2 mt-3">
                     <x-status-pill :status="$profile['status']" size="lg"/>
                     <x-status-pill :status="$profile['kycLevel']" size="lg"/>
@@ -54,9 +54,9 @@
         ];
         @endphp
         @foreach($rows as $row)
-        <div class="flex justify-between items-center px-5 py-3" style="border-bottom: 1px solid var(--color-border);">
-            <span style="font-size: 13px; color: var(--color-ink-mid);">{{ $row[0] }}</span>
-            <span style="font-size: 13px; font-weight: 500;">{{ $row[1] }}</span>
+        <div class="flex justify-between items-center gap-3 px-4 md:px-5 py-3" style="border-bottom: 1px solid var(--color-border);">
+            <span class="flex-shrink-0" style="font-size: 13px; color: var(--color-ink-mid);">{{ $row[0] }}</span>
+            <span class="truncate text-right" style="font-size: 13px; font-weight: 500;">{{ $row[1] }}</span>
         </div>
         @endforeach
     </div>
@@ -89,7 +89,7 @@
 
     <a href="{{ route('merchant.login') }}" class="btn btn-secondary btn-lg">
         <x-icon name="arrow-left" class="w-4 h-4"/>
-        Sign Out (clear local session)
+        Sign Out
     </a>
     <div class="mt-3 text-sm" style="color: var(--color-ink-low);">Note: Merchant sessions last 8 hours. Sign-out only clears local storage — the JWT remains valid until natural expiry.</div>
 </div>

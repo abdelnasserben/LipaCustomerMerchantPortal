@@ -1,7 +1,9 @@
 @php use App\Services\FormatService; @endphp
 <div>
-    <div class="px-5 pt-5">
-        <h1 class="font-bold mb-5" style="font-size: 21px; letter-spacing: -0.02em;">Profile</h1>
+    <div class="px-5 lg:px-8 pt-5 lg:pt-8">
+        <h1 class="font-bold mb-5 lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">Profile</h1>
+
+        <div class="lg:grid lg:grid-cols-2 lg:gap-5">
 
         {{-- Identity card --}}
         <div class="card p-5 mb-5">
@@ -112,6 +114,8 @@
                 <x-icon name="chev-right" class="w-4 h-4" style="color: var(--color-ink-low);"/>
             </a>
         </div>
+
+        </div> {{-- /lg grid --}}
 
         <a href="{{ route('customer.login') }}" class="btn btn-secondary btn-lg btn-full">
             <x-icon name="arrow-left" class="w-4 h-4"/>
