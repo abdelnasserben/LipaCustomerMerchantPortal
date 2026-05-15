@@ -1,45 +1,69 @@
-<div class="min-h-screen flex flex-col lg:flex-row">
-    {{-- Left panel (desktop) --}}
-    <div class="relative overflow-hidden lg:w-1/2 flex flex-col justify-between"
-         style="background: #0a0a0a; min-height: 220px; padding: 48px 56px;">
+<div class="min-h-screen flex flex-col lg:flex-row" style="background: var(--color-bg);">
+    {{-- Mobile/tablet: dark hero header  |  Desktop (lg+): left panel --}}
+    <div class="relative overflow-hidden lg:w-1/2 lg:flex lg:flex-col lg:justify-between"
+         style="background: #0a0a0a;">
         <div class="grid-bg"></div>
-        <div class="relative">
-            <div class="flex items-center gap-3">
-                <x-lipa-mark :size="48" :dark="true"/>
-                <div>
-                    <div class="font-bold text-white" style="font-size: 22px; letter-spacing: -0.01em;">Lipa</div>
-                    <div class="text-xs font-semibold uppercase tracking-widest" style="color: rgba(255,255,255,0.45); margin-top: 2px;">Merchant Portal</div>
+
+        {{-- Mobile/tablet hero (compact, like customer) --}}
+        <div class="relative px-6 sm:px-10 pt-12 pb-10 text-white lg:hidden">
+            <div class="max-w-md mx-auto sm:max-w-xl">
+                <div class="flex items-center gap-3 mb-8">
+                    <x-lipa-mark :size="44" :dark="true"/>
+                    <div>
+                        <div class="font-bold" style="font-size: 20px; letter-spacing: -0.01em;">Lipa</div>
+                        <div class="text-xs font-semibold uppercase tracking-widest" style="color: rgba(255,255,255,0.5); margin-top: 2px;">Merchant Portal</div>
+                    </div>
+                </div>
+                <h1 style="font-size: clamp(26px, 5vw, 34px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; margin: 0;">
+                    @if($step === 'login') Sign in to Lipa
+                    @elseif($step === 'mfa') Two-factor verification
+                    @elseif($step === 'pinSetup') Set your PIN
+                    @elseif($step === 'sessionExpired') Session expired
+                    @elseif($step === 'locked') PIN locked
+                    @endif
+                </h1>
+                <p style="font-size: 14px; color: rgba(255,255,255,0.6); margin-top: 10px; line-height: 1.5; max-width: 360px;">
+                    @if($step === 'login') Use your registered phone number and PIN.
+                    @elseif($step === 'mfa') Open your authenticator app and enter the 6-digit code.
+                    @elseif($step === 'pinSetup') Choose a 4–8 digit PIN. Required for every transfer.
+                    @elseif($step === 'sessionExpired') Merchant sessions last 8 hours. Sign in again to continue.
+                    @elseif($step === 'locked') Too many incorrect attempts. Try again in 14 minutes.
+                    @endif
+                </p>
+            </div>
+            <div style="position: absolute; bottom: -1px; left: 0; right: 0; height: 24px; background: var(--color-bg); border-radius: 24px 24px 0 0;"></div>
+        </div>
+
+        {{-- Desktop left panel --}}
+        <div class="relative hidden lg:flex lg:flex-col lg:justify-between" style="padding: 48px 56px; min-height: 100vh;">
+            <div class="relative">
+                <div class="flex items-center gap-3">
+                    <x-lipa-mark :size="48" :dark="true"/>
+                    <div>
+                        <div class="font-bold text-white" style="font-size: 22px; letter-spacing: -0.01em;">Lipa</div>
+                        <div class="text-xs font-semibold uppercase tracking-widest" style="color: rgba(255,255,255,0.45); margin-top: 2px;">Merchant Portal</div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="relative hidden lg:block">
-            <h1 class="text-white" style="font-size: 48px; font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; max-width: 420px; margin: 0;">
-                Run your business.<br>Settle in seconds.
-            </h1>
-            <p style="color: rgba(255,255,255,0.6); font-size: 15px; line-height: 1.55; margin-top: 18px; max-width: 380px;">
-                Manage payments, terminals and your cashier team — securely, from one place.
-            </p>
-            <div class="flex gap-10 mt-10 pt-6" style="border-top: 1px solid rgba(255,255,255,0.08);">
-                <div>
-                    <div class="font-bold text-white font-mono" style="font-size: 20px;">2 487 600</div>
-                    <div style="font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 2px;">KMF available</div>
-                </div>
-                <div>
-                    <div class="font-bold text-white font-mono" style="font-size: 20px;">27</div>
-                    <div style="font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 2px;">Sales today</div>
-                </div>
-                <div>
-                    <div class="font-bold text-white font-mono" style="font-size: 20px;">3</div>
-                    <div style="font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 2px;">Terminals online</div>
-                </div>
+            <div class="relative">
+                <h1 class="text-white" style="font-size: 48px; font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; max-width: 420px; margin: 0;">
+                    Run your business.<br>Settle in seconds.
+                </h1>
+                <p style="color: rgba(255,255,255,0.6); font-size: 15px; line-height: 1.55; margin-top: 18px; max-width: 380px;">
+                    Manage payments, terminals and your cashier team — securely, from one place.
+                </p>
+            </div>
+            <div class="relative" style="font-size: 12px; color: rgba(255,255,255,0.35);">
+                Lipa Merchant Portal · All sessions are logged and monitored
             </div>
         </div>
     </div>
 
-    {{-- Right panel: form --}}
-    <div class="flex-1 flex items-center justify-center px-6 py-10 lg:px-16" style="background: var(--color-bg);">
-        <div class="w-full max-w-md">
-            <div class="mb-8">
+    {{-- Form area --}}
+    <div class="flex-1 flex lg:items-center justify-center px-6 sm:px-10 pt-6 pb-10 lg:px-16 lg:py-10" style="background: var(--color-bg);">
+        <div class="w-full max-w-md sm:max-w-lg lg:max-w-md">
+            {{-- Desktop-only heading (mobile uses the dark hero above) --}}
+            <div class="hidden lg:block mb-8">
                 <h2 style="font-size: 28px; font-weight: 700; letter-spacing: -0.025em; margin: 0; color: var(--color-ink-hi);">
                     @if($step === 'login') Sign in to Lipa
                     @elseif($step === 'mfa') Two-factor verification
@@ -70,18 +94,18 @@
                 <div>
                     <label class="label">Phone Number</label>
                     <div style="display: flex; height: 52px; border: 1px solid var(--color-border-hi); border-radius: 12px; background: #fff; overflow: hidden;">
-                        <div style="width: 80px; background: var(--color-surface-alt); display: flex; align-items: center; justify-content: center; border-right: 1px solid var(--color-border); font-family: var(--font-mono); font-weight: 600; font-size: 15px; color: var(--color-ink-mid);">
+                        <div style="width: 80px; background: var(--color-surface-alt); display: flex; align-items: center; justify-content: center; border-right: 1px solid var(--color-border); font-family: var(--font-mono); font-weight: 600; font-size: 15px; color: var(--color-ink-mid); flex-shrink: 0;">
                             +269
                         </div>
-                        <input wire:model="phoneNumber" type="tel" placeholder="33 XX XX XX"
-                            style="flex: 1; border: none; outline: none; padding: 0 16px; font-family: var(--font-mono); font-size: 16px; color: var(--color-ink-hi); background: transparent; letter-spacing: 0.04em;"/>
+                        <input wire:model="phoneNumber" type="tel" placeholder="33 XX XX XX" inputmode="tel"
+                            style="flex: 1; min-width: 0; border: none; outline: none; padding: 0 16px; font-family: var(--font-mono); font-size: 16px; color: var(--color-ink-hi); background: transparent; letter-spacing: 0.04em;"/>
                     </div>
                 </div>
                 <div>
                     <label class="label">PIN</label>
                     <div style="display: flex; height: 52px; border: 1px solid var(--color-border-hi); border-radius: 12px; background: #fff; align-items: center; padding: 0 16px; gap: 8px;">
-                        <input wire:model="pin" type="{{ $pinVisible ? 'text' : 'password' }}" placeholder="••••"
-                            style="flex: 1; border: none; outline: none; font-family: var(--font-mono); font-size: 20px; color: var(--color-ink-hi); background: transparent; letter-spacing: 0.3em;"/>
+                        <input wire:model="pin" type="{{ $pinVisible ? 'text' : 'password' }}" placeholder="••••" inputmode="numeric"
+                            style="flex: 1; min-width: 0; border: none; outline: none; font-family: var(--font-mono); font-size: 20px; color: var(--color-ink-hi); background: transparent; letter-spacing: 0.3em;"/>
                         <button type="button" wire:click="$toggle('pinVisible')" style="background: none; border: none; cursor: pointer; color: var(--color-ink-low); padding: 4px; display: flex;">
                             @if($pinVisible)<x-icon name="eye-off" class="w-5 h-5"/>@else<x-icon name="eye" class="w-5 h-5"/>@endif
                         </button>
@@ -89,28 +113,23 @@
                 </div>
                 <button type="submit" class="btn btn-dark btn-lg btn-full">Sign In</button>
             </form>
-            <div class="mt-5 p-4 rounded-xl text-sm" style="background: var(--color-surface-alt); border: 1px solid var(--color-border);">
-                <div class="font-semibold mb-1" style="color: var(--color-ink-mid); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">Demo PINs</div>
-                <div style="color: var(--color-ink-mid); font-size: 12px; line-height: 1.7; font-family: var(--font-mono);">
-                    <div>Any PIN → login success</div>
-                    <div>0000 → PIN locked &nbsp;·&nbsp; 2222 → MFA &nbsp;·&nbsp; 3333 → PIN setup</div>
-                </div>
-            </div>
             @endif
 
             @if($step === 'mfa')
             <form wire:submit="verifyMfa" class="flex flex-col gap-6">
                 <div>
                     <label class="label">Authenticator Code</label>
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 justify-between">
                         @for($i = 0; $i < 6; $i++)
-                        <input type="text" maxlength="1" inputmode="numeric" class="otp-input flex-1"/>
+                        <input type="text" maxlength="1" inputmode="numeric"
+                            class="otp-input flex-1 min-w-0"
+                            x-data x-on:input="if($event.target.value && $el.nextElementSibling) $el.nextElementSibling.focus()"/>
                         @endfor
                     </div>
                 </div>
                 <div class="alert alert-info">
                     <x-icon name="shield" class="w-4 h-4 flex-shrink-0 mt-0.5"/>
-                    <span>Open your authenticator app and enter the code for Lipa Merchant.</span>
+                    <span>Open your authenticator app and enter the code.</span>
                 </div>
                 <button type="button" wire:click="$set('mfaCode', '123456'); verifyMfa()" class="btn btn-dark btn-lg btn-full">
                     Verify Code
@@ -169,9 +188,6 @@
                 <a wire:navigate href="{{ route('customer.login') }}" style="font-size: 13px; color: var(--color-ink-low);">
                     Customer? <span style="color: var(--color-brand); font-weight: 600;">Sign in to customer portal →</span>
                 </a>
-            </div>
-            <div class="mt-6 text-center" style="font-size: 12px; color: var(--color-ink-low);">
-                Lipa Merchant Portal · All sessions are logged and monitored
             </div>
         </div>
     </div>
