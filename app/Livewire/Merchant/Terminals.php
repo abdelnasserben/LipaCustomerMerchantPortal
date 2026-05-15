@@ -34,6 +34,6 @@ class Terminals extends Component
     {
         $terminals = $presenter->presentMany($api->terminals());
         return view('livewire.merchant.terminals', compact('terminals'))
-            ->layout('layouts.merchant', ['title' => 'Lipa Merchant · Terminals']);
+            ->layout('layouts.merchant', ['title' => __('merchant.title.terminals')]);
     }
 }

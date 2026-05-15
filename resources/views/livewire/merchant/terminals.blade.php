@@ -7,7 +7,7 @@
             <button wire:click="back" class="circle-btn">
                 <x-icon name="arrow-left" class="w-4 h-4"/>
             </button>
-            <h1 class="font-bold lg:!text-2xl" style="font-size: 19px; letter-spacing: -0.02em;">Terminal Detail</h1>
+            <h1 class="font-bold lg:!text-2xl" style="font-size: 19px; letter-spacing: -0.02em;">{{ __('merchant.terminals.detail_title') }}</h1>
         </div>
 
         <div class="card overflow-hidden mb-5">
@@ -26,13 +26,13 @@
 
             @php
             $rows = [
-                ['Serial Number', $selectedTerminal['serialNumber']],
-                ['Model', $selectedTerminal['deviceModel'] ?? '—'],
-                ['Android Version', $selectedTerminal['androidVersion'] ?? '—'],
-                ['App Version', $selectedTerminal['appVersion'] ?? '—'],
-                ['Status', null, $selectedTerminal['status']],
-                ['Last Seen', !empty($selectedTerminal['lastSeenAt']) ? FormatService::relativeTime($selectedTerminal['lastSeenAt']) : '—'],
-                ['Registered', !empty($selectedTerminal['registeredAt']) ? FormatService::date($selectedTerminal['registeredAt']) : '—'],
+                [__('merchant.terminals.serial'), $selectedTerminal['serialNumber']],
+                [__('merchant.terminals.model'), $selectedTerminal['deviceModel'] ?? '—'],
+                [__('merchant.terminals.android_version'), $selectedTerminal['androidVersion'] ?? '—'],
+                [__('merchant.terminals.app_version'), $selectedTerminal['appVersion'] ?? '—'],
+                [__('merchant.terminals.status'), null, $selectedTerminal['status']],
+                [__('merchant.terminals.last_seen'), !empty($selectedTerminal['lastSeenAt']) ? FormatService::relativeTime($selectedTerminal['lastSeenAt']) : '—'],
+                [__('merchant.terminals.registered'), !empty($selectedTerminal['registeredAt']) ? FormatService::date($selectedTerminal['registeredAt']) : '—'],
             ];
             @endphp
             @foreach($rows as $row)
@@ -50,16 +50,16 @@
         <div class="alert alert-info">
             <x-icon name="warn" class="w-4 h-4 flex-shrink-0"/>
             <div>
-                <div class="font-semibold mb-1">Read-only view</div>
-                <div>Terminal provisioning, suspension, and revocation is managed by the Lipa operations team. Contact support to make changes.</div>
+                <div class="font-semibold mb-1">{{ __('merchant.terminals.read_only_title') }}</div>
+                <div>{{ __('merchant.terminals.read_only_body') }}</div>
             </div>
         </div>
     </div>
     @else
     {{-- Terminals list --}}
     <div class="mb-5 lg:mb-6">
-        <h1 class="font-bold lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">Terminals</h1>
-        <div style="font-size: 13px; color: var(--color-ink-low); margin-top: 2px;">Read-only — provisioned by Lipa operations</div>
+        <h1 class="font-bold lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">{{ __('merchant.terminals.list_title') }}</h1>
+        <div style="font-size: 13px; color: var(--color-ink-low); margin-top: 2px;">{{ __('merchant.terminals.list_subtitle') }}</div>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -83,7 +83,7 @@
 
     <div class="alert alert-info mt-5 max-w-xl">
         <x-icon name="warn" class="w-4 h-4 flex-shrink-0"/>
-        <div>To provision a new terminal or modify an existing one, contact the Lipa operations team. Portal view is read-only.</div>
+        <div>{{ __('merchant.terminals.list_footer') }}</div>
     </div>
     @endif
 </div>

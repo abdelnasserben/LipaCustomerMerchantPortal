@@ -31,6 +31,6 @@ class Transactions extends Component
         $transactions = $presenter->presentMany($page->items, $walletId);
 
         return view('livewire.merchant.transactions', compact('transactions'))
-            ->layout('layouts.merchant', ['title' => 'Lipa Merchant · Transactions']);
+            ->layout('layouts.merchant', ['title' => __('merchant.title.transactions')]);
     }
 }

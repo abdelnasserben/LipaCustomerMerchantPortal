@@ -24,6 +24,6 @@ class Statement extends Component
         )->items;
 
         return view('livewire.merchant.statement', compact('entries'))
-            ->layout('layouts.merchant', ['title' => 'Lipa Merchant · Statement']);
+            ->layout('layouts.merchant', ['title' => __('merchant.title.statement')]);
     }
 }

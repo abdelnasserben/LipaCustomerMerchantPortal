@@ -24,6 +24,6 @@ class Statement extends Component
         )->items;
 
         return view('livewire.customer.statement', compact('entries'))
-            ->layout('layouts.customer', ['title' => 'Lipa · Statement']);
+            ->layout('layouts.customer', ['title' => __('customer.title.statement')]);
     }
 }

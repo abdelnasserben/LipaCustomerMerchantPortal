@@ -567,6 +567,8 @@ BeneficiaryResponse = {
 
 CustomerCardResponse = {
   id: uuid;
+  internalCardLast4: string | null;        // last 4 chars of printed/internal card number
+  maskedInternalCardNumber: string | null; // e.g. "•••• 0099"
   cardType: string;            // CardType
   status: string;              // CardStatus
   pinEnabled: boolean;
@@ -578,7 +580,7 @@ CustomerCardResponse = {
 }
 ```
 
-> Note: `CustomerCardResponse` deliberately does **not** expose `nfcUid` or any auth-key material.
+> Note: `CustomerCardResponse` deliberately does **not** expose `nfcUid`, the full `internalCardNumber`, or any auth-key material.
 
 ### 7.4 Customer — P2P & Bill Payment Results
 

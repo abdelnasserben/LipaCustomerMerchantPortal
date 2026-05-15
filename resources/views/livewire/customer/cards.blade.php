@@ -7,7 +7,7 @@
             <button wire:click="back" class="circle-btn">
                 <x-icon name="arrow-left" class="w-4 h-4"/>
             </button>
-            <h1 class="font-bold lg:!text-2xl" style="font-size: 19px; letter-spacing: -0.02em;">Card Detail</h1>
+            <h1 class="font-bold lg:!text-2xl" style="font-size: 19px; letter-spacing: -0.02em;">{{ __('customer.cards.detail_title') }}</h1>
         </div>
 
         {{-- Card visual --}}
@@ -25,15 +25,15 @@
                 </div>
                 <div class="flex justify-between mt-4">
                     <div>
-                        <div style="font-size: 9px; text-transform: uppercase; color: rgba(255,255,255,0.5); letter-spacing: 0.06em; margin-bottom: 2px;">Expires</div>
+                        <div style="font-size: 9px; text-transform: uppercase; color: rgba(255,255,255,0.5); letter-spacing: 0.06em; margin-bottom: 2px;">{{ __('customer.cards.expires') }}</div>
                         <div class="font-mono" style="font-size: 13px; color: rgba(255,255,255,0.8);">
                             @php $exp = explode('-', $selectedCard['expiresAt']); @endphp
                             {{ $exp[1] ?? '' }}/{{ substr($exp[0] ?? '', 2) }}
                         </div>
                     </div>
                     <div class="text-right">
-                        <div style="font-size: 9px; text-transform: uppercase; color: rgba(255,255,255,0.5); letter-spacing: 0.06em; margin-bottom: 2px;">Lipa</div>
-                        <div style="font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.8);">Lipa</div>
+                        <div style="font-size: 9px; text-transform: uppercase; color: rgba(255,255,255,0.5); letter-spacing: 0.06em; margin-bottom: 2px;">{{ __('common.brand') }}</div>
+                        <div style="font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.8);">{{ __('common.brand') }}</div>
                     </div>
                 </div>
             </div>
@@ -42,24 +42,24 @@
         {{-- Info rows --}}
         <div class="card overflow-hidden mb-5">
             <div class="flex justify-between px-4 py-3" style="border-bottom: 1px solid var(--color-border);">
-                <span style="font-size: 13px; color: var(--color-ink-mid);">Status</span>
+                <span style="font-size: 13px; color: var(--color-ink-mid);">{{ __('customer.cards.status') }}</span>
                 <x-status-pill :status="$selectedCard['status']"/>
             </div>
             <div class="flex justify-between px-4 py-3" style="border-bottom: 1px solid var(--color-border);">
-                <span style="font-size: 13px; color: var(--color-ink-mid);">Type</span>
+                <span style="font-size: 13px; color: var(--color-ink-mid);">{{ __('customer.cards.type') }}</span>
                 <span style="font-size: 13px; font-weight: 500;">{{ $selectedCard['cardType'] }}</span>
             </div>
             <div class="flex justify-between px-4 py-3" style="border-bottom: 1px solid var(--color-border);">
-                <span style="font-size: 13px; color: var(--color-ink-mid);">Issued</span>
+                <span style="font-size: 13px; color: var(--color-ink-mid);">{{ __('customer.cards.issued') }}</span>
                 <span style="font-size: 13px;">{{ FormatService::date($selectedCard['issuedAt']) }}</span>
             </div>
             <div class="flex justify-between px-4 py-3" style="border-bottom: 1px solid var(--color-border);">
-                <span style="font-size: 13px; color: var(--color-ink-mid);">Expires</span>
+                <span style="font-size: 13px; color: var(--color-ink-mid);">{{ __('customer.cards.expires') }}</span>
                 <span style="font-size: 13px;">{{ FormatService::date($selectedCard['expiresAt']) }}</span>
             </div>
             <div class="flex justify-between px-4 py-3">
-                <span style="font-size: 13px; color: var(--color-ink-mid);">Last Used</span>
-                <span style="font-size: 13px;">{{ isset($selectedCard['lastUsedAt']) ? FormatService::relativeTime($selectedCard['lastUsedAt']) : 'Never' }}</span>
+                <span style="font-size: 13px; color: var(--color-ink-mid);">{{ __('customer.cards.last_used') }}</span>
+                <span style="font-size: 13px;">{{ isset($selectedCard['lastUsedAt']) ? FormatService::relativeTime($selectedCard['lastUsedAt']) : __('common.never') }}</span>
             </div>
         </div>
 
@@ -67,15 +67,15 @@
         <div class="flex flex-col gap-3">
             @if($selectedCard['status'] === 'ACTIVE')
             <button wire:click="openReportModal('lost')" class="btn btn-danger-outline btn-lg btn-full">
-                Report Lost
+                {{ __('customer.cards.report_lost') }}
             </button>
             <button wire:click="openReportModal('stolen')" class="btn btn-danger btn-lg btn-full">
-                Report Stolen
+                {{ __('customer.cards.report_stolen') }}
             </button>
             @endif
             <div class="alert alert-info text-sm">
                 <x-icon name="warn" class="w-4 h-4 flex-shrink-0"/>
-                <span>To order a new card or request a replacement, please visit a Lipa agent.</span>
+                <span>{{ __('customer.cards.agent_replacement') }}</span>
             </div>
         </div>
         @endif
@@ -85,27 +85,30 @@
     @if($showReportModal)
     <div class="drawer-backdrop" wire:click="$set('showReportModal', false)"></div>
     <div class="sheet">
-        <div class="font-bold text-center mb-2" style="font-size: 18px;">Report Card {{ ucfirst($reportType) }}</div>
+        @php
+            $reportLabel = $reportType === 'stolen' ? __('customer.cards.report_stolen_label') : __('customer.cards.report_lost_label');
+        @endphp
+        <div class="font-bold text-center mb-2" style="font-size: 18px;">{{ __('customer.cards.report_modal_title', ['type' => $reportLabel]) }}</div>
         <p class="text-center mb-5" style="font-size: 14px; color: var(--color-ink-mid);">
-            Are you sure you want to report this card as {{ $reportType }}? The card will be blocked immediately.
+            {{ __('customer.cards.report_confirm_body', ['type' => $reportLabel]) }}
         </p>
         <button wire:click="confirmReport" class="btn btn-danger btn-lg btn-full mb-3">
-            Confirm — Report as {{ ucfirst($reportType) }}
+            {{ __('customer.cards.report_confirm_btn', ['type' => $reportLabel]) }}
         </button>
-        <button wire:click="$set('showReportModal', false)" class="btn btn-secondary btn-lg btn-full">Cancel</button>
+        <button wire:click="$set('showReportModal', false)" class="btn btn-secondary btn-lg btn-full">{{ __('common.cancel') }}</button>
     </div>
     @endif
 
     @else
     {{-- Cards list --}}
     <div class="px-5 lg:px-8 pt-5 lg:pt-8">
-        <h1 class="font-bold mb-5 lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">My Cards</h1>
+        <h1 class="font-bold mb-5 lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">{{ __('customer.cards.list_title') }}</h1>
 
         @if(empty($cards))
         <div class="empty-state">
             <x-icon name="card" class="w-10 h-10 mb-3" style="color: var(--color-border-hi);"/>
-            <div style="font-size: 15px; font-weight: 600; margin-bottom: 6px;">No cards yet</div>
-            <div style="font-size: 13px;">Visit a Lipa agent to get your first card.</div>
+            <div style="font-size: 15px; font-weight: 600; margin-bottom: 6px;">{{ __('customer.cards.no_cards_title') }}</div>
+            <div style="font-size: 13px;">{{ __('customer.cards.no_cards_sub') }}</div>
         </div>
         @else
         <div class="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-5">
@@ -128,7 +131,7 @@
                                 @php $exp = explode('-', $card['expiresAt']); @endphp
                                 {{ $exp[1] ?? '' }}/{{ substr($exp[0] ?? '', 2) }}
                             </div>
-                            <div style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8);">Lipa</div>
+                            <div style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8);">{{ __('common.brand') }}</div>
                         </div>
                     </div>
                 </div>
@@ -138,7 +141,7 @@
 
         <div class="alert alert-info mt-5">
             <x-icon name="warn" class="w-4 h-4 flex-shrink-0"/>
-            <span>Need a card? Visit a Lipa agent to get one issued.</span>
+            <span>{{ __('customer.cards.need_card_hint') }}</span>
         </div>
         @endif
     </div>

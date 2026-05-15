@@ -32,15 +32,15 @@ class Operators extends Component
     {
         $this->error = '';
         if (empty($this->fullName) || empty($this->phoneNumber) || empty($this->pin)) {
-            $this->error = 'All fields are required.';
+            $this->error = __('merchant.errors.all_fields_required');
             return;
         }
         if (strlen($this->pin) < 4 || strlen($this->pin) > 8) {
-            $this->error = 'PIN must be 4–8 digits.';
+            $this->error = __('merchant.errors.pin_length_4_8');
             return;
         }
         if ($this->pin !== $this->confirmPin) {
-            $this->error = 'PINs do not match.';
+            $this->error = __('merchant.errors.pins_dont_match');
             return;
         }
 
@@ -54,7 +54,7 @@ class Operators extends Component
         } catch (KomopayException $e) {
             // PHONE_ALREADY_IN_USE → inline form error (spec 12.2).
             $this->error = $e->errorCode() === 'PHONE_ALREADY_IN_USE'
-                ? 'This phone number is already in use (PHONE_ALREADY_IN_USE).'
+                ? __('merchant.errors.phone_already_in_use')
                 : $e->getMessage();
             return;
         }
@@ -62,7 +62,7 @@ class Operators extends Component
         $this->createdOperatorPin = ['operator' => $newOp, 'pin' => $this->pin];
         $this->showCreateDrawer = false;
         $this->fullName = $this->phoneNumber = $this->pin = $this->confirmPin = '';
-        $this->success = "Cashier {$newOp['fullName']} created. Share the PIN securely — it cannot be retrieved later.";
+        $this->success = __('merchant.success.cashier_created', ['name' => $newOp['fullName']]);
     }
 
     public function openAction(string $id, string $type): void
@@ -103,6 +103,6 @@ class Operators extends Component
         }
 
         return view('livewire.merchant.operators', ['operators' => array_values($operators)])
-            ->layout('layouts.merchant', ['title' => 'Lipa Merchant · Cashiers']);
+            ->layout('layouts.merchant', ['title' => __('merchant.title.cashiers')]);
     }
 }

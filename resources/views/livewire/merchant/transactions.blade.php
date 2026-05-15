@@ -2,15 +2,15 @@
 <div class="px-5 lg:px-8 pt-5 lg:pt-8">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 lg:mb-6">
         <div>
-            <h1 class="font-bold lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">Transactions</h1>
-            <div style="font-size: 13px; color: var(--color-ink-low); margin-top: 2px;">All wallet activity</div>
+            <h1 class="font-bold lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">{{ __('merchant.transactions.title') }}</h1>
+            <div style="font-size: 13px; color: var(--color-ink-low); margin-top: 2px;">{{ __('merchant.transactions.subtitle') }}</div>
         </div>
         <div class="flex gap-2">
             <button wire:click="$toggle('showFilters')" class="btn btn-secondary btn-sm sm:btn-md {{ $showFilters ? 'ring-2 ring-brand' : '' }}">
-                <x-icon name="filter" class="w-4 h-4"/>Filters
+                <x-icon name="filter" class="w-4 h-4"/>{{ __('merchant.transactions.filters') }}
             </button>
             <button class="btn btn-secondary btn-sm sm:btn-md">
-                <x-icon name="download" class="w-4 h-4"/><span class="hidden sm:inline">Export</span>
+                <x-icon name="download" class="w-4 h-4"/><span class="hidden sm:inline">{{ __('merchant.transactions.export') }}</span>
             </button>
         </div>
     </div>
@@ -19,21 +19,21 @@
     <div class="card p-4 mb-5">
         <div class="flex flex-col sm:flex-row sm:flex-wrap gap-3">
             <div class="flex-1 sm:flex-none">
-                <label class="label">Status</label>
+                <label class="label">{{ __('merchant.transactions.status') }}</label>
                 <select wire:model.live="filterStatus" class="input" style="height: 40px; font-size: 13px;">
-                    <option value="">All statuses</option>
-                    <option value="COMPLETED">Completed</option>
-                    <option value="PENDING">Pending</option>
-                    <option value="DECLINED">Declined</option>
+                    <option value="">{{ __('merchant.transactions.all_statuses') }}</option>
+                    <option value="COMPLETED">{{ __('merchant.transactions.completed') }}</option>
+                    <option value="PENDING">{{ __('merchant.transactions.pending') }}</option>
+                    <option value="DECLINED">{{ __('merchant.transactions.declined') }}</option>
                 </select>
             </div>
             <div class="flex-1 sm:flex-none">
-                <label class="label">Type</label>
+                <label class="label">{{ __('merchant.transactions.type') }}</label>
                 <select wire:model.live="filterType" class="input" style="height: 40px; font-size: 13px;">
-                    <option value="">All types</option>
-                    <option value="CARD_SALE">Card Sale</option>
-                    <option value="MERCHANT_TO_MERCHANT">M2M Transfer</option>
-                    <option value="COMMISSION_PAYOUT">Commission</option>
+                    <option value="">{{ __('merchant.transactions.all_types') }}</option>
+                    <option value="CARD_SALE">{{ __('merchant.transactions.card_sale') }}</option>
+                    <option value="MERCHANT_TO_MERCHANT">{{ __('merchant.transactions.m2m') }}</option>
+                    <option value="COMMISSION_PAYOUT">{{ __('merchant.transactions.commission') }}</option>
                 </select>
             </div>
         </div>
@@ -42,12 +42,12 @@
 
     <div class="card overflow-hidden">
         <div class="hidden md:grid grid-cols-12 px-5 py-2" style="background: var(--color-surface-alt); border-bottom: 1px solid var(--color-border);">
-            <div class="col-span-3 section-title">Counterparty</div>
-            <div class="col-span-2 section-title">Operator</div>
-            <div class="col-span-2 section-title">Terminal</div>
-            <div class="col-span-2 section-title">Status</div>
-            <div class="col-span-1 section-title">Time</div>
-            <div class="col-span-2 section-title text-right">Amount</div>
+            <div class="col-span-3 section-title">{{ __('merchant.transactions.counterparty') }}</div>
+            <div class="col-span-2 section-title">{{ __('merchant.transactions.operator') }}</div>
+            <div class="col-span-2 section-title">{{ __('merchant.transactions.terminal') }}</div>
+            <div class="col-span-2 section-title">{{ __('merchant.transactions.status') }}</div>
+            <div class="col-span-1 section-title">{{ __('merchant.transactions.time') }}</div>
+            <div class="col-span-2 section-title text-right">{{ __('merchant.transactions.amount') }}</div>
         </div>
         @forelse($transactions as $tx)
         <a wire:navigate href="{{ route('merchant.transactions.show', $tx['id']) }}"
@@ -85,7 +85,7 @@
         @empty
         <div class="empty-state">
             <x-icon name="list" class="w-10 h-10 mb-3" style="color: var(--color-border-hi);"/>
-            <div style="font-size: 15px; font-weight: 600;">No transactions found</div>
+            <div style="font-size: 15px; font-weight: 600;">{{ __('merchant.transactions.no_tx') }}</div>
         </div>
         @endforelse
     </div>

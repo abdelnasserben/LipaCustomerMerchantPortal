@@ -50,6 +50,6 @@ class Cards extends Component
         $cards = $presenter->presentMany($api->cards());
 
         return view('livewire.customer.cards', compact('cards'))
-            ->layout('layouts.customer', ['title' => 'Lipa · Cards']);
+            ->layout('layouts.customer', ['title' => __('customer.title.cards')]);
     }
 }

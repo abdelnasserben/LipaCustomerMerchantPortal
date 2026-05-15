@@ -34,12 +34,12 @@ class SendMoney extends Component
     {
         $this->error = '';
         if (empty($this->recipientPhone)) {
-            $this->error = 'Please enter a recipient phone number.';
+            $this->error = __('merchant.errors.recipient_required');
             return;
         }
         $amount = (int) str_replace([' ', ','], '', $this->amountInput);
         if ($amount < 1) {
-            $this->error = 'Amount must be at least 1 KMF.';
+            $this->error = __('merchant.errors.amount_min_1');
             return;
         }
         $this->amount = $amount;
@@ -47,7 +47,7 @@ class SendMoney extends Component
         // Spec 9.3: gate UI on canReceiveFromMerchant; backend remains authoritative.
         $profile = $api->profile();
         if (empty($profile['canReceiveFromMerchant'])) {
-            $this->error = 'M2M transfers are not enabled for your account.';
+            $this->error = __('merchant.errors.m2m_not_enabled');
             return;
         }
 
@@ -87,6 +87,6 @@ class SendMoney extends Component
         $profile = $api->profile();
         $balance = $api->balance();
         return view('livewire.merchant.send-money', compact('profile', 'balance'))
-            ->layout('layouts.merchant', ['title' => 'Lipa Merchant · Send Money']);
+            ->layout('layouts.merchant', ['title' => __('merchant.title.send_money')]);
     }
 }

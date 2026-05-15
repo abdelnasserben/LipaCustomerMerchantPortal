@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lipa — Customer & Merchant Portal</title>
+    <title>{{ __('welcome.title') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
@@ -20,14 +20,14 @@
                     </svg>
                 </div>
                 <div class="text-left">
-                    <div style="font-size: 28px; font-weight: 800; letter-spacing: -0.025em; color: var(--color-ink-hi);">Lipa</div>
+                    <div style="font-size: 28px; font-weight: 800; letter-spacing: -0.025em; color: var(--color-ink-hi);">{{ __('common.brand') }}</div>
                     <div style="font-size: 11px; font-weight: 600; color: var(--color-ink-low); letter-spacing: 0.08em; text-transform: uppercase;">Portal</div>
                 </div>
             </div>
         </div>
 
-        <h1 style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; color: var(--color-ink-hi);">Choose your portal</h1>
-        <p style="font-size: 14px; color: var(--color-ink-mid); margin-bottom: 36px; line-height: 1.5;">Access your Lipa account</p>
+        <h1 style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; color: var(--color-ink-hi);">{{ __('welcome.choose_portal') }}</h1>
+        <p style="font-size: 14px; color: var(--color-ink-mid); margin-bottom: 36px; line-height: 1.5;">{{ __('welcome.access_account') }}</p>
 
         <div class="flex flex-col gap-4">
             {{-- Customer card --}}
@@ -42,8 +42,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <div style="font-size: 16px; font-weight: 700; color: var(--color-ink-hi);">Customer</div>
-                                <div style="font-size: 13px; color: var(--color-ink-mid); margin-top: 2px;">Wallet, P2P transfers, cards</div>
+                                <div style="font-size: 16px; font-weight: 700; color: var(--color-ink-hi);">{{ __('welcome.customer') }}</div>
+                                <div style="font-size: 13px; color: var(--color-ink-mid); margin-top: 2px;">{{ __('welcome.customer_desc') }}</div>
                             </div>
                         </div>
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="color: var(--color-ink-low); flex-shrink: 0;">
@@ -51,8 +51,8 @@
                         </svg>
                     </div>
                     <div class="flex gap-2 mt-4">
-                        <span class="pill pill-neutral">Mobile-first</span>
-                        <span class="pill pill-neutral">15-min sessions</span>
+                        <span class="pill pill-neutral">{{ __('welcome.mobile_first') }}</span>
+                        <span class="pill pill-neutral">{{ __('welcome.sessions_15') }}</span>
                     </div>
                 </div>
             </a>
@@ -70,8 +70,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <div style="font-size: 16px; font-weight: 700; color: var(--color-ink-hi);">Merchant</div>
-                                <div style="font-size: 13px; color: var(--color-ink-mid); margin-top: 2px;">Payments, cashiers, terminals</div>
+                                <div style="font-size: 16px; font-weight: 700; color: var(--color-ink-hi);">{{ __('welcome.merchant') }}</div>
+                                <div style="font-size: 13px; color: var(--color-ink-mid); margin-top: 2px;">{{ __('welcome.merchant_desc') }}</div>
                             </div>
                         </div>
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="color: var(--color-ink-low); flex-shrink: 0;">
@@ -79,15 +79,15 @@
                         </svg>
                     </div>
                     <div class="flex gap-2 mt-4">
-                        <span class="pill pill-neutral">Dashboard-first</span>
-                        <span class="pill pill-neutral">8-hour sessions</span>
+                        <span class="pill pill-neutral">{{ __('welcome.dashboard_first') }}</span>
+                        <span class="pill pill-neutral">{{ __('welcome.sessions_8h') }}</span>
                     </div>
                 </div>
             </a>
         </div>
 
         <div style="font-size: 12px; color: var(--color-ink-low); margin-top: 32px; line-height: 1.6;">
-            Lipa · All sessions are logged and monitored
+            {{ __('welcome.footer') }}
         </div>
     </div>
     @livewireScripts

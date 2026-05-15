@@ -32,7 +32,7 @@ class CustomerLogin extends Component
     {
         $this->error = '';
         if (empty($this->phoneNumber) || empty($this->pin)) {
-            $this->error = 'Please enter your phone number and PIN.';
+            $this->error = __('auth.errors.phone_pin_required');
             return;
         }
 
@@ -69,7 +69,7 @@ class CustomerLogin extends Component
     {
         $this->error = '';
         if (strlen($this->mfaCode) !== 6) {
-            $this->error = 'Enter the 6-digit code from your authenticator app.';
+            $this->error = __('auth.errors.mfa_code_required');
             return;
         }
         try {
@@ -89,11 +89,11 @@ class CustomerLogin extends Component
     {
         $this->error = '';
         if (strlen($this->newPin) < 4 || strlen($this->newPin) > 8) {
-            $this->error = 'PIN must be 4 to 8 digits.';
+            $this->error = __('auth.errors.pin_length');
             return;
         }
         if ($this->newPin !== $this->confirmPin) {
-            $this->error = 'PINs do not match.';
+            $this->error = __('auth.errors.pins_dont_match');
             return;
         }
         try {

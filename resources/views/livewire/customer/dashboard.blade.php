@@ -3,7 +3,7 @@
     {{-- Header --}}
     <div class="flex items-center justify-between px-5 lg:px-8 pt-5 lg:pt-8 pb-3">
         <div>
-            <div class="text-sm" style="color: var(--color-ink-mid);">Good morning</div>
+            <div class="text-sm" style="color: var(--color-ink-mid);">{{ __('common.good_morning') }}</div>
             <div class="font-bold lg:!text-2xl" style="font-size: 19px; letter-spacing: -0.015em; margin-top: 1px;">{{ $profile['fullName'] }}</div>
         </div>
         <div class="flex gap-2">
@@ -19,7 +19,7 @@
             <div class="relative">
                 <div class="flex justify-between items-start">
                     <div>
-                        <div class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: rgba(255,255,255,0.5);">Available Balance</div>
+                        <div class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: rgba(255,255,255,0.5);">{{ __('customer.dashboard.available_balance') }}</div>
                         <div class="font-mono font-bold" style="font-size: {{ $balanceHidden ? '28px' : '32px' }}; letter-spacing: -0.02em; line-height: 1;">
                             @if($balanceHidden)
                                 <span style="letter-spacing: 0.1em;">••••••</span>
@@ -29,7 +29,7 @@
                         </div>
                         @if($balance['frozenBalance'] > 0)
                         <div class="text-xs mt-2" style="color: rgba(255,255,255,0.45);">
-                            + {{ FormatService::kmf($balance['frozenBalance']) }} frozen
+                            + {{ FormatService::kmf($balance['frozenBalance']) }} {{ __('customer.dashboard.frozen_suffix') }}
                         </div>
                         @endif
                     </div>
@@ -42,13 +42,13 @@
                 {{-- Quick actions --}}
                 <div class="flex gap-3 mt-6">
                     <a wire:navigate href="{{ route('customer.send') }}" style="flex: 1; height: 44px; background: #0c7a3e; border: none; border-radius: 10px; color: #fff; font-weight: 600; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; cursor: pointer;">
-                        <x-icon name="send" class="w-4 h-4"/>Send
+                        <x-icon name="send" class="w-4 h-4"/>{{ __('customer.dashboard.send') }}
                     </a>
                     <a wire:navigate href="{{ route('customer.statement') }}" style="flex: 1; height: 44px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; color: rgba(255,255,255,0.85); font-weight: 600; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; cursor: pointer;">
-                        <x-icon name="doc" class="w-4 h-4"/>Statement
+                        <x-icon name="doc" class="w-4 h-4"/>{{ __('customer.dashboard.statement') }}
                     </a>
                     <a wire:navigate href="{{ route('customer.cards') }}" style="flex: 1; height: 44px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; color: rgba(255,255,255,0.85); font-weight: 600; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; cursor: pointer;">
-                        <x-icon name="card" class="w-4 h-4"/>Cards
+                        <x-icon name="card" class="w-4 h-4"/>{{ __('customer.dashboard.cards') }}
                     </a>
                 </div>
             </div>
@@ -59,7 +59,7 @@
     {{-- Send again (beneficiaries) --}}
     @if(count($beneficiaries) > 0)
     <div class="px-5 lg:px-0 mb-5 lg:col-span-1 lg:order-2">
-        <div class="section-title mb-3">Send Again</div>
+        <div class="section-title mb-3">{{ __('customer.dashboard.send_again') }}</div>
         <div class="flex gap-3 overflow-x-auto lg:flex-wrap lg:overflow-visible pb-1" style="-webkit-overflow-scrolling: touch;">
             @foreach($beneficiaries as $b)
             <a wire:navigate href="{{ route('customer.send', ['phone' => $b['phoneNumber'], 'name' => $b['fullName']]) }}"
@@ -79,15 +79,15 @@
     {{-- Recent activity --}}
     <div class="px-5 lg:px-0 lg:col-span-2 lg:order-1">
         <div class="flex justify-between items-center mb-3">
-            <div class="section-title">Recent Activity</div>
-            <a wire:navigate href="{{ route('customer.transactions') }}" style="font-size: 12.5px; font-weight: 600; color: var(--color-brand); text-decoration: none;">View all</a>
+            <div class="section-title">{{ __('customer.dashboard.recent_activity') }}</div>
+            <a wire:navigate href="{{ route('customer.transactions') }}" style="font-size: 12.5px; font-weight: 600; color: var(--color-brand); text-decoration: none;">{{ __('common.view_all') }}</a>
         </div>
 
         @if(empty($grouped))
         <div class="empty-state">
             <x-icon name="list" class="w-10 h-10 mb-3" style="color: var(--color-border-hi);"/>
-            <div style="font-size: 15px; font-weight: 600; margin-bottom: 6px;">No transactions yet</div>
-            <div style="font-size: 13px;">Your activity will appear here once you make your first transaction.</div>
+            <div style="font-size: 15px; font-weight: 600; margin-bottom: 6px;">{{ __('customer.dashboard.no_tx_title') }}</div>
+            <div style="font-size: 13px;">{{ __('customer.dashboard.no_tx_sub') }}</div>
         </div>
         @else
         <div class="card overflow-hidden">
@@ -98,9 +98,9 @@
                         $d = \Carbon\Carbon::parse($date);
                         $today = \Carbon\Carbon::today();
                         $yesterday = \Carbon\Carbon::yesterday();
-                        if ($d->isToday()) echo 'Today';
-                        elseif ($d->isYesterday()) echo 'Yesterday';
-                        else echo $d->format('d M Y');
+                        if ($d->isToday()) echo __('common.today');
+                        elseif ($d->isYesterday()) echo __('common.yesterday');
+                        else echo $d->translatedFormat('d M Y');
                     @endphp
                 </span>
             </div>

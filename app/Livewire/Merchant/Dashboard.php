@@ -32,7 +32,7 @@ class Dashboard extends Component
 
         return view('livewire.merchant.dashboard', compact(
             'profile', 'balance', 'transactions', 'terminals', 'activeTerminals', 'chart',
-        ))->layout('layouts.merchant', ['title' => 'Lipa Merchant · Dashboard']);
+        ))->layout('layouts.merchant', ['title' => __('merchant.title.dashboard')]);
     }
 
     /** @param list<array> $rows */

@@ -61,13 +61,13 @@ class Security extends Component
     {
         $this->error = '';
         if ($this->newPin !== $this->confirmPin) {
-            $this->error = 'PINs do not match.';
+            $this->error = __('merchant.errors.pins_dont_match');
             return;
         }
         try {
             $token = app('komopay.tokens.merchant')->accessToken() ?? '';
             $auth->changePin($token, $this->currentPin, $this->newPin);
-            $this->success = 'PIN changed successfully.';
+            $this->success = __('merchant.success.pin_changed');
             $this->currentPin = $this->newPin = $this->confirmPin = '';
             $this->activePanel = '';
         } catch (KomopayException $e) {
@@ -79,7 +79,7 @@ class Security extends Component
     {
         $this->error = '';
         if (strlen($this->totpCode) !== 6) {
-            $this->error = 'Enter the 6-digit code from your authenticator app.';
+            $this->error = __('merchant.errors.totp_6_digits');
             return;
         }
         try {
@@ -87,7 +87,7 @@ class Security extends Component
             $auth->totpConfirm($token, $this->totpCode);
             $this->totpEnrolled = true;
             session([self::SESSION_KEY => true]);
-            $this->success = 'Two-factor authentication enabled.';
+            $this->success = __('merchant.success.two_fa_enabled');
             $this->resetTotpState();
             $this->activePanel = '';
         } catch (KomopayException $e) {
@@ -99,7 +99,7 @@ class Security extends Component
     {
         $this->error = '';
         if (strlen($this->totpCode) !== 6) {
-            $this->error = 'Enter your current 6-digit code.';
+            $this->error = __('merchant.errors.totp_current_6');
             return;
         }
         try {
@@ -107,7 +107,7 @@ class Security extends Component
             $auth->totpRevoke($token, $this->totpCode);
             $this->totpEnrolled = false;
             session()->forget(self::SESSION_KEY);
-            $this->success = 'Two-factor authentication disabled.';
+            $this->success = __('merchant.success.two_fa_disabled');
             $this->resetTotpState();
             $this->activePanel = '';
         } catch (KomopayException $e) {
@@ -127,6 +127,6 @@ class Security extends Component
     {
         $profile = $api->profile();
         return view('livewire.merchant.security', compact('profile'))
-            ->layout('layouts.merchant', ['title' => 'Lipa Merchant · Security']);
+            ->layout('layouts.merchant', ['title' => __('merchant.title.security')]);
     }
 }

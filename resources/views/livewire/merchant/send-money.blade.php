@@ -8,9 +8,9 @@
         @endif
         <div class="min-w-0 flex-1">
             <h1 class="font-bold lg:!text-2xl truncate" style="font-size: 19px; letter-spacing: -0.02em;">
-                @if($step === 'form') Send to Merchant (M2M)
-                @elseif($step === 'confirm') Confirm Transfer
-                @elseif($step === 'receipt') Transfer Complete
+                @if($step === 'form') {{ __('merchant.send.title_form') }}
+                @elseif($step === 'confirm') {{ __('merchant.send.title_confirm') }}
+                @elseif($step === 'receipt') {{ __('merchant.send.title_receipt') }}
                 @endif
             </h1>
         </div>
@@ -20,8 +20,8 @@
     <div class="alert alert-warn mb-5">
         <x-icon name="warn" class="w-4 h-4 flex-shrink-0"/>
         <div>
-            <div class="font-semibold mb-1">M2M transfers not enabled</div>
-            <div>Your account is not configured to send merchant-to-merchant transfers. Contact support to enable this feature.</div>
+            <div class="font-semibold mb-1">{{ __('merchant.send.m2m_disabled_title') }}</div>
+            <div>{{ __('merchant.send.m2m_disabled_body') }}</div>
         </div>
     </div>
     @endif
@@ -37,14 +37,14 @@
     <form wire:submit="proceedToConfirm" class="flex flex-col gap-5">
         <div class="card p-4 flex items-center justify-between">
             <div>
-                <div class="section-title mb-1">Available Balance</div>
+                <div class="section-title mb-1">{{ __('merchant.send.available_balance') }}</div>
                 <div class="font-mono font-bold" style="font-size: 20px;">{{ FormatService::kmf($balance['availableBalance']) }}</div>
             </div>
             <x-status-pill :status="$balance['walletStatus']"/>
         </div>
 
         <div>
-            <label class="label">Recipient Merchant Phone</label>
+            <label class="label">{{ __('merchant.send.recipient_phone') }}</label>
             <div style="display: flex; height: 52px; border: 1px solid var(--color-border-hi); border-radius: 12px; background: #fff; overflow: hidden;">
                 <div style="width: 80px; background: var(--color-surface-alt); display: flex; align-items: center; justify-content: center; border-right: 1px solid var(--color-border); font-family: var(--font-mono); font-weight: 600; font-size: 14px; color: var(--color-ink-mid);">
                     +269
@@ -55,7 +55,7 @@
         </div>
 
         <div>
-            <label class="label">Amount (KMF)</label>
+            <label class="label">{{ __('merchant.send.amount_kmf') }}</label>
             <div style="display: flex; height: 64px; border: 1px solid var(--color-border-hi); border-radius: 12px; background: #fff; align-items: center; padding: 0 18px; gap: 8px;">
                 <input wire:model="amountInput" type="text" inputmode="numeric" placeholder="0"
                     style="flex: 1 1 auto; min-width: 0; border: none; outline: none; font-family: var(--font-mono); font-size: 26px; font-weight: 600; color: var(--color-ink-hi); background: transparent; letter-spacing: -0.02em;"/>
@@ -64,12 +64,12 @@
         </div>
 
         <div>
-            <label class="label">Note (optional)</label>
-            <input wire:model="description" type="text" placeholder="What's this for?" class="input" style="font-family: var(--font-sans); font-size: 15px;"/>
+            <label class="label">{{ __('merchant.send.note_optional') }}</label>
+            <input wire:model="description" type="text" placeholder="{{ __('merchant.send.note_placeholder') }}" class="input" style="font-family: var(--font-sans); font-size: 15px;"/>
         </div>
 
         <button type="submit" class="btn btn-primary btn-lg btn-full" {{ !$profile['canReceiveFromMerchant'] ? 'disabled' : '' }}>
-            Review Transfer
+            {{ __('merchant.send.review') }}
         </button>
     </form>
     @endif
@@ -77,29 +77,29 @@
     @if($step === 'confirm')
     <div class="flex flex-col gap-5">
         <div class="card p-6 text-center">
-            <div style="font-size: 13px; color: var(--color-ink-mid); margin-bottom: 6px;">Sending</div>
+            <div style="font-size: 13px; color: var(--color-ink-mid); margin-bottom: 6px;">{{ __('merchant.send.sending') }}</div>
             <div class="font-mono font-bold" style="font-size: 36px; letter-spacing: -0.025em;">{{ FormatService::kmf($amount) }}</div>
-            <div style="font-size: 13px; color: var(--color-ink-mid); margin-top: 6px;">to +269 {{ $recipientPhone }}</div>
+            <div style="font-size: 13px; color: var(--color-ink-mid); margin-top: 6px;">{{ __('merchant.send.to_phone', ['phone' => $recipientPhone]) }}</div>
         </div>
 
         <div class="card-flat overflow-hidden">
             <div class="flex justify-between px-4 py-3" style="border-bottom: 1px solid var(--color-border);">
-                <span style="font-size: 13px; color: var(--color-ink-mid);">Recipient phone</span>
+                <span style="font-size: 13px; color: var(--color-ink-mid);">{{ __('merchant.send.recipient_phone_label') }}</span>
                 <span class="font-mono" style="font-size: 13px;">+269 {{ $recipientPhone }}</span>
             </div>
             <div class="flex justify-between px-4 py-3">
-                <span style="font-size: 13px; color: var(--color-ink-mid);">Amount</span>
+                <span style="font-size: 13px; color: var(--color-ink-mid);">{{ __('merchant.send.amount') }}</span>
                 <span class="font-mono font-semibold" style="font-size: 13px;">{{ FormatService::kmf($amount) }}</span>
             </div>
         </div>
 
         <div class="card-flat p-4">
-            <div class="section-title mb-1">Idempotency Key</div>
+            <div class="section-title mb-1">{{ __('merchant.send.idempotency_key') }}</div>
             <div class="font-mono text-sm" style="color: var(--color-ink-mid); word-break: break-all;">{{ $idempotencyKey }}</div>
         </div>
 
-        <button wire:click="submit" class="btn btn-primary btn-lg btn-full">Execute Transfer</button>
-        <button wire:click="$set('step', 'form')" class="btn btn-ghost btn-md btn-full" style="color: var(--color-ink-mid);">Edit</button>
+        <button wire:click="submit" class="btn btn-primary btn-lg btn-full">{{ __('merchant.send.execute') }}</button>
+        <button wire:click="$set('step', 'form')" class="btn btn-ghost btn-md btn-full" style="color: var(--color-ink-mid);">{{ __('merchant.send.edit') }}</button>
     </div>
     @endif
 
@@ -109,27 +109,27 @@
             <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--color-brand-soft); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
                 <x-icon name="check" class="w-7 h-7" style="color: var(--color-brand);"/>
             </div>
-            <div class="font-bold" style="font-size: 18px;">Transfer Complete</div>
+            <div class="font-bold" style="font-size: 18px;">{{ __('merchant.send.transfer_complete') }}</div>
             <div class="font-mono font-bold" style="font-size: 28px; letter-spacing: -0.02em; color: var(--color-brand); margin: 8px 0;">{{ FormatService::kmf($receipt['requestedAmount']) }}</div>
         </div>
 
         <div class="card-flat overflow-hidden">
             <div class="flex justify-between px-4 py-3" style="border-bottom: 1px solid var(--color-border);">
-                <span style="font-size: 13px; color: var(--color-ink-mid);">Fee</span>
+                <span style="font-size: 13px; color: var(--color-ink-mid);">{{ __('merchant.send.fee') }}</span>
                 <span class="font-mono" style="font-size: 13px;">{{ FormatService::kmf($receipt['feeAmount']) }}</span>
             </div>
             <div class="flex justify-between px-4 py-3" style="border-bottom: 1px solid var(--color-border);">
-                <span style="font-size: 13px; color: var(--color-ink-mid);">Net received</span>
+                <span style="font-size: 13px; color: var(--color-ink-mid);">{{ __('merchant.send.net_received') }}</span>
                 <span class="font-mono font-semibold" style="font-size: 13px;">{{ FormatService::kmf($receipt['netAmountToDestination']) }}</span>
             </div>
             <div class="flex justify-between items-center px-4 py-3">
-                <span style="font-size: 13px; color: var(--color-ink-mid);">Transaction ID</span>
+                <span style="font-size: 13px; color: var(--color-ink-mid);">{{ __('merchant.send.transaction_id') }}</span>
                 <span class="font-mono" style="font-size: 12px; color: var(--color-ink-low);">{{ $receipt['transactionId'] }}</span>
             </div>
         </div>
 
-        <button wire:click="resetForm" class="btn btn-primary btn-lg btn-full">Send Again</button>
-        <a wire:navigate href="{{ route('merchant.dashboard') }}" class="btn btn-secondary btn-lg btn-full">Back to Dashboard</a>
+        <button wire:click="resetForm" class="btn btn-primary btn-lg btn-full">{{ __('merchant.send.send_again') }}</button>
+        <a wire:navigate href="{{ route('merchant.dashboard') }}" class="btn btn-secondary btn-lg btn-full">{{ __('merchant.send.back_dashboard') }}</a>
     </div>
     @endif
 </div>

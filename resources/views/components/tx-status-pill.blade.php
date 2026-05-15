@@ -1,13 +1,17 @@
-@props(['status'])
+@props(['status', 'size' => 'sm'])
 @php
-$map = [
-    'COMPLETED'  => ['pill-success', 'Completed'],
-    'PENDING'    => ['pill-pending', 'Pending'],
-    'AUTHORIZED' => ['pill-info', 'Authorized'],
-    'DECLINED'   => ['pill-declined', 'Declined'],
-    'EXPIRED'    => ['pill-pending', 'Expired'],
-    'REVERSED'   => ['pill-warn', 'Reversed'],
+$classMap = [
+    'COMPLETED'  => 'pill-success',
+    'PENDING'    => 'pill-pending',
+    'AUTHORIZED' => 'pill-info',
+    'DECLINED'   => 'pill-declined',
+    'EXPIRED'    => 'pill-pending',
+    'REVERSED'   => 'pill-warn',
 ];
-[$class, $label] = $map[$status] ?? ['pill-neutral', $status];
+$class = $classMap[$status] ?? 'pill-neutral';
+$key = "status.{$status}";
+$translated = __($key);
+$label = $translated === $key ? $status : $translated;
+$sizeClass = $size === 'lg' ? 'pill-lg' : '';
 @endphp
-<span class="pill {{ $class }}">{{ $label }}</span>
+<span class="pill {{ $class }} {{ $sizeClass }}">{{ $label }}</span>

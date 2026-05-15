@@ -5,14 +5,14 @@
         <a wire:navigate href="{{ route('customer.transactions') }}" class="circle-btn">
             <x-icon name="arrow-left" class="w-4 h-4"/>
         </a>
-        <h1 class="font-bold lg:!text-2xl" style="font-size: 19px; letter-spacing: -0.02em;">Transaction Detail</h1>
+        <h1 class="font-bold lg:!text-2xl" style="font-size: 19px; letter-spacing: -0.02em;">{{ __('customer.transaction.detail_title') }}</h1>
     </div>
 
     @if(!$tx)
     <div class="empty-state">
         <x-icon name="warn" class="w-10 h-10 mb-3" style="color: var(--color-border-hi);"/>
-        <div style="font-size: 15px; font-weight: 600; margin-bottom: 6px;">Transaction not found</div>
-        <a wire:navigate href="{{ route('customer.transactions') }}" class="btn btn-secondary btn-md mt-2">Back to Activity</a>
+        <div style="font-size: 15px; font-weight: 600; margin-bottom: 6px;">{{ __('customer.transaction.not_found') }}</div>
+        <a wire:navigate href="{{ route('customer.transactions') }}" class="btn btn-secondary btn-md mt-2">{{ __('customer.transaction.back_to_activity') }}</a>
     </div>
     @else
 
@@ -40,17 +40,17 @@
 
     {{-- Details --}}
     <div class="card overflow-hidden mb-5">
-        <div class="px-5 py-3 font-semibold text-sm" style="border-bottom: 1px solid var(--color-border); color: var(--color-ink-mid);">Details</div>
+        <div class="px-5 py-3 font-semibold text-sm" style="border-bottom: 1px solid var(--color-border); color: var(--color-ink-mid);">{{ __('customer.transaction.details') }}</div>
         @php
         $rows = [
-            ['Type', FormatService::txTypLabel($tx['type'])],
-            ['Counterparty', $tx['counterparty'] ?? '—'],
-            ['Direction', $tx['direction'] === 'in' ? 'Incoming' : 'Outgoing'],
+            [__('customer.transaction.type'), FormatService::txTypLabel($tx['type'])],
+            [__('customer.transaction.counterparty'), $tx['counterparty'] ?? '—'],
+            [__('customer.transaction.direction'), $tx['direction'] === 'in' ? __('customer.transaction.incoming') : __('customer.transaction.outgoing')],
         ];
-        if ($tx['feeAmount'] > 0) $rows[] = ['Fee', FormatService::kmf($tx['feeAmount'])];
-        if ($tx['netAmountToDestination'] > 0) $rows[] = ['Net Amount', FormatService::kmf($tx['netAmountToDestination'])];
-        $rows[] = ['Date', FormatService::dateTime($tx['createdAt'])];
-        if (isset($tx['completedAt'])) $rows[] = ['Completed', FormatService::dateTime($tx['completedAt'])];
+        if ($tx['feeAmount'] > 0) $rows[] = [__('customer.transaction.fee'), FormatService::kmf($tx['feeAmount'])];
+        if ($tx['netAmountToDestination'] > 0) $rows[] = [__('customer.transaction.net_amount'), FormatService::kmf($tx['netAmountToDestination'])];
+        $rows[] = [__('customer.transaction.date'), FormatService::dateTime($tx['createdAt'])];
+        if (isset($tx['completedAt'])) $rows[] = [__('customer.transaction.completed'), FormatService::dateTime($tx['completedAt'])];
         @endphp
         @foreach($rows as $row)
         <div class="flex justify-between items-center px-5 py-3" style="border-bottom: 1px solid var(--color-border);">
@@ -59,7 +59,7 @@
         </div>
         @endforeach
         <div class="flex justify-between items-center px-5 py-3">
-            <span style="font-size: 13px; color: var(--color-ink-mid);">Transaction ID</span>
+            <span style="font-size: 13px; color: var(--color-ink-mid);">{{ __('customer.transaction.transaction_id') }}</span>
             <div class="flex items-center gap-2">
                 <span class="font-mono" style="font-size: 12px; color: var(--color-ink-mid);">{{ FormatService::shortId($tx['id']) }}</span>
                 <button onclick="navigator.clipboard.writeText('{{ $tx['id'] }}')" class="circle-btn" style="width: 28px; height: 28px;">
@@ -71,7 +71,7 @@
 
     @if(isset($tx['correlationId']))
     <div class="card-flat p-4 mb-5">
-        <div class="section-title mb-1">Correlation ID</div>
+        <div class="section-title mb-1">{{ __('customer.transaction.correlation_id') }}</div>
         <div class="font-mono text-sm" style="color: var(--color-ink-mid);">{{ $tx['correlationId'] }}</div>
     </div>
     @endif

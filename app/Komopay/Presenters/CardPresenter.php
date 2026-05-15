@@ -2,7 +2,7 @@
 
 namespace App\Komopay\Presenters;
 
-/** Adds `last4` (UI-only) to a CustomerCardResponse using the active directory. */
+/** Adds `last4` (UI-only) to a CustomerCardResponse, preferring the API field. */
 final class CardPresenter
 {
     public function __construct(
@@ -11,7 +11,8 @@ final class CardPresenter
 
     public function present(array $card): array
     {
-        $card['last4'] = $this->directory->cardLast4($card['id']);
+        $card['last4'] = $card['internalCardLast4']
+            ?? $this->directory->cardLast4($card['id']);
         return $card;
     }
 

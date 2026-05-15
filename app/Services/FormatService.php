@@ -67,20 +67,9 @@ class FormatService
 
     public static function txTypLabel(string $type): string
     {
-        return match ($type) {
-            'P2P_TRANSFER'          => 'P2P Transfer',
-            'CASH_IN'               => 'Cash-in',
-            'CASH_OUT'              => 'Cash-out',
-            'CARD_SALE'             => 'Card Sale',
-            'PAYMENT'               => 'Payment',
-            'MERCHANT_TO_MERCHANT'  => 'M2M Transfer',
-            'COMMISSION_PAYOUT'     => 'Commission',
-            'REVERSAL'              => 'Reversal',
-            'SERVICE_PAYMENT'       => 'Bill Payment',
-            'AGENT_FUND_IN'         => 'Agent Fund-in',
-            'AGENT_FUND_OUT'        => 'Agent Fund-out',
-            default                 => $type,
-        };
+        $key = "tx.{$type}";
+        $translated = __($key);
+        return $translated === $key ? $type : $translated;
     }
 
     public static function statusPillClass(string $status): string
@@ -102,14 +91,12 @@ class FormatService
 
     public static function statusLabel(string $status): string
     {
-        return match ($status) {
-            'PENDING_KYC'   => 'Pending KYC',
-            'KYC_NONE'      => 'No KYC',
-            'KYC_BASIC'     => 'KYC Basic',
-            'KYC_VERIFIED'  => 'KYC Verified',
-            'KYC_ENHANCED'  => 'KYC Enhanced',
-            default         => ucfirst(strtolower(str_replace('_', ' ', $status))),
-        };
+        $key = "status.{$status}";
+        $translated = __($key);
+        if ($translated !== $key) {
+            return $translated;
+        }
+        return ucfirst(strtolower(str_replace('_', ' ', $status)));
     }
 
     public static function cardMask(array $card): string

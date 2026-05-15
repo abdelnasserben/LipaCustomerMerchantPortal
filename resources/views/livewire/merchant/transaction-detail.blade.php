@@ -4,14 +4,14 @@
         <a wire:navigate href="{{ route('merchant.transactions') }}" class="circle-btn">
             <x-icon name="arrow-left" class="w-4 h-4"/>
         </a>
-        <h1 class="font-bold lg:!text-2xl" style="font-size: 19px; letter-spacing: -0.02em;">Transaction Detail</h1>
+        <h1 class="font-bold lg:!text-2xl" style="font-size: 19px; letter-spacing: -0.02em;">{{ __('merchant.transaction.detail_title') }}</h1>
     </div>
 
     @if(!$tx)
     <div class="empty-state">
         <x-icon name="warn" class="w-10 h-10 mb-3" style="color: var(--color-border-hi);"/>
-        <div style="font-size: 15px; font-weight: 600; margin-bottom: 6px;">Transaction not found</div>
-        <a wire:navigate href="{{ route('merchant.transactions') }}" class="btn btn-secondary btn-md mt-2">Back to Transactions</a>
+        <div style="font-size: 15px; font-weight: 600; margin-bottom: 6px;">{{ __('merchant.transaction.not_found') }}</div>
+        <a wire:navigate href="{{ route('merchant.transactions') }}" class="btn btn-secondary btn-md mt-2">{{ __('merchant.transaction.back_to_tx') }}</a>
     </div>
     @else
 
@@ -43,20 +43,20 @@
 
             {{-- Details table --}}
             <div class="card overflow-hidden mb-5">
-                <div class="px-5 py-2 font-semibold text-sm" style="background: var(--color-surface-alt); border-bottom: 1px solid var(--color-border); color: var(--color-ink-mid);">Transaction Details</div>
+                <div class="px-5 py-2 font-semibold text-sm" style="background: var(--color-surface-alt); border-bottom: 1px solid var(--color-border); color: var(--color-ink-mid);">{{ __('merchant.transaction.details') }}</div>
                 @php
                 $rows = [
-                    ['Counterparty', $tx['counterparty'] ?: '—'],
-                    ['Type', FormatService::txTypLabel($tx['type'])],
-                    ['Direction', $tx['direction'] === 'in' ? 'Incoming (credit)' : 'Outgoing (debit)'],
-                    ['Operator', $tx['operatorName'] ?? '—'],
-                    ['Terminal', $tx['terminalSerial'] ?? '—'],
+                    [__('merchant.transaction.counterparty'), $tx['counterparty'] ?: '—'],
+                    [__('merchant.transaction.type'), FormatService::txTypLabel($tx['type'])],
+                    [__('merchant.transaction.direction'), $tx['direction'] === 'in' ? __('merchant.transaction.incoming') : __('merchant.transaction.outgoing')],
+                    [__('merchant.transaction.operator'), $tx['operatorName'] ?? '—'],
+                    [__('merchant.transaction.terminal'), $tx['terminalSerial'] ?? '—'],
                 ];
-                if (($tx['commissionAmount'] ?? 0) > 0) $rows[] = ['Commission', FormatService::kmf($tx['commissionAmount'])];
-                if (($tx['feeAmount'] ?? 0) > 0) $rows[] = ['Fee', FormatService::kmf($tx['feeAmount'])];
-                if (($tx['netAmountToDestination'] ?? 0) > 0) $rows[] = ['Net to destination', FormatService::kmf($tx['netAmountToDestination'])];
-                if (!empty($tx['createdAt'])) $rows[] = ['Created', FormatService::dateTime($tx['createdAt'])];
-                if (!empty($tx['completedAt'])) $rows[] = ['Completed', FormatService::dateTime($tx['completedAt'])];
+                if (($tx['commissionAmount'] ?? 0) > 0) $rows[] = [__('merchant.transaction.commission'), FormatService::kmf($tx['commissionAmount'])];
+                if (($tx['feeAmount'] ?? 0) > 0) $rows[] = [__('merchant.transaction.fee'), FormatService::kmf($tx['feeAmount'])];
+                if (($tx['netAmountToDestination'] ?? 0) > 0) $rows[] = [__('merchant.transaction.net_to_dest'), FormatService::kmf($tx['netAmountToDestination'])];
+                if (!empty($tx['createdAt'])) $rows[] = [__('merchant.transaction.created'), FormatService::dateTime($tx['createdAt'])];
+                if (!empty($tx['completedAt'])) $rows[] = [__('merchant.transaction.completed'), FormatService::dateTime($tx['completedAt'])];
                 @endphp
                 @foreach($rows as $row)
                 <div class="flex justify-between items-center px-5 py-3" style="border-bottom: 1px solid var(--color-border);">
@@ -65,7 +65,7 @@
                 </div>
                 @endforeach
                 <div class="flex justify-between items-center px-5 py-3">
-                    <span style="font-size: 13px; color: var(--color-ink-mid);">Transaction ID</span>
+                    <span style="font-size: 13px; color: var(--color-ink-mid);">{{ __('merchant.transaction.transaction_id') }}</span>
                     <div class="flex items-center gap-2">
                         <span class="font-mono" style="font-size: 12px; color: var(--color-ink-mid);">{{ FormatService::shortId($tx['id']) }}</span>
                         <button onclick="navigator.clipboard.writeText('{{ $tx['id'] }}')" class="circle-btn" style="width: 28px; height: 28px;">
@@ -79,18 +79,18 @@
         {{-- Sidebar info --}}
         <div>
             <div class="card p-5 mb-4">
-                <div class="section-title mb-3">Wallet IDs</div>
+                <div class="section-title mb-3">{{ __('merchant.transaction.wallet_ids') }}</div>
                 <div class="mb-3">
-                    <div style="font-size: 11px; color: var(--color-ink-low); margin-bottom: 2px;">Source</div>
+                    <div style="font-size: 11px; color: var(--color-ink-low); margin-bottom: 2px;">{{ __('merchant.transaction.source') }}</div>
                     <div class="font-mono" style="font-size: 12px;">{{ !empty($tx['sourceWalletId']) ? FormatService::shortId($tx['sourceWalletId']) : '—' }}</div>
                 </div>
                 <div>
-                    <div style="font-size: 11px; color: var(--color-ink-low); margin-bottom: 2px;">Destination</div>
+                    <div style="font-size: 11px; color: var(--color-ink-low); margin-bottom: 2px;">{{ __('merchant.transaction.destination') }}</div>
                     <div class="font-mono" style="font-size: 12px;">{{ !empty($tx['destinationWalletId']) ? FormatService::shortId($tx['destinationWalletId']) : '—' }}</div>
                 </div>
             </div>
             <div class="card p-5">
-                <div class="section-title mb-3">Initiator</div>
+                <div class="section-title mb-3">{{ __('merchant.transaction.initiator') }}</div>
                 <div class="font-semibold" style="font-size: 14px;">{{ $tx['initiatorType'] }}</div>
                 <div class="font-mono text-sm" style="color: var(--color-ink-low); margin-top: 2px;">{{ !empty($tx['initiatorId']) ? FormatService::shortId($tx['initiatorId']) : '—' }}</div>
             </div>

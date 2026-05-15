@@ -34,6 +34,6 @@ class Dashboard extends Component
         }
 
         return view('livewire.customer.dashboard', compact('profile', 'balance', 'activity', 'beneficiaries', 'grouped'))
-            ->layout('layouts.customer', ['title' => 'Lipa · Home']);
+            ->layout('layouts.customer', ['title' => __('customer.title.home')]);
     }
 }

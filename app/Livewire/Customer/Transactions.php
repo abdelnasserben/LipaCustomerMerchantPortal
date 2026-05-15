@@ -41,6 +41,6 @@ class Transactions extends Component
         }
 
         return view('livewire.customer.transactions', compact('transactions', 'grouped'))
-            ->layout('layouts.customer', ['title' => 'Lipa · Activity']);
+            ->layout('layouts.customer', ['title' => __('customer.title.activity')]);
     }
 }

@@ -1,0 +1,78 @@
+<?php
+
+return [
+    // Customer
+    'customer' => [
+        'welcome_back'          => 'Content de vous revoir',
+        'welcome_back_sub'      => 'Téléphone et PIN pour accéder à votre portefeuille.',
+        'sign_in_title'         => 'Connexion à votre portefeuille',
+        'sign_in_sub'           => 'Téléphone et PIN pour continuer.',
+        'hero_title_html'       => 'Votre portefeuille.<br>Dans votre poche.',
+        'hero_subtitle'         => 'Envoyez, payez, suivez vos transactions — en toute sécurité.',
+        'footer_label'          => 'Espace Client Lipa · Sessions enregistrées et surveillées',
+        'merchant_link_prefix'  => 'Marchand ?',
+        'merchant_link_text'    => 'Accéder à l’espace marchand →',
+    ],
+
+    // Merchant
+    'merchant' => [
+        'sign_in_title'         => 'Connexion à Lipa',
+        'sign_in_sub'           => 'Téléphone enregistré et PIN.',
+        'mfa_title'             => 'Vérification en deux étapes',
+        'mfa_sub'               => 'Saisissez le code à 6 chiffres de votre app d’authentification.',
+        'pin_setup_title'       => 'Définir votre PIN',
+        'pin_setup_sub'         => 'PIN de 4 à 8 chiffres. Requis pour chaque transfert.',
+        'session_expired_title' => 'Session expirée',
+        'session_expired_sub'   => 'Les sessions marchandes durent 8 h. Reconnectez-vous pour continuer.',
+        'locked_title'          => 'PIN bloqué',
+        'locked_sub'            => 'Trop de tentatives. Réessayez dans 14 minutes.',
+        'hero_title_html'       => 'Gérez votre activité.<br>Encaissez en quelques secondes.',
+        'hero_subtitle'         => 'Paiements, terminaux et équipe de caisse — depuis un seul endroit.',
+        'footer_label'          => 'Espace Marchand Lipa · Sessions enregistrées et surveillées',
+        'customer_link_prefix'  => 'Client ?',
+        'customer_link_text'    => 'Accéder à l’espace client →',
+        'mfa_alert'             => 'Saisissez le code de votre app d’authentification.',
+        'session_expired_alert' => 'Sessions marchandes : 8 h, sans rafraîchissement auto. Reconnectez-vous.',
+        'locked_heading'        => 'PIN bloqué 15 minutes',
+        'locked_body'           => 'Après 3 tentatives échouées, la saisie est temporairement bloquée.',
+    ],
+
+    // Shared steps
+    'mfa_title'                 => 'Vérifions que c’est bien vous',
+    'mfa_sub'                   => 'Code à 6 chiffres de votre app d’authentification.',
+    'pin_setup_title'           => 'Définir votre PIN',
+    'pin_setup_sub'             => 'PIN de 4 à 8 chiffres, utilisé pour chaque transfert.',
+    'session_expired_title'     => 'Session expirée',
+    'session_expired_sub'       => 'Déconnexion après inactivité, par sécurité.',
+    'locked_title'              => 'PIN bloqué',
+    'locked_sub'                => 'Trop de tentatives. Réessayez dans 14 minutes.',
+
+    // Form fields & buttons
+    'phone_number'              => 'Numéro de téléphone',
+    'phone_placeholder_customer'=> '32 XX XX XX',
+    'phone_placeholder_merchant'=> '33 XX XX XX',
+    'pin'                       => 'PIN',
+    'authenticator_code'        => 'Code d’authentification',
+    'new_pin'                   => 'Nouveau PIN',
+    'confirm_pin'               => 'Confirmer le PIN',
+    'pin_4_8'                   => '4 à 8 chiffres',
+    'repeat_pin'                => 'Répétez votre PIN',
+    'sign_in'                   => 'Se connecter',
+    'verify_code'               => 'Vérifier le code',
+    'back_to_login'             => '← Retour à la connexion',
+    'set_pin_continue'          => 'Définir le PIN et continuer',
+    'sign_in_again'             => 'Se reconnecter',
+    'try_again_later'           => 'Réessayer plus tard',
+    'mfa_alert_customer'        => 'Saisissez le code Lipa à 6 chiffres de votre app d’authentification.',
+    'session_expired_alert'     => 'Session expirée après 15 min d’inactivité. Reconnectez-vous.',
+    'locked_heading'            => 'PIN bloqué 15 minutes',
+    'locked_body'               => 'Après 3 tentatives échouées, la saisie est bloquée pour protéger votre compte.',
+
+    // Validation messages (Livewire)
+    'errors' => [
+        'phone_pin_required'    => 'Saisissez votre téléphone et votre PIN.',
+        'mfa_code_required'     => 'Saisissez le code à 6 chiffres de votre app d’authentification.',
+        'pin_length'            => 'PIN entre 4 et 8 chiffres.',
+        'pins_dont_match'       => 'Les PIN ne correspondent pas.',
+    ],
+];

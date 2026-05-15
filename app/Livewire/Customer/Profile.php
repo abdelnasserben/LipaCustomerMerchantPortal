@@ -26,6 +26,6 @@ class Profile extends Component
         }
 
         return view('livewire.customer.profile', compact('profile', 'balance', 'limits'))
-            ->layout('layouts.customer', ['title' => 'Lipa · Profile']);
+            ->layout('layouts.customer', ['title' => __('customer.title.profile')]);
     }
 }

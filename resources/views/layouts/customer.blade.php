@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'Lipa · Customer' }}</title>
+    <title>{{ $title ?? __('common.brand').' · '.__('nav.customer_label') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
@@ -17,33 +17,33 @@
                 <div class="flex items-center gap-3 px-3 py-4 mb-4">
                     <x-lipa-mark size="36"/>
                     <div>
-                        <div class="font-bold text-white" style="font-size: 17px; letter-spacing: -0.01em;">Lipa</div>
-                        <div class="text-xs font-semibold uppercase tracking-widest" style="color: rgba(255,255,255,0.45); margin-top: 1px;">Customer</div>
+                        <div class="font-bold text-white" style="font-size: 17px; letter-spacing: -0.01em;">{{ __('common.brand') }}</div>
+                        <div class="text-xs font-semibold uppercase tracking-widest" style="color: rgba(255,255,255,0.45); margin-top: 1px;">{{ __('nav.customer_label') }}</div>
                     </div>
                 </div>
 
                 <nav class="flex flex-col gap-1 flex-1">
                     <a wire:navigate href="{{ route('customer.dashboard') }}" class="nav-item {{ request()->routeIs('customer.dashboard') ? 'active' : '' }}">
-                        <x-icon name="home" class="w-5 h-5"/><span>Home</span>
+                        <x-icon name="home" class="w-5 h-5"/><span>{{ __('nav.home') }}</span>
                     </a>
                     <a wire:navigate href="{{ route('customer.transactions') }}" class="nav-item {{ request()->routeIs('customer.transactions*') ? 'active' : '' }}">
-                        <x-icon name="list" class="w-5 h-5"/><span>Activity</span>
+                        <x-icon name="list" class="w-5 h-5"/><span>{{ __('nav.activity') }}</span>
                     </a>
                     <a wire:navigate href="{{ route('customer.send') }}" class="nav-item {{ request()->routeIs('customer.send*') ? 'active' : '' }}">
-                        <x-icon name="send" class="w-5 h-5"/><span>Send Money</span>
+                        <x-icon name="send" class="w-5 h-5"/><span>{{ __('nav.send_money') }}</span>
                     </a>
                     <a wire:navigate href="{{ route('customer.cards') }}" class="nav-item {{ request()->routeIs('customer.cards*') ? 'active' : '' }}">
-                        <x-icon name="card" class="w-5 h-5"/><span>Cards</span>
+                        <x-icon name="card" class="w-5 h-5"/><span>{{ __('nav.cards') }}</span>
                     </a>
                     <a wire:navigate href="{{ route('customer.statement') }}" class="nav-item {{ request()->routeIs('customer.statement') ? 'active' : '' }}">
-                        <x-icon name="doc" class="w-5 h-5"/><span>Statement</span>
+                        <x-icon name="doc" class="w-5 h-5"/><span>{{ __('nav.statement') }}</span>
                     </a>
                     <div class="mt-auto">
                         <a wire:navigate href="{{ route('customer.profile') }}" class="nav-item {{ request()->routeIs('customer.profile') ? 'active' : '' }}">
-                            <x-icon name="user" class="w-5 h-5"/><span>Profile</span>
+                            <x-icon name="user" class="w-5 h-5"/><span>{{ __('nav.profile') }}</span>
                         </a>
                         <a wire:navigate href="{{ route('customer.security') }}" class="nav-item {{ request()->routeIs('customer.security') ? 'active' : '' }}">
-                            <x-icon name="shield" class="w-5 h-5"/><span>Security</span>
+                            <x-icon name="shield" class="w-5 h-5"/><span>{{ __('nav.security') }}</span>
                         </a>
                     </div>
                 </nav>

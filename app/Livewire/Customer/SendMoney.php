@@ -52,7 +52,7 @@ class SendMoney extends Component
     {
         $this->error = '';
         if (empty($this->recipientPhone)) {
-            $this->error = 'Please enter a recipient phone number.';
+            $this->error = __('customer.errors.recipient_required');
             return;
         }
         if (empty($this->recipientName)) {
@@ -75,11 +75,11 @@ class SendMoney extends Component
         $this->error = '';
         $amount = (int) str_replace([' ', ','], '', $this->amountInput);
         if ($amount < 100) {
-            $this->error = 'Minimum amount is 100 KMF.';
+            $this->error = __('customer.errors.amount_min');
             return;
         }
         if ($amount > 500000) {
-            $this->error = 'Maximum single transaction is 500 000 KMF.';
+            $this->error = __('customer.errors.amount_max');
             return;
         }
         $this->amount = $amount;
@@ -95,11 +95,11 @@ class SendMoney extends Component
     {
         $this->error = '';
         if ($this->pinLocked) {
-            $this->error = 'PIN locked. Try again in 15 minutes.';
+            $this->error = __('customer.errors.pin_locked');
             return;
         }
         if (strlen($this->pin) < 4) {
-            $this->error = 'Enter your PIN to confirm.';
+            $this->error = __('customer.errors.pin_required');
             return;
         }
         $this->dispatchTransfer($api);
@@ -133,7 +133,7 @@ class SendMoney extends Component
             if ($e->errorCode() === 'AUTH_PIN_INVALID') {
                 $this->pin = '';
                 $this->step = 'pin';
-                $this->error = 'Incorrect PIN. Please try again.';
+                $this->error = __('customer.errors.pin_incorrect');
                 return;
             }
             $this->error = $e->getMessage();
@@ -143,7 +143,7 @@ class SendMoney extends Component
                 $this->pin = '';
                 $this->pinLocked = true;
                 $this->step = 'pin';
-                $this->error = 'PIN locked after 3 failed attempts. Try again in 15 minutes.';
+                $this->error = __('customer.errors.pin_locked_3_attempts');
                 return;
             }
             $this->error = $e->getMessage();
@@ -195,6 +195,6 @@ class SendMoney extends Component
         $beneficiaries = $api->beneficiaries(20);
         $balance = $api->balance();
         return view('livewire.customer.send-money', compact('beneficiaries', 'balance'))
-            ->layout('layouts.customer', ['title' => 'Lipa · Send Money']);
+            ->layout('layouts.customer', ['title' => __('customer.title.send_money')]);
     }
 }

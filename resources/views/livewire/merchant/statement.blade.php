@@ -2,15 +2,15 @@
 <div class="px-5 lg:px-8 pt-5 lg:pt-8">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 lg:mb-6">
         <div>
-            <h1 class="font-bold lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">Statement</h1>
-            <div style="font-size: 13px; color: var(--color-ink-low); margin-top: 2px;">Ledger entries with running balance</div>
+            <h1 class="font-bold lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">{{ __('merchant.statement.title') }}</h1>
+            <div style="font-size: 13px; color: var(--color-ink-low); margin-top: 2px;">{{ __('merchant.statement.subtitle') }}</div>
         </div>
         <div class="flex gap-2 items-center w-full sm:w-auto">
             <input wire:model="from" type="date" class="input flex-1 sm:flex-none" style="height: 40px; font-size: 13px; min-width: 0; padding: 0 10px; width: auto;"/>
             <span class="flex-shrink-0" style="color: var(--color-ink-low);">→</span>
             <input wire:model="to" type="date" class="input flex-1 sm:flex-none" style="height: 40px; font-size: 13px; min-width: 0; padding: 0 10px; width: auto;"/>
             <button class="btn btn-secondary btn-sm flex-shrink-0">
-                <x-icon name="download" class="w-4 h-4"/><span class="hidden sm:inline">Export</span>
+                <x-icon name="download" class="w-4 h-4"/><span class="hidden sm:inline">{{ __('common.export') }}</span>
             </button>
         </div>
     </div>
@@ -19,10 +19,10 @@
         {{-- Desktop header --}}
         <div class="hidden md:grid grid-cols-12 px-5 py-2" style="background: var(--color-surface-alt); border-bottom: 1px solid var(--color-border);">
             <div class="col-span-1 section-title">#</div>
-            <div class="col-span-5 section-title">Description</div>
-            <div class="col-span-2 section-title">Date</div>
-            <div class="col-span-2 section-title text-right">Amount</div>
-            <div class="col-span-2 section-title text-right">Balance</div>
+            <div class="col-span-5 section-title">{{ __('merchant.statement.description') }}</div>
+            <div class="col-span-2 section-title">{{ __('merchant.statement.date') }}</div>
+            <div class="col-span-2 section-title text-right">{{ __('merchant.statement.amount') }}</div>
+            <div class="col-span-2 section-title text-right">{{ __('merchant.statement.balance') }}</div>
         </div>
 
         @forelse($entries as $i => $entry)
@@ -44,7 +44,7 @@
                 <span class="font-mono font-semibold" style="font-size: 13px; color: {{ ($entry['entryType'] ?? '') === 'CREDIT' ? 'var(--color-success)' : 'var(--color-danger)' }};">
                     {{ ($entry['entryType'] ?? '') === 'CREDIT' ? '+' : '−' }}{{ FormatService::kmf((int)($entry['amount'] ?? 0)) }}
                 </span>
-                <div class="md:hidden font-mono" style="font-size: 11px; color: var(--color-ink-low); margin-top: 2px;">bal {{ FormatService::kmf((int)($entry['runningBalance'] ?? 0)) }}</div>
+                <div class="md:hidden font-mono" style="font-size: 11px; color: var(--color-ink-low); margin-top: 2px;">{{ __('merchant.statement.bal_short') }} {{ FormatService::kmf((int)($entry['runningBalance'] ?? 0)) }}</div>
             </div>
             <div class="hidden md:block md:col-span-2 text-right">
                 <span class="font-mono" style="font-size: 12px; color: var(--color-ink-mid);">{{ FormatService::kmf((int)($entry['runningBalance'] ?? 0)) }}</span>
@@ -53,7 +53,7 @@
         @empty
         <div class="empty-state">
             <x-icon name="doc" class="w-10 h-10 mb-3" style="color: var(--color-border-hi);"/>
-            <div style="font-size: 15px; font-weight: 600;">No statement entries</div>
+            <div style="font-size: 15px; font-weight: 600;">{{ __('merchant.statement.no_entries') }}</div>
         </div>
         @endforelse
     </div>

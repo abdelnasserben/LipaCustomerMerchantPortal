@@ -1,7 +1,7 @@
 @php use App\Services\FormatService; @endphp
 <div>
     <div class="px-5 lg:px-8 pt-5 lg:pt-8">
-        <h1 class="font-bold mb-5 lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">Profile</h1>
+        <h1 class="font-bold mb-5 lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">{{ __('customer.profile.title') }}</h1>
 
         <div class="lg:grid lg:grid-cols-2 lg:gap-5">
 
@@ -27,14 +27,14 @@
         <div class="card-flat p-4 mb-5">
             <div class="flex justify-between items-center">
                 <div>
-                    <div class="section-title mb-1">Wallet Balance</div>
+                    <div class="section-title mb-1">{{ __('customer.profile.wallet_balance') }}</div>
                     <div class="font-mono font-bold" style="font-size: 22px; letter-spacing: -0.015em;">{{ FormatService::kmf($balance['availableBalance']) }}</div>
                 </div>
                 <x-status-pill :status="$balance['walletStatus']"/>
             </div>
             @if($balance['frozenBalance'] > 0)
             <div class="mt-3 text-sm" style="color: var(--color-ink-mid);">
-                {{ FormatService::kmf($balance['frozenBalance']) }} frozen
+                {{ FormatService::kmf($balance['frozenBalance']) }} {{ __('customer.profile.frozen_suffix') }}
             </div>
             @endif
         </div>
@@ -42,20 +42,20 @@
         {{-- Account details --}}
         <div class="card overflow-hidden mb-5">
             <div class="px-4 py-2" style="background: var(--color-surface-alt); border-bottom: 1px solid var(--color-border);">
-                <div class="section-title">Account Details</div>
+                <div class="section-title">{{ __('customer.profile.account_details') }}</div>
             </div>
             @php
             $rows = [
-                ['Customer ID', $profile['externalRef']],
-                ['Status', null, $profile['status']],
-                ['KYC Level', null, $profile['kycLevel']],
-                ['Island', $profile['addressIsland'] ?? '—'],
-                ['City', $profile['addressCity'] ?? '—'],
+                [__('customer.profile.customer_id'), $profile['externalRef']],
+                [__('customer.profile.status'), null, $profile['status']],
+                [__('customer.profile.kyc_level'), null, $profile['kycLevel']],
+                [__('customer.profile.island'), $profile['addressIsland'] ?? '—'],
+                [__('customer.profile.city'), $profile['addressCity'] ?? '—'],
             ];
             if (isset($profile['kycVerifiedAt'])) {
-                $rows[] = ['KYC Verified', FormatService::date($profile['kycVerifiedAt'])];
+                $rows[] = [__('customer.profile.kyc_verified'), FormatService::date($profile['kycVerifiedAt'])];
             }
-            $rows[] = ['Member since', FormatService::date($profile['createdAt'])];
+            $rows[] = [__('customer.profile.member_since'), FormatService::date($profile['createdAt'])];
             @endphp
             @foreach($rows as $row)
             <div class="flex justify-between items-center px-4 py-3" style="border-bottom: 1px solid var(--color-border);">
@@ -73,16 +73,16 @@
         <div class="card overflow-hidden mb-5">
             <div class="px-4 py-2" style="background: var(--color-surface-alt); border-bottom: 1px solid var(--color-border);">
                 <div class="flex justify-between items-center">
-                    <div class="section-title">Transaction Limits</div>
+                    <div class="section-title">{{ __('customer.profile.limits_title') }}</div>
                     <span style="font-size: 12px; color: var(--color-ink-low);">{{ $limits['profileName'] }}</span>
                 </div>
             </div>
             @php
             $limitRows = [
-                ['Per transaction', $limits['maxTransactionAmount']],
-                ['Daily limit', $limits['maxDailyAmount']],
-                ['Monthly limit', $limits['maxMonthlyAmount']],
-                ['Daily transactions', null, $limits['maxDailyTransactionCount'] . ' max'],
+                [__('customer.profile.per_transaction'), $limits['maxTransactionAmount']],
+                [__('customer.profile.daily_limit'), $limits['maxDailyAmount']],
+                [__('customer.profile.monthly_limit'), $limits['maxMonthlyAmount']],
+                [__('customer.profile.daily_count'), null, __('customer.profile.count_max', ['n' => $limits['maxDailyTransactionCount']])],
             ];
             @endphp
             @foreach($limitRows as $row)
@@ -102,14 +102,14 @@
             <a wire:navigate href="{{ route('customer.statement') }}" class="flex items-center justify-between px-4 py-3 text-decoration-none" style="border-bottom: 1px solid var(--color-border); text-decoration: none; color: inherit;">
                 <div class="flex items-center gap-3">
                     <x-icon name="doc" class="w-5 h-5" style="color: var(--color-ink-mid);"/>
-                    <span style="font-size: 14px;">Account Statement</span>
+                    <span style="font-size: 14px;">{{ __('customer.profile.account_statement') }}</span>
                 </div>
                 <x-icon name="chev-right" class="w-4 h-4" style="color: var(--color-ink-low);"/>
             </a>
             <a wire:navigate href="{{ route('customer.security') }}" class="flex items-center justify-between px-4 py-3" style="text-decoration: none; color: inherit;">
                 <div class="flex items-center gap-3">
                     <x-icon name="shield" class="w-5 h-5" style="color: var(--color-ink-mid);"/>
-                    <span style="font-size: 14px;">Security & PIN</span>
+                    <span style="font-size: 14px;">{{ __('customer.profile.security_pin') }}</span>
                 </div>
                 <x-icon name="chev-right" class="w-4 h-4" style="color: var(--color-ink-low);"/>
             </a>
@@ -121,7 +121,7 @@
             @csrf
             <button type="submit" class="btn btn-secondary btn-lg btn-full">
                 <x-icon name="arrow-left" class="w-4 h-4"/>
-                Sign Out
+                {{ __('common.sign_out') }}
             </button>
         </form>
     </div>

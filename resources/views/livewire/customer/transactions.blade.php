@@ -3,7 +3,7 @@
     {{-- Header --}}
     <div class="sticky top-0 z-10 px-5 lg:px-8 pt-5 lg:pt-8 pb-3" style="background: var(--color-bg);">
         <div class="flex items-center justify-between mb-4">
-            <h1 class="font-bold lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">Activity</h1>
+            <h1 class="font-bold lg:!text-2xl" style="font-size: 21px; letter-spacing: -0.02em;">{{ __('customer.activity.title') }}</h1>
             <button wire:click="$toggle('showFilters')" class="circle-btn" style="{{ $showFilters ? 'background: var(--color-brand-soft); color: var(--color-brand); border-color: var(--color-brand);' : '' }}">
                 <x-icon name="filter" class="w-4 h-4"/>
             </button>
@@ -11,10 +11,10 @@
 
         @if($showFilters)
         <div class="flex flex-wrap gap-2 overflow-x-auto pb-2">
-            <button wire:click="$set('filterStatus', '')" class="btn btn-sm {{ $filterStatus === '' ? 'btn-primary' : 'btn-secondary' }}">All</button>
-            <button wire:click="$set('filterStatus', 'COMPLETED')" class="btn btn-sm {{ $filterStatus === 'COMPLETED' ? 'btn-primary' : 'btn-secondary' }}">Completed</button>
-            <button wire:click="$set('filterStatus', 'PENDING')" class="btn btn-sm {{ $filterStatus === 'PENDING' ? 'btn-primary' : 'btn-secondary' }}">Pending</button>
-            <button wire:click="$set('filterStatus', 'DECLINED')" class="btn btn-sm {{ $filterStatus === 'DECLINED' ? 'btn-primary' : 'btn-secondary' }}">Declined</button>
+            <button wire:click="$set('filterStatus', '')" class="btn btn-sm {{ $filterStatus === '' ? 'btn-primary' : 'btn-secondary' }}">{{ __('customer.activity.all') }}</button>
+            <button wire:click="$set('filterStatus', 'COMPLETED')" class="btn btn-sm {{ $filterStatus === 'COMPLETED' ? 'btn-primary' : 'btn-secondary' }}">{{ __('customer.activity.completed') }}</button>
+            <button wire:click="$set('filterStatus', 'PENDING')" class="btn btn-sm {{ $filterStatus === 'PENDING' ? 'btn-primary' : 'btn-secondary' }}">{{ __('customer.activity.pending') }}</button>
+            <button wire:click="$set('filterStatus', 'DECLINED')" class="btn btn-sm {{ $filterStatus === 'DECLINED' ? 'btn-primary' : 'btn-secondary' }}">{{ __('customer.activity.declined') }}</button>
         </div>
         @endif
     </div>
@@ -23,8 +23,8 @@
         @if(empty($grouped))
         <div class="empty-state">
             <x-icon name="list" class="w-10 h-10 mb-3" style="color: var(--color-border-hi);"/>
-            <div style="font-size: 15px; font-weight: 600; margin-bottom: 6px;">No transactions found</div>
-            <div style="font-size: 13px;">Try adjusting your filters.</div>
+            <div style="font-size: 15px; font-weight: 600; margin-bottom: 6px;">{{ __('customer.activity.no_tx_title') }}</div>
+            <div style="font-size: 13px;">{{ __('customer.activity.no_tx_sub') }}</div>
         </div>
         @else
         <div class="card overflow-hidden">
@@ -33,9 +33,9 @@
                 <span class="section-title">
                     @php
                         $d = \Carbon\Carbon::parse($date);
-                        if ($d->isToday()) echo 'Today';
-                        elseif ($d->isYesterday()) echo 'Yesterday';
-                        else echo $d->format('d M Y');
+                        if ($d->isToday()) echo __('common.today');
+                        elseif ($d->isYesterday()) echo __('common.yesterday');
+                        else echo $d->translatedFormat('d M Y');
                     @endphp
                 </span>
             </div>

@@ -17,6 +17,6 @@ class Profile extends Component
         $profile = $api->profile();
         $balance = $api->balance();
         return view('livewire.merchant.profile', compact('profile', 'balance'))
-            ->layout('layouts.merchant', ['title' => 'Lipa Merchant · Profile']);
+            ->layout('layouts.merchant', ['title' => __('merchant.title.profile')]);
     }
 }

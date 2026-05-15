@@ -31,6 +31,6 @@ class TransactionDetail extends Component
     public function render()
     {
         return view('livewire.customer.transaction-detail', ['tx' => $this->tx])
-            ->layout('layouts.customer', ['title' => 'Lipa · Transaction']);
+            ->layout('layouts.customer', ['title' => __('customer.title.transaction')]);
     }
 }

@@ -10,24 +10,24 @@
                 <div class="flex items-center gap-3 mb-8">
                     <x-lipa-mark :size="44" :dark="true"/>
                     <div>
-                        <div class="font-bold" style="font-size: 20px; letter-spacing: -0.01em;">Lipa</div>
-                        <div class="text-xs font-semibold uppercase tracking-widest" style="color: rgba(255,255,255,0.5); margin-top: 2px;">Merchant Portal</div>
+                        <div class="font-bold" style="font-size: 20px; letter-spacing: -0.01em;">{{ __('common.brand') }}</div>
+                        <div class="text-xs font-semibold uppercase tracking-widest" style="color: rgba(255,255,255,0.5); margin-top: 2px;">{{ __('nav.merchant_portal') }}</div>
                     </div>
                 </div>
                 <h1 style="font-size: clamp(26px, 5vw, 34px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; margin: 0;">
-                    @if($step === 'login') Sign in to Lipa
-                    @elseif($step === 'mfa') Two-factor verification
-                    @elseif($step === 'pinSetup') Set your PIN
-                    @elseif($step === 'sessionExpired') Session expired
-                    @elseif($step === 'locked') PIN locked
+                    @if($step === 'login') {{ __('auth.merchant.sign_in_title') }}
+                    @elseif($step === 'mfa') {{ __('auth.merchant.mfa_title') }}
+                    @elseif($step === 'pinSetup') {{ __('auth.merchant.pin_setup_title') }}
+                    @elseif($step === 'sessionExpired') {{ __('auth.merchant.session_expired_title') }}
+                    @elseif($step === 'locked') {{ __('auth.merchant.locked_title') }}
                     @endif
                 </h1>
                 <p style="font-size: 14px; color: rgba(255,255,255,0.6); margin-top: 10px; line-height: 1.5; max-width: 360px;">
-                    @if($step === 'login') Use your registered phone number and PIN.
-                    @elseif($step === 'mfa') Open your authenticator app and enter the 6-digit code.
-                    @elseif($step === 'pinSetup') Choose a 4–8 digit PIN. Required for every transfer.
-                    @elseif($step === 'sessionExpired') Merchant sessions last 8 hours. Sign in again to continue.
-                    @elseif($step === 'locked') Too many incorrect attempts. Try again in 14 minutes.
+                    @if($step === 'login') {{ __('auth.merchant.sign_in_sub') }}
+                    @elseif($step === 'mfa') {{ __('auth.merchant.mfa_sub') }}
+                    @elseif($step === 'pinSetup') {{ __('auth.merchant.pin_setup_sub') }}
+                    @elseif($step === 'sessionExpired') {{ __('auth.merchant.session_expired_sub') }}
+                    @elseif($step === 'locked') {{ __('auth.merchant.locked_sub') }}
                     @endif
                 </p>
             </div>
@@ -40,21 +40,21 @@
                 <div class="flex items-center gap-3">
                     <x-lipa-mark :size="48" :dark="true"/>
                     <div>
-                        <div class="font-bold text-white" style="font-size: 22px; letter-spacing: -0.01em;">Lipa</div>
-                        <div class="text-xs font-semibold uppercase tracking-widest" style="color: rgba(255,255,255,0.45); margin-top: 2px;">Merchant Portal</div>
+                        <div class="font-bold text-white" style="font-size: 22px; letter-spacing: -0.01em;">{{ __('common.brand') }}</div>
+                        <div class="text-xs font-semibold uppercase tracking-widest" style="color: rgba(255,255,255,0.45); margin-top: 2px;">{{ __('nav.merchant_portal') }}</div>
                     </div>
                 </div>
             </div>
             <div class="relative">
                 <h1 class="text-white" style="font-size: 48px; font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; max-width: 420px; margin: 0;">
-                    Run your business.<br>Settle in seconds.
+                    {!! __('auth.merchant.hero_title_html') !!}
                 </h1>
                 <p style="color: rgba(255,255,255,0.6); font-size: 15px; line-height: 1.55; margin-top: 18px; max-width: 380px;">
-                    Manage payments, terminals and your cashier team — securely, from one place.
+                    {{ __('auth.merchant.hero_subtitle') }}
                 </p>
             </div>
             <div class="relative" style="font-size: 12px; color: rgba(255,255,255,0.35);">
-                Lipa Merchant Portal · All sessions are logged and monitored
+                {{ __('auth.merchant.footer_label') }}
             </div>
         </div>
     </div>
@@ -65,19 +65,19 @@
             {{-- Desktop-only heading (mobile uses the dark hero above) --}}
             <div class="hidden lg:block mb-8">
                 <h2 style="font-size: 28px; font-weight: 700; letter-spacing: -0.025em; margin: 0; color: var(--color-ink-hi);">
-                    @if($step === 'login') Sign in to Lipa
-                    @elseif($step === 'mfa') Two-factor verification
-                    @elseif($step === 'pinSetup') Set your PIN
-                    @elseif($step === 'sessionExpired') Session expired
-                    @elseif($step === 'locked') PIN locked
+                    @if($step === 'login') {{ __('auth.merchant.sign_in_title') }}
+                    @elseif($step === 'mfa') {{ __('auth.merchant.mfa_title') }}
+                    @elseif($step === 'pinSetup') {{ __('auth.merchant.pin_setup_title') }}
+                    @elseif($step === 'sessionExpired') {{ __('auth.merchant.session_expired_title') }}
+                    @elseif($step === 'locked') {{ __('auth.merchant.locked_title') }}
                     @endif
                 </h2>
                 <p style="font-size: 14.5px; color: var(--color-ink-mid); margin-top: 8px; line-height: 1.5;">
-                    @if($step === 'login') Use your registered phone number and PIN.
-                    @elseif($step === 'mfa') Open your authenticator app and enter the 6-digit code.
-                    @elseif($step === 'pinSetup') Choose a 4–8 digit PIN. Required for every transfer.
-                    @elseif($step === 'sessionExpired') Merchant sessions last 8 hours. Sign in again to continue.
-                    @elseif($step === 'locked') Too many incorrect attempts. Try again in 14 minutes.
+                    @if($step === 'login') {{ __('auth.merchant.sign_in_sub') }}
+                    @elseif($step === 'mfa') {{ __('auth.merchant.mfa_sub') }}
+                    @elseif($step === 'pinSetup') {{ __('auth.merchant.pin_setup_sub') }}
+                    @elseif($step === 'sessionExpired') {{ __('auth.merchant.session_expired_sub') }}
+                    @elseif($step === 'locked') {{ __('auth.merchant.locked_sub') }}
                     @endif
                 </p>
             </div>
@@ -92,17 +92,17 @@
             @if($step === 'login')
             <form wire:submit="login" class="flex flex-col gap-5">
                 <div>
-                    <label class="label">Phone Number</label>
+                    <label class="label">{{ __('auth.phone_number') }}</label>
                     <div style="display: flex; height: 52px; border: 1px solid var(--color-border-hi); border-radius: 12px; background: #fff; overflow: hidden;">
                         <div style="width: 80px; background: var(--color-surface-alt); display: flex; align-items: center; justify-content: center; border-right: 1px solid var(--color-border); font-family: var(--font-mono); font-weight: 600; font-size: 15px; color: var(--color-ink-mid); flex-shrink: 0;">
                             +269
                         </div>
-                        <input wire:model="phoneNumber" type="tel" placeholder="33 XX XX XX" inputmode="tel"
+                        <input wire:model="phoneNumber" type="tel" placeholder="{{ __('auth.phone_placeholder_merchant') }}" inputmode="tel"
                             style="flex: 1; min-width: 0; border: none; outline: none; padding: 0 16px; font-family: var(--font-mono); font-size: 16px; color: var(--color-ink-hi); background: transparent; letter-spacing: 0.04em;"/>
                     </div>
                 </div>
                 <div>
-                    <label class="label">PIN</label>
+                    <label class="label">{{ __('auth.pin') }}</label>
                     <div style="display: flex; height: 52px; border: 1px solid var(--color-border-hi); border-radius: 12px; background: #fff; align-items: center; padding: 0 16px; gap: 8px;">
                         <input wire:model="pin" type="{{ $pinVisible ? 'text' : 'password' }}" placeholder="••••" inputmode="numeric"
                             style="flex: 1; min-width: 0; border: none; outline: none; font-family: var(--font-mono); font-size: 20px; color: var(--color-ink-hi); background: transparent; letter-spacing: 0.3em;"/>
@@ -111,14 +111,14 @@
                         </button>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-dark btn-lg btn-full">Sign In</button>
+                <button type="submit" class="btn btn-dark btn-lg btn-full">{{ __('auth.sign_in') }}</button>
             </form>
             @endif
 
             @if($step === 'mfa')
             <form wire:submit="verifyMfa" class="flex flex-col gap-6">
                 <div x-data="otpInput(@js($mfaCode))" x-init="$watch('value', v => $wire.set('mfaCode', v, false))">
-                    <label class="label">Authenticator Code</label>
+                    <label class="label">{{ __('auth.authenticator_code') }}</label>
                     <div class="flex gap-2 justify-between" x-on:paste.prevent="onPaste($event)">
                         @for($i = 0; $i < 6; $i++)
                         <input type="text" maxlength="1" inputmode="numeric" autocomplete="one-time-code"
@@ -133,13 +133,13 @@
                 </div>
                 <div class="alert alert-info">
                     <x-icon name="shield" class="w-4 h-4 flex-shrink-0 mt-0.5"/>
-                    <span>Open your authenticator app and enter the code.</span>
+                    <span>{{ __('auth.merchant.mfa_alert') }}</span>
                 </div>
                 <button type="submit" class="btn btn-dark btn-lg btn-full">
-                    Verify Code
+                    {{ __('auth.verify_code') }}
                 </button>
                 <button type="button" wire:click="$set('step', 'login')" class="btn btn-ghost btn-md btn-full" style="color: var(--color-ink-mid);">
-                    ← Back
+                    ← {{ __('common.back') }}
                 </button>
             </form>
             @endif
@@ -147,14 +147,14 @@
             @if($step === 'pinSetup')
             <form wire:submit="setupPin" class="flex flex-col gap-5">
                 <div>
-                    <label class="label">New PIN</label>
-                    <input wire:model="newPin" type="password" placeholder="4–8 digits" class="input" inputmode="numeric"/>
+                    <label class="label">{{ __('auth.new_pin') }}</label>
+                    <input wire:model="newPin" type="password" placeholder="{{ __('auth.pin_4_8') }}" class="input" inputmode="numeric"/>
                 </div>
                 <div>
-                    <label class="label">Confirm PIN</label>
-                    <input wire:model="confirmPin" type="password" placeholder="Repeat your PIN" class="input" inputmode="numeric"/>
+                    <label class="label">{{ __('auth.confirm_pin') }}</label>
+                    <input wire:model="confirmPin" type="password" placeholder="{{ __('auth.repeat_pin') }}" class="input" inputmode="numeric"/>
                 </div>
-                <button type="submit" class="btn btn-dark btn-lg btn-full">Set PIN & Continue</button>
+                <button type="submit" class="btn btn-dark btn-lg btn-full">{{ __('auth.set_pin_continue') }}</button>
             </form>
             @endif
 
@@ -163,11 +163,11 @@
                 <div class="alert alert-warn">
                     <x-icon name="warn" class="w-4 h-4 flex-shrink-0 mt-0.5"/>
                     <div>
-                        <div class="font-semibold mb-1">Session expired</div>
-                        <div>Merchant sessions last 8 hours. There is no automatic refresh — please sign in again to continue.</div>
+                        <div class="font-semibold mb-1">{{ __('auth.merchant.session_expired_title') }}</div>
+                        <div>{{ __('auth.merchant.session_expired_alert') }}</div>
                     </div>
                 </div>
-                <button wire:click="$set('step', 'login')" class="btn btn-dark btn-lg btn-full">Sign In Again</button>
+                <button wire:click="$set('step', 'login')" class="btn btn-dark btn-lg btn-full">{{ __('auth.sign_in_again') }}</button>
             </div>
             @endif
 
@@ -176,17 +176,17 @@
                 <div class="alert alert-danger">
                     <x-icon name="lock" class="w-4 h-4 flex-shrink-0 mt-0.5"/>
                     <div>
-                        <div class="font-semibold mb-1">PIN locked for 15 minutes</div>
-                        <div>After 3 failed attempts, PIN entry is temporarily blocked.</div>
+                        <div class="font-semibold mb-1">{{ __('auth.merchant.locked_heading') }}</div>
+                        <div>{{ __('auth.merchant.locked_body') }}</div>
                     </div>
                 </div>
-                <button wire:click="$set('step', 'login')" class="btn btn-secondary btn-lg btn-full">Try Again Later</button>
+                <button wire:click="$set('step', 'login')" class="btn btn-secondary btn-lg btn-full">{{ __('auth.try_again_later') }}</button>
             </div>
             @endif
 
             <div class="mt-8 text-center">
                 <a wire:navigate href="{{ route('customer.login') }}" style="font-size: 13px; color: var(--color-ink-low);">
-                    Customer? <span style="color: var(--color-brand); font-weight: 600;">Sign in to customer portal →</span>
+                    {{ __('auth.merchant.customer_link_prefix') }} <span style="color: var(--color-brand); font-weight: 600;">{{ __('auth.merchant.customer_link_text') }}</span>
                 </a>
             </div>
         </div>
