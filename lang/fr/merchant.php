@@ -13,18 +13,13 @@ return [
         'security'          => 'Lipa Marchand · Sécurité',
     ],
 
-    'sidebar' => [
-        'shop_default'      => 'Boutique Karthala',
-        'shop_default_addr' => 'M-2041 · Moroni',
-    ],
-
     'dashboard' => [
         'available_balance' => 'Solde disponible',
         'frozen_suffix'     => 'gelé',
         'today'             => "Aujourd'hui",
         'sales'             => 'Ventes',
         'week'              => 'Semaine',
-        'send_m2m'          => 'Envoyer M2M',
+        'send_m2m'          => 'Envoyer',
         'statement'         => 'Relevé',
         'terminals'         => 'Terminaux',
         'sales_today_kmf'   => "Ventes du jour (KMF)",
@@ -100,13 +95,13 @@ return [
     ],
 
     'send' => [
-        'title_form'        => 'Envoyer à un marchand (M2M)',
+        'title_form'        => 'Envoyer à un marchand',
         'title_confirm'     => 'Confirmer le transfert',
         'title_receipt'     => 'Transfert effectué',
         'm2m_disabled_title'=> 'Transferts M2M non activés',
         'm2m_disabled_body' => 'Les transferts marchand à marchand ne sont pas activés sur ce compte. Contactez le support pour les activer.',
         'available_balance' => 'Solde disponible',
-        'recipient_phone'   => 'Téléphone du marchand destinataire',
+        'recipient_phone'   => 'Téléphone du destinataire',
         'amount_kmf'        => 'Montant (KMF)',
         'note_optional'     => 'Note (facultatif)',
         'note_placeholder'  => 'À quoi ça sert ?',
@@ -209,7 +204,7 @@ return [
         'terminal_pin'      => 'PIN du terminal',
         'terminal_pin_hint' => '4 à 8 chiffres · saisi sur l’appareil',
         'confirm_pin'       => 'Confirmer le PIN',
-        'repeat_pin'        => 'Répéter le PIN',
+        'repeat_pin'        => '****',
         'create_cashier'    => 'Créer le caissier',
         'irreversible_title'=> 'Action irréversible',
         'irreversible_body' => 'La révocation désactive définitivement l’accès aux terminaux. Impossible à annuler.',

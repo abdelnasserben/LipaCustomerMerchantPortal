@@ -13,18 +13,13 @@ return [
         'security'          => 'Lipa Merchant · Security',
     ],
 
-    'sidebar' => [
-        'shop_default'      => 'Boutique Karthala',
-        'shop_default_addr' => 'M-2041 · Moroni',
-    ],
-
     'dashboard' => [
         'available_balance' => 'Available Balance',
         'frozen_suffix'     => 'frozen',
         'today'             => 'Today',
         'sales'             => 'Sales',
         'week'              => 'Week',
-        'send_m2m'          => 'Send M2M',
+        'send_m2m'          => 'Send',
         'statement'         => 'Statement',
         'terminals'         => 'Terminals',
         'sales_today_kmf'   => 'Sales Today (KMF)',
@@ -100,7 +95,7 @@ return [
     ],
 
     'send' => [
-        'title_form'        => 'Send to Merchant (M2M)',
+        'title_form'        => 'Send to Merchant',
         'title_confirm'     => 'Confirm Transfer',
         'title_receipt'     => 'Transfer Complete',
         'm2m_disabled_title'=> 'M2M transfers not enabled',

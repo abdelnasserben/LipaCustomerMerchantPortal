@@ -51,13 +51,6 @@
                         </a>
                     </div>
                 </nav>
-
-                <div class="px-3 pt-4 mt-auto" style="border-top: 1px solid rgba(255,255,255,0.08);">
-                    <div class="text-xs" style="color: rgba(255,255,255,0.35); line-height: 1.5;">
-                        <div class="font-semibold text-white opacity-60" style="font-size: 13px;">{{ __('merchant.sidebar.shop_default') }}</div>
-                        <div>{{ __('merchant.sidebar.shop_default_addr') }}</div>
-                    </div>
-                </div>
             </div>
         </aside>
 
