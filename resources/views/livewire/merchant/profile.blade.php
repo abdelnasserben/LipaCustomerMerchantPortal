@@ -94,5 +94,4 @@
             {{ __('common.sign_out') }}
         </button>
     </form>
-    <div class="mt-3 text-sm" style="color: var(--color-ink-low);">{{ __('merchant.profile.session_note') }}</div>
 </div>

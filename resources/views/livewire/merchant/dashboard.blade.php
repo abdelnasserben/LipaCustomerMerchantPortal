@@ -51,7 +51,7 @@
 
                 {{-- Quick actions --}}
                 <div class="flex gap-3 mt-6">
-                    <a wire:navigate href="{{ route('merchant.send') }}" style="flex: 1; height: 44px; background: #0c7a3e; border: none; border-radius: 10px; color: #fff; font-weight: 600; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; cursor: pointer;">
+                    <a wire:navigate href="{{ route('merchant.send') }}" style="flex: 1; height: 44px; background: var(--color-brand); border: none; border-radius: 10px; color: #fff; font-weight: 600; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; cursor: pointer;">
                         <x-icon name="send" class="w-4 h-4"/>{{ __('merchant.dashboard.send_m2m') }}
                     </a>
                     <a wire:navigate href="{{ route('merchant.statement') }}" style="flex: 1; height: 44px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; color: rgba(255,255,255,0.85); font-weight: 600; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; cursor: pointer;">

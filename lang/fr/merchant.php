@@ -139,7 +139,6 @@ return [
         'cash_out_enabled'  => 'Retrait en espèces activé',
         'm2m_transfers'     => 'Transferts M2M',
         'security_pin'      => 'Sécurité et PIN',
-        'session_note'      => 'Sessions de 8 h. La déconnexion vide le stockage local — le JWT reste valide jusqu’à expiration.',
     ],
 
     'security' => [
@@ -158,11 +157,11 @@ return [
         'not_available'     => 'Indisponible',
         'server_logout'     => 'Déconnexion côté serveur',
         'current_pin'       => 'PIN actuel',
-        'current_pin_ph'    => 'PIN actuel',
+        'current_pin_ph'    => '****',
         'new_pin'           => 'Nouveau PIN',
         'confirm_new_pin'   => 'Confirmer le nouveau PIN',
-        'new_pin_ph'        => '4 à 8 chiffres',
-        'repeat'            => 'Répétez',
+        'new_pin_ph'        => '****',
+        'repeat'            => '****',
         'update_pin'        => 'Mettre à jour le PIN',
         'enable_2fa'        => 'Activer la 2FA',
         'enable_2fa_sub'    => 'Scannez le QR avec votre app d’authentification, puis saisissez le code à 6 chiffres.',
@@ -230,7 +229,7 @@ return [
         'registered'        => 'Enregistré le',
         'read_only_title'   => 'Lecture seule',
         'read_only_body'    => 'Provisionnement, suspension et révocation gérés par Lipa Ops. Contactez le support pour toute modification.',
-        'list_footer'       => 'Pour provisionner ou modifier un terminal, contactez Lipa Ops — la vue du portail est en lecture seule.',
+        'list_footer'       => 'Pour provisionner ou modifier un terminal, contactez Lipa Ops.',
     ],
 
     'errors' => [

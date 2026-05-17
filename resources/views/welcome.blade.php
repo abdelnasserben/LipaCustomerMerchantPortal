@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ __('welcome.title') }}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('favicon/favicon-192x192.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
@@ -12,13 +15,7 @@
         {{-- Logo --}}
         <div class="flex justify-center mb-8">
             <div class="flex items-center gap-4">
-                <div style="width: 56px; height: 56px; border-radius: 14px; background: #0c7a3e; display: flex; align-items: center; justify-content: center;">
-                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
-                        <path d="M7 7h10v2.5a4 4 0 0 1-4 4h-2a4 4 0 0 1-4-4V7z" stroke="white" stroke-width="1.8" stroke-linejoin="round"/>
-                        <path d="M10 7V5.5a2 2 0 0 1 4 0V7" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
-                        <path d="M9.5 16.5l2 2 3.5-4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
+                <x-lipa-mark :size="56"/>
                 <div class="text-left">
                     <div style="font-size: 28px; font-weight: 800; letter-spacing: -0.025em; color: var(--color-ink-hi);">{{ __('common.brand') }}</div>
                     <div style="font-size: 11px; font-weight: 600; color: var(--color-ink-low); letter-spacing: 0.08em; text-transform: uppercase;">Portal</div>
@@ -37,8 +34,8 @@
                         <div class="flex items-center gap-4">
                             <div style="width: 52px; height: 52px; border-radius: 14px; background: var(--color-brand-soft); display: flex; align-items: center; justify-content: center;">
                                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-                                    <circle cx="12" cy="8" r="4" stroke="#085c2e" stroke-width="1.8"/>
-                                    <path d="M4 21c0-4 4-7 8-7s8 3 8 7" stroke="#085c2e" stroke-width="1.8" stroke-linecap="round"/>
+                                    <circle cx="12" cy="8" r="4" stroke="currentColor" style="color: var(--color-brand-deep);" stroke-width="1.8"/>
+                                    <path d="M4 21c0-4 4-7 8-7s8 3 8 7" stroke="currentColor" style="color: var(--color-brand-deep);" stroke-width="1.8" stroke-linecap="round"/>
                                 </svg>
                             </div>
                             <div>

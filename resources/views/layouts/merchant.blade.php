@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? __('common.brand').' · '.__('nav.merchant_portal') }}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('favicon/favicon-192x192.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
@@ -16,7 +19,7 @@
             <div class="grid-bg"></div>
             <div class="relative flex flex-col h-full p-4">
                 <div class="flex items-center gap-3 px-3 py-4 mb-4">
-                    <x-lipa-mark size="36"/>
+                    <x-lipa-mark :size="36" :dark="true"/>
                     <div>
                         <div class="font-bold text-white" style="font-size: 17px; letter-spacing: -0.01em;">{{ __('common.brand') }}</div>
                         <div class="text-xs font-semibold uppercase tracking-widest" style="color: rgba(255,255,255,0.45); margin-top: 1px;">{{ __('nav.merchant_portal') }}</div>

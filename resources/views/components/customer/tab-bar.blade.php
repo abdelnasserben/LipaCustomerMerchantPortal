@@ -8,7 +8,7 @@
         <span>{{ __('nav.activity') }}</span>
     </a>
     <a wire:navigate href="{{ route('customer.send') }}" class="tab-item {{ request()->routeIs('customer.send*') ? 'active' : '' }}" style="position: relative;">
-        <span style="width: 48px; height: 48px; border-radius: 50%; background: #0c7a3e; color: #fff; display: flex; align-items: center; justify-content: center; margin-top: -16px; box-shadow: 0 6px 16px rgba(12,122,62,0.35);">
+        <span style="width: 48px; height: 48px; border-radius: 50%; background: var(--color-brand); color: #fff; display: flex; align-items: center; justify-content: center; margin-top: -16px; box-shadow: 0 6px 16px color-mix(in oklch, var(--color-brand) 35%, transparent);">
             <x-icon name="send" class="w-6 h-6"/>
         </span>
         <span>{{ __('nav.send') }}</span>

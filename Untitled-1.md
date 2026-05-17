@@ -13,4 +13,18 @@ Merchant sawaprix: +269 3456789 / 2026
 
 Caissier 1: +269 4091010 / 2026
 
-TODO: last seen terminal dont work
+Customers
+---------
+ 4102030
+ 3010002
+ 3009865
+ 4567890
+ 4350987
+
+Agents
+---------
+ 4637809
+ 4098976
+ 3709800
+ 3209988
+ 4017077

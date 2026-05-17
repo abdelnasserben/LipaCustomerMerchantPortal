@@ -139,7 +139,6 @@ return [
         'cash_out_enabled'  => 'Cash-out enabled',
         'm2m_transfers'     => 'M2M transfers',
         'security_pin'      => 'Security & PIN',
-        'session_note'      => 'Note: Merchant sessions last 8 hours. Sign-out only clears local storage — the JWT remains valid until natural expiry.',
     ],
 
     'security' => [
@@ -158,11 +157,11 @@ return [
         'not_available'     => 'Not available',
         'server_logout'     => 'Server-side logout',
         'current_pin'       => 'Current PIN',
-        'current_pin_ph'    => 'Current PIN',
+        'current_pin_ph'    => '****',
         'new_pin'           => 'New PIN',
         'confirm_new_pin'   => 'Confirm New PIN',
-        'new_pin_ph'        => '4–8 digits',
-        'repeat'            => 'Repeat',
+        'new_pin_ph'        => '****',
+        'repeat'            => '****',
         'update_pin'        => 'Update PIN',
         'enable_2fa'        => 'Enable 2FA',
         'enable_2fa_sub'    => 'Scan the QR code with your authenticator app, then enter the 6-digit code.',
@@ -230,7 +229,7 @@ return [
         'registered'        => 'Registered',
         'read_only_title'   => 'Read-only view',
         'read_only_body'    => 'Terminal provisioning, suspension, and revocation is managed by the Lipa operations team. Contact support to make changes.',
-        'list_footer'       => 'To provision a new terminal or modify an existing one, contact the Lipa operations team. Portal view is read-only.',
+        'list_footer'       => 'To provision a new terminal or modify an existing one, contact the Lipa operations team.',
     ],
 
     'errors' => [

@@ -129,13 +129,13 @@
                         <div style="width: 80px; background: var(--color-surface-alt); display: flex; align-items: center; justify-content: center; border-right: 1px solid var(--color-border); font-family: var(--font-mono); font-weight: 600; font-size: 14px; color: var(--color-ink-mid);">
                             +269
                         </div>
-                        <input wire:model="phoneNumber" type="tel" placeholder="32 XX XX XX"
+                        <input wire:model="phoneNumber" type="tel" placeholder="XXX XX XX"
                             style="flex: 1; border: none; outline: none; padding: 0 16px; font-family: var(--font-mono); font-size: 16px; color: var(--color-ink-hi); background: transparent;"/>
                     </div>
                 </div>
                 <div>
                     <label class="label">{{ __('merchant.cashiers.terminal_pin') }} <span style="font-size: 10px; color: var(--color-ink-low); text-transform: none; font-weight: 400; letter-spacing: normal; margin-left: 4px;">{{ __('merchant.cashiers.terminal_pin_hint') }}</span></label>
-                    <input wire:model="pin" type="password" inputmode="numeric" placeholder="••••" class="input" style="font-size: 20px; letter-spacing: 0.3em;"/>
+                    <input wire:model="pin" type="password" inputmode="numeric" placeholder="****" class="input" style="font-size: 20px; letter-spacing: 0.3em;"/>
                 </div>
                 <div>
                     <label class="label">{{ __('merchant.cashiers.confirm_pin') }}</label>
