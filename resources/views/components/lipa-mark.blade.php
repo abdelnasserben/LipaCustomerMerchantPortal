@@ -1,7 +1,7 @@
 @props(['size' => 36, 'dark' => false])
 @php
-    $ink = $dark ? '#ffffff' : '#0a0a0a';
-    $accent = $dark ? '#ffffff' : '#4f8a6a';
+    $ink = $dark ? '#faf6ec' : '#0a0a0a';
+    $accent = $dark ? '#4f8a6a' : '#4f8a6a';
 @endphp
 <svg width="{{ $size }}" height="{{ $size }}" viewBox="0 0 100 100" fill="none" role="img" aria-label="Lipa" style="flex-shrink: 0;">
     <circle cx="26" cy="50" r="9" fill="{{ $ink }}"/>
