@@ -81,6 +81,27 @@ final class MockCustomerAuthApi implements CustomerAuthApi
         }
     }
 
+    public function resetPin(string $phoneCountryCode, string $phoneNumber, string $totpCode, string $newPin): void
+    {
+        // Drive the three documented branches via fixtures:
+        //   phone "000000" → actor has no TOTP enrolled
+        //   totp  "000000" → invalid TOTP / unknown phone (anti-enumeration)
+        //   anything else  → 204 success
+        if ($phoneNumber === '000000') {
+            throw new BusinessException(
+                'TOTP must be enrolled before self-service PIN reset',
+                'AUTH_PIN_RESET_TOTP_REQUIRED',
+                422,
+            );
+        }
+        if (strlen($totpCode) !== 6 || $totpCode === '000000') {
+            throw new AuthException('Invalid TOTP code', 'AUTH_MFA_INVALID', 401);
+        }
+        if (strlen($newPin) < 4 || strlen($newPin) > 8) {
+            throw new BusinessException('Invalid PIN format', 'AUTH_PIN_FORMAT', 422);
+        }
+    }
+
     public function totpSetup(string $accessToken): array
     {
         return [

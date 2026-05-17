@@ -43,6 +43,10 @@ return [
     'session_expired_sub'       => 'For your safety, we signed you out after a period of inactivity.',
     'locked_title'              => 'PIN locked',
     'locked_sub'                => 'Too many incorrect attempts. Try again in 14 minutes.',
+    'reset_pin_title'           => 'Reset your PIN',
+    'reset_pin_sub'             => 'Enter your phone, a 6-digit authenticator code, and choose a new PIN.',
+    'reset_pin_done_title'      => 'PIN reset',
+    'reset_pin_done_sub'        => 'Sign in with your new PIN.',
 
     'phone_number'              => 'Phone Number',
     'phone_placeholder_customer'=> 'XXX XX XX',
@@ -63,9 +67,14 @@ return [
     'session_expired_alert'     => 'Your session expired after 15 minutes of inactivity. Please sign in again to continue.',
     'locked_heading'            => 'PIN locked for 15 minutes',
     'locked_body'               => 'After 3 failed attempts, PIN entry is temporarily blocked. This protects your account.',
+    'forgot_pin'                => 'Forgot your PIN?',
+    'reset_pin_submit'          => 'Reset my PIN',
+    'reset_pin_alert'           => 'Two-factor authentication is required. Without 2FA enrolled, please contact support.',
+    'reset_pin_done_alert'      => 'Your PIN has been reset. Sign in with your new PIN.',
 
     'errors' => [
         'phone_pin_required'    => 'Please enter your phone number and PIN.',
+        'phone_required'        => 'Please enter your phone number.',
         'mfa_code_required'     => 'Enter the 6-digit code from your authenticator app.',
         'pin_length'            => 'PIN must be 4 to 8 digits.',
         'pins_dont_match'       => 'PINs do not match.',

@@ -46,6 +46,10 @@ return [
     'session_expired_sub'       => 'Déconnexion après inactivité, par sécurité.',
     'locked_title'              => 'PIN bloqué',
     'locked_sub'                => 'Trop de tentatives. Réessayez dans 14 minutes.',
+    'reset_pin_title'           => 'Réinitialiser votre PIN',
+    'reset_pin_sub'             => 'Saisissez votre numéro, un code d’authentification à 6 chiffres et choisissez un nouveau PIN.',
+    'reset_pin_done_title'      => 'PIN réinitialisé',
+    'reset_pin_done_sub'        => 'Connectez-vous avec votre nouveau PIN.',
 
     // Form fields & buttons
     'phone_number'              => 'Numéro de téléphone',
@@ -67,10 +71,15 @@ return [
     'session_expired_alert'     => 'Session expirée après 15 min d’inactivité. Reconnectez-vous.',
     'locked_heading'            => 'PIN bloqué 15 minutes',
     'locked_body'               => 'Après 3 tentatives échouées, la saisie est bloquée pour protéger votre compte.',
+    'forgot_pin'                => 'PIN oublié ?',
+    'reset_pin_submit'          => 'Réinitialiser mon PIN',
+    'reset_pin_alert'           => 'L’authentification à deux facteurs est requise. Sans 2FA, contactez le support.',
+    'reset_pin_done_alert'      => 'Votre PIN a été réinitialisé. Connectez-vous avec votre nouveau PIN.',
 
     // Validation messages (Livewire)
     'errors' => [
         'phone_pin_required'    => 'Saisissez votre téléphone et votre PIN.',
+        'phone_required'        => 'Saisissez votre numéro de téléphone.',
         'mfa_code_required'     => 'Saisissez le code à 6 chiffres de votre app d’authentification.',
         'pin_length'            => 'PIN entre 4 et 8 chiffres.',
         'pins_dont_match'       => 'Les PIN ne correspondent pas.',

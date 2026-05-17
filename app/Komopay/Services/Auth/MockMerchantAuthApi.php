@@ -64,6 +64,23 @@ final class MockMerchantAuthApi implements MerchantAuthApi
         }
     }
 
+    public function resetPin(string $phoneCountryCode, string $phoneNumber, string $totpCode, string $newPin): void
+    {
+        if ($phoneNumber === '000000') {
+            throw new BusinessException(
+                'TOTP must be enrolled before self-service PIN reset',
+                'AUTH_PIN_RESET_TOTP_REQUIRED',
+                422,
+            );
+        }
+        if (strlen($totpCode) !== 6 || $totpCode === '000000') {
+            throw new AuthException('Invalid TOTP code', 'AUTH_MFA_INVALID', 401);
+        }
+        if (strlen($newPin) < 4 || strlen($newPin) > 8) {
+            throw new BusinessException('Invalid PIN format', 'AUTH_PIN_FORMAT', 422);
+        }
+    }
+
     public function totpSetup(string $accessToken): array
     {
         return [

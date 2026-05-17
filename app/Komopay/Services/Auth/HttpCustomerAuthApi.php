@@ -54,6 +54,16 @@ final class HttpCustomerAuthApi implements CustomerAuthApi
         ], ['bearer' => $accessToken]);
     }
 
+    public function resetPin(string $phoneCountryCode, string $phoneNumber, string $totpCode, string $newPin): void
+    {
+        $this->http->post('auth/customer/auth-pin/reset', [
+            'phoneCountryCode' => $phoneCountryCode,
+            'phoneNumber'      => $phoneNumber,
+            'totpCode'         => $totpCode,
+            'newPin'           => $newPin,
+        ]);
+    }
+
     public function totpSetup(string $accessToken): array
     {
         return (array) $this->http->post('auth/customer/totp-setup', [], ['bearer' => $accessToken])->data;

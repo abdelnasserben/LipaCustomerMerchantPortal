@@ -17,6 +17,7 @@ class MerchantLogin extends Component
     public string $mfaCode = '';
     public string $newPin = '';
     public string $confirmPin = '';
+    public string $resetTotpCode = '';
     public string $error = '';
 
     public ?string $challengeId = null;
@@ -82,6 +83,48 @@ class MerchantLogin extends Component
             session(['actor_type' => 'merchant', 'auth_user' => ['name' => 'Merchant', 'type' => 'merchant']]);
             $this->redirect(route('merchant.dashboard'), navigate: true);
         }
+    }
+
+    public function startReset(): void
+    {
+        $this->error = '';
+        $this->resetTotpCode = '';
+        $this->newPin = $this->confirmPin = '';
+        $this->step = 'resetPin';
+    }
+
+    public function resetPin(MerchantAuthApi $auth): void
+    {
+        $this->error = '';
+        if (empty($this->phoneNumber)) {
+            $this->error = __('auth.errors.phone_required');
+            return;
+        }
+        if (strlen($this->resetTotpCode) !== 6) {
+            $this->error = __('auth.errors.mfa_code_required');
+            return;
+        }
+        if (strlen($this->newPin) < 4 || strlen($this->newPin) > 8) {
+            $this->error = __('auth.errors.pin_length');
+            return;
+        }
+        if ($this->newPin !== $this->confirmPin) {
+            $this->error = __('auth.errors.pins_dont_match');
+            return;
+        }
+        try {
+            $auth->resetPin($this->phoneCountryCode, $this->phoneNumber, $this->resetTotpCode, $this->newPin);
+        } catch (BusinessException $e) {
+            $this->error = $e->getMessage();
+            return;
+        } catch (KomopayException $e) {
+            $this->error = $e->getMessage();
+            return;
+        }
+        $this->resetTotpCode = '';
+        $this->newPin = $this->confirmPin = '';
+        $this->pin = '';
+        $this->step = 'resetPinDone';
     }
 
     public function setupPin(MerchantAuthApi $auth): void

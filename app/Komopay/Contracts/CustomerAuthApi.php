@@ -28,6 +28,9 @@ interface CustomerAuthApi
     /** PUT /auth/customer/auth-pin — 204. */
     public function changePin(string $accessToken, string $currentPin, string $newPin): void;
 
+    /** POST /auth/customer/auth-pin/reset — 204. Public; gated by TOTP. */
+    public function resetPin(string $phoneCountryCode, string $phoneNumber, string $totpCode, string $newPin): void;
+
     /** POST /auth/customer/totp-setup — returns TotpSetupResponse. */
     public function totpSetup(string $accessToken): array;
 

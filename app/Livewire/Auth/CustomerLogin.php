@@ -9,7 +9,7 @@ use Livewire\Component;
 
 class CustomerLogin extends Component
 {
-    public string $step = 'login'; // login | mfa | pinSetup | sessionExpired | locked
+    public string $step = 'login'; // login | mfa | pinSetup | resetPin | resetPinDone | sessionExpired | locked
     public string $phoneCountryCode = '269';
     public string $phoneNumber = '';
     public string $pin = '';
@@ -17,6 +17,7 @@ class CustomerLogin extends Component
     public string $mfaCode = '';
     public string $newPin = '';
     public string $confirmPin = '';
+    public string $resetTotpCode = '';
     public string $error = '';
 
     public ?string $challengeId = null;
@@ -83,6 +84,49 @@ class CustomerLogin extends Component
             session(['actor_type' => 'customer', 'auth_user' => ['name' => 'Customer', 'type' => 'customer']]);
             $this->redirect(route('customer.dashboard'), navigate: true);
         }
+    }
+
+    public function startReset(): void
+    {
+        $this->error = '';
+        $this->resetTotpCode = '';
+        $this->newPin = $this->confirmPin = '';
+        $this->step = 'resetPin';
+    }
+
+    public function resetPin(CustomerAuthApi $auth): void
+    {
+        $this->error = '';
+        if (empty($this->phoneNumber)) {
+            $this->error = __('auth.errors.phone_required');
+            return;
+        }
+        if (strlen($this->resetTotpCode) !== 6) {
+            $this->error = __('auth.errors.mfa_code_required');
+            return;
+        }
+        if (strlen($this->newPin) < 4 || strlen($this->newPin) > 8) {
+            $this->error = __('auth.errors.pin_length');
+            return;
+        }
+        if ($this->newPin !== $this->confirmPin) {
+            $this->error = __('auth.errors.pins_dont_match');
+            return;
+        }
+        try {
+            $auth->resetPin($this->phoneCountryCode, $this->phoneNumber, $this->resetTotpCode, $this->newPin);
+        } catch (BusinessException $e) {
+            // AUTH_PIN_RESET_TOTP_REQUIRED, ACTOR_* — surface message, stay on form
+            $this->error = $e->getMessage();
+            return;
+        } catch (KomopayException $e) {
+            $this->error = $e->getMessage();
+            return;
+        }
+        $this->resetTotpCode = '';
+        $this->newPin = $this->confirmPin = '';
+        $this->pin = '';
+        $this->step = 'resetPinDone';
     }
 
     public function setupPin(CustomerAuthApi $auth): void

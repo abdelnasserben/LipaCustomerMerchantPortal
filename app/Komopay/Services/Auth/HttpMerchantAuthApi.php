@@ -42,6 +42,16 @@ final class HttpMerchantAuthApi implements MerchantAuthApi
         ], ['bearer' => $accessToken]);
     }
 
+    public function resetPin(string $phoneCountryCode, string $phoneNumber, string $totpCode, string $newPin): void
+    {
+        $this->http->post('auth/merchant/auth-pin/reset', [
+            'phoneCountryCode' => $phoneCountryCode,
+            'phoneNumber'      => $phoneNumber,
+            'totpCode'         => $totpCode,
+            'newPin'           => $newPin,
+        ]);
+    }
+
     public function totpSetup(string $accessToken): array
     {
         return (array) $this->http->post('auth/merchant/totp-setup', [], ['bearer' => $accessToken])->data;

@@ -206,7 +206,9 @@ The `LoginResponse` envelope has **three mutually exclusive shapes** — exactly
 | `POST /api/v1/auth/customer/totp-confirm` | Customer JWT | confirm with first 6-digit code |
 | `DELETE /api/v1/auth/customer/totp-setup` | Customer JWT | revoke TOTP; requires a current code as step-up |
 
-PIN rules: 4–8 digits, BCrypt-hashed server-side, never returned. `auth-pin/setup` rejects with `AUTH_PIN_ALREADY_SET` if a PIN exists. Forgotten-PIN self-service does not exist — requires Backoffice forced reset, which returns the customer to the `pinSetupRequired` branch.
+PIN rules: 4–8 digits, BCrypt-hashed server-side, never returned. `auth-pin/setup` rejects with `AUTH_PIN_ALREADY_SET` if a PIN exists.
+
+**Forgotten PIN — self-service via TOTP**. A Customer or Merchant who has TOTP enrolled may reset their PIN without contacting Backoffice via `POST /api/v1/auth/{customer|merchant}/auth-pin/reset` (public; body `{ phoneCountryCode, phoneNumber, totpCode, newPin }`). The server verifies the TOTP code and atomically replaces the PIN hash + resets lock counters. No temporary PIN is generated or transmitted — the user supplies `newPin` directly. Actors without TOTP get `422 AUTH_PIN_RESET_TOTP_REQUIRED` and must request a Backoffice forced reset instead. Unknown phone or invalid TOTP both return `401 AUTH_MFA_INVALID` (anti-enumeration). Active sessions are not revoked; the next login still requires the new PIN + TOTP.
 
 ### 3.4 Merchant Auth & Its Limitations
 
@@ -301,6 +303,7 @@ Identical contract shape on both surfaces — build these as shared components:
 | POST | `/api/v1/auth/customer/logout` | Customer JWT | `Authorization` | none | `204 No Content` | `401 UNAUTHORIZED` | Revokes current access token + active refresh tokens. Clear local tokens. |
 | POST | `/api/v1/auth/customer/auth-pin/setup` | `PIN_SETUP` token | `Authorization` | `SetAuthPinRequest` | `204 No Content` | `400 VALIDATION_FIELD_REQUIRED`, `401 UNAUTHORIZED`, `422 AUTH_PIN_ALREADY_SET`, `422 AUTH_PIN_FORMAT` | Consumes the single-use `pinSetupToken`. |
 | PUT | `/api/v1/auth/customer/auth-pin` | Customer JWT | `Authorization` | `ChangeAuthPinRequest` | `204 No Content` | `400 VALIDATION_FIELD_REQUIRED`, `401 AUTH_PIN_INVALID`, `401 UNAUTHORIZED`, `422 AUTH_PIN_NOT_SET`, `422 AUTH_PIN_LOCKED`, `422 AUTH_PIN_FORMAT` | Requires `currentPin`. |
+| POST | `/api/v1/auth/customer/auth-pin/reset` | Public | none | `ResetAuthPinRequest` | `204 No Content` | `400 VALIDATION_FIELD_REQUIRED`, `401 AUTH_MFA_INVALID`, `422 AUTH_PIN_RESET_TOTP_REQUIRED`, `422 AUTH_PIN_FORMAT`, `422 ACTOR_SUSPENDED`, `422 ACTOR_CLOSED`, `422 ACTOR_PENDING_KYC` | Forgotten-PIN reset gated by TOTP. New PIN supplied in the request; no temporary PIN is generated. |
 | POST | `/api/v1/auth/customer/totp-setup` | Customer JWT | `Authorization` | none | `200 ApiResponse<TotpSetupResponse>` | `401 UNAUTHORIZED`, `403 FORBIDDEN` | Display `qrUri` as QR; treat `secret` as a credential. |
 | POST | `/api/v1/auth/customer/totp-confirm` | Customer JWT | `Authorization` | `TotpConfirmRequest` | `204 No Content` | `400 VALIDATION_FIELD_REQUIRED`, `401 MFA_INVALID`, `401 UNAUTHORIZED` | Activates the pending secret. |
 | DELETE | `/api/v1/auth/customer/totp-setup` | Customer JWT | `Authorization` | `TotpRevokeRequest` | `204 No Content` | `400 VALIDATION_FIELD_REQUIRED`, `401 MFA_INVALID`, `401 UNAUTHORIZED` | Step-up with a current TOTP code. |
@@ -334,6 +337,7 @@ Identical contract shape on both surfaces — build these as shared components:
 | POST | `/api/v1/auth/merchant/login/verify-mfa` | Public | — | `VerifyMfaRequest` | `200 ApiResponse<LoginResponse>` (tokens) | `400 VALIDATION_FIELD_REQUIRED`, `401 MFA_INVALID`, `401 INVALID_CREDENTIALS`, `422 ACTOR_*`, `429 TERMINAL_RATE_LIMIT` | Only after a `mfaRequired=true` login. |
 | POST | `/api/v1/auth/merchant/auth-pin/setup` | `PIN_SETUP` token | `Authorization` | `SetAuthPinRequest` | `204 No Content` | `400 VALIDATION_FIELD_REQUIRED`, `401 UNAUTHORIZED`, `422 AUTH_PIN_ALREADY_SET`, `422 AUTH_PIN_FORMAT` | Single-use token. |
 | PUT | `/api/v1/auth/merchant/auth-pin` | Merchant JWT | `Authorization` | `ChangeAuthPinRequest` | `204 No Content` | `400 VALIDATION_FIELD_REQUIRED`, `401 AUTH_PIN_INVALID`, `401 UNAUTHORIZED`, `422 AUTH_PIN_NOT_SET`, `422 AUTH_PIN_LOCKED`, `422 AUTH_PIN_FORMAT` | Requires `currentPin`. |
+| POST | `/api/v1/auth/merchant/auth-pin/reset` | Public | none | `ResetAuthPinRequest` | `204 No Content` | `400 VALIDATION_FIELD_REQUIRED`, `401 AUTH_MFA_INVALID`, `422 AUTH_PIN_RESET_TOTP_REQUIRED`, `422 AUTH_PIN_FORMAT`, `422 ACTOR_SUSPENDED`, `422 ACTOR_CLOSED`, `422 ACTOR_PENDING_KYC` | Forgotten-PIN reset gated by TOTP. Same contract as Customer. |
 | POST | `/api/v1/auth/merchant/totp-setup` | Merchant JWT | `Authorization` | none | `200 ApiResponse<TotpSetupResponse>` | `401 UNAUTHORIZED`, `403 FORBIDDEN` | Display `qrUri` as QR; treat `secret` as a credential. |
 | POST | `/api/v1/auth/merchant/totp-confirm` | Merchant JWT | `Authorization` | `TotpConfirmRequest` | `204 No Content` | `400 VALIDATION_FIELD_REQUIRED`, `401 MFA_INVALID`, `401 UNAUTHORIZED` | Activates the pending secret. |
 | DELETE | `/api/v1/auth/merchant/totp-setup` | Merchant JWT | `Authorization` | `TotpRevokeRequest` | `204 No Content` | `400 VALIDATION_FIELD_REQUIRED`, `401 MFA_INVALID`, `401 UNAUTHORIZED` | Step-up with a current TOTP code. |
@@ -770,7 +774,7 @@ Every controller additionally re-checks the actor type in code (`requireCustomer
 | Refresh | `POST /auth/customer/refresh` (rotating) | **none — re-login on expiry** |
 | Logout | `POST /auth/customer/logout` (server revokes) | **none — clear local storage only** |
 | Initial PIN | `pinSetupRequired` branch → `auth-pin/setup` | same |
-| Forgotten PIN | Backoffice forced reset → back to `pinSetupRequired` | same |
+| Forgotten PIN | Self-service `POST auth-pin/reset` (requires TOTP) — else Backoffice forced reset → back to `pinSetupRequired` | same |
 | Lockout | 3 wrong PINs → 15 min lock | same |
 
 ### 9.3 Frontend Gating Inputs

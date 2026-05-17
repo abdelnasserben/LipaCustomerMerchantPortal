@@ -16,6 +16,9 @@ interface MerchantAuthApi
 
     public function changePin(string $accessToken, string $currentPin, string $newPin): void;
 
+    /** POST /auth/merchant/auth-pin/reset — 204. Public; gated by TOTP. */
+    public function resetPin(string $phoneCountryCode, string $phoneNumber, string $totpCode, string $newPin): void;
+
     public function totpSetup(string $accessToken): array;
 
     public function totpConfirm(string $accessToken, string $code): void;

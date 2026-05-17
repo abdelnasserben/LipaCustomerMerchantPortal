@@ -1,6 +1,6 @@
 <div class="min-h-screen flex flex-col lg:flex-row" style="background: var(--color-bg);">
     {{-- Mobile/tablet: dark hero header  |  Desktop (lg+): left panel --}}
-    <div class="relative overflow-hidden lg:w-1/2 lg:flex lg:flex-col lg:justify-between"
+    <div class="relative overflow-hidden lg:w-1/2 lg:sticky lg:top-0 lg:self-start lg:h-screen lg:flex lg:flex-col lg:justify-between"
          style="background: #0a0a0a;">
         <div class="grid-bg"></div>
 
@@ -18,6 +18,8 @@
                     @if($step === 'login') {{ __('auth.merchant.sign_in_title') }}
                     @elseif($step === 'mfa') {{ __('auth.merchant.mfa_title') }}
                     @elseif($step === 'pinSetup') {{ __('auth.merchant.pin_setup_title') }}
+                    @elseif($step === 'resetPin') {{ __('auth.reset_pin_title') }}
+                    @elseif($step === 'resetPinDone') {{ __('auth.reset_pin_done_title') }}
                     @elseif($step === 'sessionExpired') {{ __('auth.merchant.session_expired_title') }}
                     @elseif($step === 'locked') {{ __('auth.merchant.locked_title') }}
                     @endif
@@ -26,6 +28,8 @@
                     @if($step === 'login') {{ __('auth.merchant.sign_in_sub') }}
                     @elseif($step === 'mfa') {{ __('auth.merchant.mfa_sub') }}
                     @elseif($step === 'pinSetup') {{ __('auth.merchant.pin_setup_sub') }}
+                    @elseif($step === 'resetPin') {{ __('auth.reset_pin_sub') }}
+                    @elseif($step === 'resetPinDone') {{ __('auth.reset_pin_done_sub') }}
                     @elseif($step === 'sessionExpired') {{ __('auth.merchant.session_expired_sub') }}
                     @elseif($step === 'locked') {{ __('auth.merchant.locked_sub') }}
                     @endif
@@ -35,7 +39,7 @@
         </div>
 
         {{-- Desktop left panel --}}
-        <div class="relative hidden lg:flex lg:flex-col lg:justify-between" style="padding: 48px 56px; min-height: 100vh;">
+        <div class="relative hidden lg:flex lg:flex-col lg:justify-between lg:h-full" style="padding: 48px 56px;">
             <div class="relative">
                 <div class="flex items-center gap-3">
                     <x-lipa-mark :size="48" :dark="true"/>
@@ -68,6 +72,8 @@
                     @if($step === 'login') {{ __('auth.merchant.sign_in_title') }}
                     @elseif($step === 'mfa') {{ __('auth.merchant.mfa_title') }}
                     @elseif($step === 'pinSetup') {{ __('auth.merchant.pin_setup_title') }}
+                    @elseif($step === 'resetPin') {{ __('auth.reset_pin_title') }}
+                    @elseif($step === 'resetPinDone') {{ __('auth.reset_pin_done_title') }}
                     @elseif($step === 'sessionExpired') {{ __('auth.merchant.session_expired_title') }}
                     @elseif($step === 'locked') {{ __('auth.merchant.locked_title') }}
                     @endif
@@ -76,6 +82,8 @@
                     @if($step === 'login') {{ __('auth.merchant.sign_in_sub') }}
                     @elseif($step === 'mfa') {{ __('auth.merchant.mfa_sub') }}
                     @elseif($step === 'pinSetup') {{ __('auth.merchant.pin_setup_sub') }}
+                    @elseif($step === 'resetPin') {{ __('auth.reset_pin_sub') }}
+                    @elseif($step === 'resetPinDone') {{ __('auth.reset_pin_done_sub') }}
                     @elseif($step === 'sessionExpired') {{ __('auth.merchant.session_expired_sub') }}
                     @elseif($step === 'locked') {{ __('auth.merchant.locked_sub') }}
                     @endif
@@ -112,7 +120,84 @@
                     </div>
                 </div>
                 <button type="submit" class="btn btn-dark btn-lg btn-full">{{ __('auth.sign_in') }}</button>
+                <div class="text-center" style="margin-top: -4px;">
+                    <button type="button" wire:click="startReset" style="background: none; border: none; cursor: pointer; font-size: 13px; color: var(--color-brand); font-weight: 600;">
+                        {{ __('auth.forgot_pin') }}
+                    </button>
+                </div>
             </form>
+            @endif
+
+            @if($step === 'resetPin')
+            <form wire:submit="resetPin" class="flex flex-col gap-5"
+                  x-data="{
+                      phone: @entangle('phoneNumber').live,
+                      newPin: @entangle('newPin').live,
+                      confirmPin: @entangle('confirmPin').live,
+                      get phoneOk() { return this.phone && this.phone.length >= 6; },
+                      get pinOk()   { return this.newPin.length >= 4 && this.newPin.length <= 8 && this.newPin === this.confirmPin; }
+                  }">
+                <div>
+                    <label class="label">{{ __('auth.phone_number') }}</label>
+                    <div style="display: flex; height: 52px; border: 1px solid var(--color-border-hi); border-radius: 12px; background: #fff; overflow: hidden;">
+                        <div style="width: 80px; background: var(--color-surface-alt); display: flex; align-items: center; justify-content: center; border-right: 1px solid var(--color-border); font-family: var(--font-mono); font-weight: 600; font-size: 15px; color: var(--color-ink-mid); flex-shrink: 0;">
+                            +269
+                        </div>
+                        <input x-model="phone" type="tel" placeholder="{{ __('auth.phone_placeholder_merchant') }}" inputmode="tel" autofocus
+                            style="flex: 1; min-width: 0; border: none; outline: none; padding: 0 16px; font-family: var(--font-mono); font-size: 16px; color: var(--color-ink-hi); background: transparent; letter-spacing: 0.04em;"/>
+                    </div>
+                </div>
+
+                <template x-if="phoneOk">
+                    <div class="flex flex-col gap-5">
+                        <div>
+                            <label class="label">{{ __('auth.new_pin') }}</label>
+                            <input x-model="newPin" type="password" placeholder="{{ __('auth.pin_4_8') }}" class="input" inputmode="numeric"/>
+                        </div>
+                        <div>
+                            <label class="label">{{ __('auth.confirm_pin') }}</label>
+                            <input x-model="confirmPin" type="password" placeholder="{{ __('auth.repeat_pin') }}" class="input" inputmode="numeric"/>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="phoneOk && pinOk">
+                    <div x-data="otpInput(@js($resetTotpCode))" x-init="$watch('value', v => $wire.set('resetTotpCode', v, false)); $nextTick(() => $refs.d0 && $refs.d0.focus())">
+                        <label class="label">{{ __('auth.authenticator_code') }}</label>
+                        <div class="flex gap-2 justify-between" x-on:paste.prevent="onPaste($event)">
+                            @for($i = 0; $i < 6; $i++)
+                            <input type="text" maxlength="1" inputmode="numeric" autocomplete="one-time-code"
+                                class="otp-input flex-1 min-w-0"
+                                x-ref="d{{ $i }}"
+                                x-on:input="onInput($event, {{ $i }})"
+                                x-on:keydown="onKeydown($event, {{ $i }})"
+                                x-on:focus="$event.target.select()"/>
+                            @endfor
+                        </div>
+                    </div>
+                </template>
+
+                <div class="alert alert-info">
+                    <x-icon name="shield" class="w-4 h-4 flex-shrink-0 mt-0.5"/>
+                    <span>{{ __('auth.reset_pin_alert') }}</span>
+                </div>
+                <button type="submit" class="btn btn-dark btn-lg btn-full" x-bind:disabled="!(phoneOk && pinOk)" x-bind:style="!(phoneOk && pinOk) ? 'opacity: 0.5; cursor: not-allowed;' : ''">
+                    {{ __('auth.reset_pin_submit') }}
+                </button>
+                <button type="button" wire:click="$set('step', 'login')" class="btn btn-ghost btn-md btn-full" style="color: var(--color-ink-mid);">
+                    ← {{ __('common.back') }}
+                </button>
+            </form>
+            @endif
+
+            @if($step === 'resetPinDone')
+            <div class="flex flex-col gap-5">
+                <div class="alert alert-success">
+                    <x-icon name="shield" class="w-4 h-4 flex-shrink-0 mt-0.5"/>
+                    <span>{{ __('auth.reset_pin_done_alert') }}</span>
+                </div>
+                <button wire:click="$set('step', 'login')" class="btn btn-dark btn-lg btn-full">{{ __('auth.sign_in_again') }}</button>
+            </div>
             @endif
 
             @if($step === 'mfa')
