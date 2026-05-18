@@ -9,7 +9,7 @@
         </div>
         <div class="flex gap-2">
             <button class="circle-btn"><x-icon name="refresh" class="w-4 h-4"/></button>
-            <button class="circle-btn"><x-icon name="bell" class="w-5 h-5"/></button>
+            <livewire:notifications.bell :actor="'merchant'" :key="'bell-merchant'"/>
         </div>
     </div>
 

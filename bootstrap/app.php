@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'guest.portal' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+            'portal.auth'  => \App\Http\Middleware\RequirePortalAuth::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

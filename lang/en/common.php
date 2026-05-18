@@ -27,4 +27,5 @@ return [
     'all_sessions_logged' => 'All sessions are logged and monitored',
     'loading_qr'        => 'Loading QR…',
     'sign_out'          => 'Sign Out',
+    'refresh'           => 'Refresh',
 ];

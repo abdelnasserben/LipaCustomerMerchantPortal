@@ -6,6 +6,9 @@ use App\Komopay\Contracts\CustomerApi;
 use App\Komopay\Contracts\CustomerAuthApi;
 use App\Komopay\Contracts\MerchantApi;
 use App\Komopay\Contracts\MerchantAuthApi;
+use App\Komopay\Contracts\NotificationApi;
+use App\Komopay\Services\Notification\HttpNotificationApi;
+use App\Komopay\Services\Notification\MockNotificationApi;
 use App\Komopay\Http\KomopayHttpClient;
 use App\Komopay\Presenters\CardPresenter;
 use App\Komopay\Presenters\CounterpartyDirectory;
@@ -105,5 +108,34 @@ class KomopayServiceProvider extends ServiceProvider
         $this->app->bind(TerminalPresenter::class, fn (Application $app) =>
             new TerminalPresenter($app->make(CounterpartyDirectory::class)),
         );
+
+        // Notifications — shared inbox (spec 5.5). Bound per-actor under named
+        // aliases so Livewire components ask for the right scope explicitly.
+        $this->app->bind('komopay.notifications.customer', $useMock
+            ? fn (Application $app) => new MockNotificationApi($app->make('session.store'), 'customer')
+            : fn (Application $app) => new HttpNotificationApi(
+                $app->make(KomopayHttpClient::class),
+                $app->make('komopay.tokens.customer'),
+                $app->make(CustomerAuthApi::class),
+            ),
+        );
+        $this->app->bind('komopay.notifications.merchant', $useMock
+            ? fn (Application $app) => new MockNotificationApi($app->make('session.store'), 'merchant')
+            : fn (Application $app) => new HttpNotificationApi(
+                $app->make(KomopayHttpClient::class),
+                $app->make('komopay.tokens.merchant'),
+                null, // Merchant tokens don't refresh — 401 bubbles to re-login.
+            ),
+        );
+
+        // Default NotificationApi binding — resolves to the active actor from
+        // session. Lets Livewire components type-hint NotificationApi directly
+        // without knowing which portal they are mounted in.
+        $this->app->bind(NotificationApi::class, function (Application $app) {
+            $actor = $app->make('session.store')->get('actor_type') === 'merchant'
+                ? 'merchant'
+                : 'customer';
+            return $app->make('komopay.notifications.' . $actor);
+        });
     }
 }

@@ -18,7 +18,7 @@
 8. [Enums](#8-enums)
 9. [Permissions, Session & Auth](#9-permissions-session--auth)
 10. [Merchant Operators](#10-merchant-operators)
-11. [Recommended UI Flows](#11-recommended-ui-flows)
+11. [Recommended UI Flows](#11-recommended-ui-flows) — includes [11.8 Notifications inbox](#118-notifications-inbox-customer--merchant)
 12. [UI States & Business Errors](#12-ui-states--business-errors)
 13. [Where To Start](#13-where-to-start)
 14. [Evidence Index](#14-evidence-index)
@@ -36,10 +36,12 @@ Out of scope: Backoffice, Agent portal, Terminal (Android POS), service-provider
 
 **Endpoint counts in scope today:**
 
-| Surface | Auth endpoints | Portal endpoints | Total |
-|---|---:|---:|---:|
-| Customer | 7 | 12 | 19 |
-| Merchant | 3 | 12 | 15 |
+| Surface | Auth endpoints | Portal endpoints | Notifications (shared) | Total |
+|---|---:|---:|---:|---:|
+| Customer | 7 | 12 | 4 | 23 |
+| Merchant | 3 | 12 | 4 | 19 |
+
+> The 4 notification endpoints live under `/api/v1/notifications/**` and accept any of `CUSTOMER`, `MERCHANT`, `AGENT`. They are counted once per surface but implemented as a single controller — see [5.5](#55-notifications--shared-inbox-customer--merchant--agent).
 
 > The Customer and Merchant are **separate accounts with separate login flows and separate JWT actor types**. A single human who is both a customer and a merchant owner holds two independent sessions. The "common portal" is a shared frontend shell, not a shared session.
 
@@ -260,6 +262,7 @@ Neither carries `perms` or `brole`. A `MERCHANT` JWT without `mid` is rejected w
 | Bill payment | Pay a bill **only when `billpay.enabled=true`** — otherwise `501` |
 | Beneficiaries | View recent P2P recipients (derived from history) |
 | Cards | List own cards, view a card, self-report a card lost/stolen |
+| Notifications | List own in-app notifications, see unread count, mark one or all read |
 
 The Customer **cannot**: cash-in/cash-out, buy or replace a card, register themselves, see other wallets, or inspect approvals.
 
@@ -273,6 +276,7 @@ The Customer **cannot**: cash-in/cash-out, buy or replace a card, register thems
 | M2M | Transfer to another merchant by phone |
 | Terminals | List own terminals, view a terminal detail (read-only) |
 | Operators (cashiers) | Create, list, view, suspend, reactivate, revoke merchant operators |
+| Notifications | List own in-app notifications, see unread count, mark one or all read |
 
 The Merchant **cannot**: take payments from the portal (payments happen on the Terminal), provision terminals, refresh or revoke its own token, or inspect approvals.
 
@@ -285,6 +289,7 @@ Identical contract shape on both surfaces — build these as shared components:
 - **Transaction list** (cursor-paginated, same query params `cursor/limit/status/type/from/to`, near-identical row DTO) + **transaction detail by id**.
 - **Ledger statement** (cursor-paginated, same `cursor/limit/from/to`).
 - **A phone-addressed transfer** with `Idempotency-Key` (`/me/p2p` vs `/merchant/m2m`) — note P2P has a control gate, M2M does not.
+- **Notifications inbox** (`/api/v1/notifications/**`) — same 4 endpoints accept Customer, Merchant and Agent. Build the inbox UI once; mount it in every shell.
 - Shared envelopes, error handling, pagination, enums.
 
 ---
@@ -364,6 +369,24 @@ Identical contract shape on both surfaces — build these as shared components:
 | PATCH | `/api/v1/merchant/operators/{id}/revoke` | Merchant JWT | `Authorization` | — | none | `200 ApiResponse<OperatorResponse>` | `401`, `403`, `404 OPERATOR_NOT_FOUND`, `422 OPERATOR_INVALID_STATUS` | **Irreversible.** |
 
 > Error codes marked with concrete names are confirmed from `ErrorCode`; status-transition codes (`OPERATOR_INVALID_STATUS`, `MERCHANT_TO_MERCHANT_NOT_ALLOWED`) reflect the documented controller behaviour — treat any `4xx` from the backend as authoritative regardless of the exact code shown.
+
+### 5.5 Notifications — Shared inbox (Customer + Merchant + Agent)
+
+Single controller, scope-checked against the JWT principal. A user can never see, read or mutate another user's notifications — every endpoint silently filters to `(recipientType, recipientId) = (principal.actorType, principal.actorId)`.
+
+| Method | Path | Auth | Headers | Query | Request | Response | Primary errors | Notes |
+|---|---|---|---|---|---|---|---|---|
+| GET | `/api/v1/notifications?limit` | Customer / Merchant / Agent JWT | `Authorization` | `limit` (default 20, max 100) | — | `200 ApiResponse<List<NotificationResponse>>` | `401 UNAUTHORIZED`, `403 FORBIDDEN` | Newest first. Not cursor-paginated — `limit` clamped to `[1, 100]`. |
+| GET | `/api/v1/notifications/unread` | Customer / Merchant / Agent JWT | `Authorization` | — | — | `200 ApiResponse<UnreadCountResponse>` | `401`, `403` | Returns `{ unread: long }`. Use for the badge — call on dashboard load and after any `read`/`read-all`. |
+| POST | `/api/v1/notifications/{id}/read` | Customer / Merchant / Agent JWT | `Authorization` | — | none | `200 ApiResponse<null>` | `401`, `403 FORBIDDEN` (foreign notification), `404 NOT_FOUND` | Idempotent: re-marking a `READ` notification is a no-op. |
+| POST | `/api/v1/notifications/read-all` | Customer / Merchant / Agent JWT | `Authorization` | — | none | `200 ApiResponse<MarkAllReadResponse>` | `401`, `403` | Returns `{ updated: int }` — the count of rows flipped from `UNREAD` to `READ`. |
+
+**Delivery model — what the frontend must know:**
+
+- Notifications are written **asynchronously** by a backend poller (default cadence: 5 s) after a transaction completes. Expect a **few-second delay** between a successful transaction and the notification appearing in the inbox. Do **not** insert a row in the local UI based on the transaction response — refetch.
+- MVP scope is **transaction notifications only** (`category = TRANSACTION`). Future categories will be additive — code defensively (don't hard-error on unknown categories).
+- A single completed transaction may yield 1 or 2 notifications: 1 for one-sided flows (`CASH_IN` → customer; `CASH_OUT` → merchant), 2 for two-sided flows (`P2P_TRANSFER`, `PAYMENT`, `MERCHANT_TO_MERCHANT`).
+- Notifications are durable — there is no auto-expiry today. There is no real-time push channel yet (no WebSocket, no SSE, no FCM). The inbox is **pull-only**: poll `/unread` for the badge.
 
 ---
 
@@ -727,6 +750,26 @@ OperatorResponse = {
 
 > `OperatorResponse` never includes the PIN hash.
 
+### 7.8 Notifications
+
+```ts
+NotificationResponse = {
+  id: uuid;
+  category: string;        // NotificationCategory — "TRANSACTION" today
+  title: string;           // pre-rendered, localized server-side (French)
+  body: string;            // pre-rendered, includes amount/currency/reference
+  data?: string;           // raw JSON string — { transactionId, type } for TRANSACTION rows; null if no payload
+  status: string;          // NotificationStatus — "UNREAD" or "READ"
+  createdAt: instant;
+  readAt?: instant;        // null when status=UNREAD
+}
+
+UnreadCountResponse  = { unread: long; }
+MarkAllReadResponse  = { updated: int; }
+```
+
+The `data` field is a **string** that contains JSON — parse it client-side to extract deep-link parameters. For `category=TRANSACTION` rows the shape today is `{ "transactionId": uuid, "type": string }` where `type` is one of the values listed in [11.8](#118--notifications-inbox-customer--merchant). Treat unknown keys as forward-compatibility room — do not break on extra fields.
+
 ---
 
 ## 8. Enums
@@ -747,6 +790,8 @@ OperatorResponse = {
 | `CardStatus` | `ISSUED`, `ACTIVE`, `BLOCKED`, `LOST`, `STOLEN`, `EXPIRED`, `CLOSED` |
 | `TerminalStatus` | `REGISTERED`, `ACTIVE`, `SUSPENDED`, `REVOKED` |
 | `BillPaymentStatus` | `PENDING`, `SUCCESS`, `FAILED` (observed via `BillPaymentResponse.status`; only relevant when bill-pay is enabled) |
+| `NotificationCategory` | `TRANSACTION` (MVP scope; future values will be additive) |
+| `NotificationStatus` | `UNREAD`, `READ` |
 
 For Customer P2P and bill payment, `TransactionControlOutcome` will only ever be `EXECUTED`, `PENDING_PIN`, or `PENDING_CONFIRMATION` — `PENDING_APPROVAL` is not surfaced to these endpoints.
 
@@ -762,6 +807,7 @@ Customer and Merchant APIs do not use the Backoffice `Permission` enum. Authoriz
 |---|---|---|
 | `/api/v1/me/**` | `ROLE_CUSTOMER` | — |
 | `/api/v1/merchant/**` | `ROLE_MERCHANT` | JWT must carry `mid` (merchantId) |
+| `/api/v1/notifications/**` | `ROLE_CUSTOMER` ∨ `ROLE_MERCHANT` ∨ `ROLE_AGENT` | — — scope filter applied server-side from JWT `(actorType, actorId)` |
 
 Every controller additionally re-checks the actor type in code (`requireCustomer` / `requireMerchant`) and throws `403` on mismatch. The `merchantId` for all merchant endpoints is **always taken from the JWT, never the request body** — a merchant can never read or mutate another merchant's data.
 
@@ -870,6 +916,19 @@ Frontend rules:
 - "Cashiers": the operator CRUD in [Section 10](#10-merchant-operators).
 - "Pay another merchant": `POST /api/v1/merchant/m2m` with `Idempotency-Key`; handle `201`/`200` (no `202`). Hide the action when `canReceiveFromMerchant`/`canCashOut` constraints make it unavailable — but always treat the backend `422` as final.
 
+### 11.8 Notifications inbox (Customer + Merchant)
+
+Identical UX in both portals — build one component, mount it twice.
+
+1. **Badge** — on app shell mount and on every screen focus, call `GET /api/v1/notifications/unread` and display `unread` as a numeric badge on the bell icon. Cap the display at `99+`.
+2. **Inbox list** — when the user taps the bell, call `GET /api/v1/notifications?limit=20`. Render each row with `title`, `body`, `createdAt` (relative time), and a visual cue for `status=UNREAD` (dot, bold, etc.). Pull-to-refresh re-fetches.
+3. **Tap a row** — call `POST /api/v1/notifications/{id}/read` optimistically (flip the local row to READ immediately, rollback on `4xx`). Then parse `data` JSON and **deep-link** based on `type`:
+   - `P2P_TRANSFER`, `PAYMENT`, `CASH_IN`, `CASH_OUT`, `MERCHANT_TO_MERCHANT` → navigate to the transaction detail page using `transactionId`.
+   - Unknown `type` → no deep-link; just dismiss.
+4. **Mark all** — show a "Mark all read" action when there is at least one UNREAD row. Call `POST /api/v1/notifications/read-all`, then refresh both the list and the badge.
+5. **Delivery delay** — after a successful P2P/M2M/Payment, do **not** optimistically insert a notification row locally. The backend writes notifications asynchronously (≤ 5 s by default). If a fresh transaction is not yet reflected in the inbox, trust the next refresh.
+6. **Polling cadence** — there is no push channel today. For a "live-feeling" badge, poll `/unread` on a tunable interval (suggested: 30 s while the app is foregrounded, paused when backgrounded). Always re-fetch on app foreground.
+
 ---
 
 ## 12. UI States & Business Errors
@@ -966,6 +1025,7 @@ After the foundation, **Customer** is the better second step:
 | Merchant portal DTOs | `merchantportal.api.dto.MerchantProfileResponse`, `MerchantBalanceResponse`, `MerchantTransactionResponse`, `MerchantStatementEntryResponse`, `MerchantTerminalResponse`, `MerchantToMerchantRequest`, `MerchantToMerchantResponse`, `CreateOperatorRequest`, `OperatorResponse` |
 | Merchant M2M | `merchantportal.api.MerchantM2mController`, `transaction.application.MerchantToMerchantUseCase`, `MerchantToMerchantCommand`, `MerchantToMerchantResult` |
 | Merchant operators | `merchantportal.api.MerchantOperatorController`, `identity.application.CreateMerchantOperatorUseCase`, `ManageMerchantOperatorUseCase`, `identity.domain.MerchantOperator`, `OperatorStatus` |
+| Notifications inbox | `notification.api.NotificationController`, `notification.api.dto.NotificationResponse`, `UnreadCountResponse`, `MarkAllReadResponse`, `notification.application.NotificationReadService`, `notification.application.TransactionNotificationConsumer`, `notification.domain.Notification`, `NotificationCategory`, `NotificationStatus`, `notification.infrastructure.TransactionNotificationPoller`, migration `V057__notifications_inbox.sql` |
 | HTTP envelopes & pagination | `shared.infrastructure.web.ApiResponse`, `PagedResponse`, `ApiError`, `CursorUtils`, `shared.infrastructure.exception.GlobalExceptionHandler` |
 | Security, rate limit, public routes | `shared.infrastructure.config.SecurityConfig`, `shared.infrastructure.web.RateLimitingFilter`, `CorrelationIdFilter` |
 | JWT claims & authorities | `security.infrastructure.JwtService`, `security.domain.JwtPrincipal` |

@@ -27,4 +27,5 @@ return [
     'all_sessions_logged' => 'Sessions enregistrées et surveillées',
     'loading_qr'        => 'Chargement du QR…',
     'sign_out'          => 'Se déconnecter',
+    'refresh'           => 'Actualiser',
 ];
